@@ -2,6 +2,6 @@ import 'package:login_with_unite_test_and_clean_architecture/features/member/dat
 import 'package:login_with_unite_test_and_clean_architecture/features/member/domain/entities/member_entity.dart';
 
 abstract class MemberRepository {
-  Future<List<MemberEntity>> members();
+  Future<List<MemberEntity>> members({Map<String, dynamic>? params});
   Future<void> addMember({required MemberModel model});
 }

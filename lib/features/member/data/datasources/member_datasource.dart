@@ -9,9 +9,12 @@ class MemberDatasource {
 
   const MemberDatasource({required this.dio});
 
-  Future<List<MemberEntity>> fetchMembers() async {
+  Future<List<MemberEntity>> fetchMembers({Map<String, dynamic>? params}) async {
     final baseUrl = dotenv.env['url'] ?? "";
-    final response = await dio.get("${baseUrl}member/");
+    final response = await dio.get(
+      "${baseUrl}member/",
+      queryParameters: params,
+    );
 
     final List<dynamic> data = response.data;
 

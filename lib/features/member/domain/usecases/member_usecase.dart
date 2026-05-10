@@ -6,8 +6,8 @@ class MemberUsecase {
   final MemberRepository repository;
   const MemberUsecase({required this.repository});
 
-  Future<List<MemberEntity>> call() {
-    return repository.members();
+  Future<List<MemberEntity>> call({Map<String, dynamic>? params}) {
+    return repository.members(params: params);
   }
 
   Future<void> callAddMember({required MemberModel model}) {

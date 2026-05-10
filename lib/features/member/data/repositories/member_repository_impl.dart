@@ -9,8 +9,8 @@ class MemberRepositoryImpl implements MemberRepository {
   const MemberRepositoryImpl({required this.datasource});
 
   @override
-  Future<List<MemberEntity>> members() async {
-    return await datasource.fetchMembers();
+  Future<List<MemberEntity>> members({Map<String, dynamic>? params}) async {
+    return await datasource.fetchMembers(params: params);
   }
 
   @override
