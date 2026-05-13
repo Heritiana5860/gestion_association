@@ -1,0 +1,143 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:go_router/go_router.dart';
+import 'package:login_with_unite_test_and_clean_architecture/core/contants/colors/app_color.dart';
+import 'package:login_with_unite_test_and_clean_architecture/core/widgets/app_text.dart';
+import 'package:login_with_unite_test_and_clean_architecture/features/member/presentation/providers/member_notifier.dart';
+import 'package:login_with_unite_test_and_clean_architecture/features/member/presentation/widgets/detail/action_row.dart';
+import 'package:login_with_unite_test_and_clean_architecture/features/member/presentation/widgets/detail/hero_card.dart';
+import 'package:login_with_unite_test_and_clean_architecture/features/member/presentation/widgets/detail/info_card.dart';
+import 'package:login_with_unite_test_and_clean_architecture/features/member/presentation/widgets/detail/info_row.dart';
+import 'package:login_with_unite_test_and_clean_architecture/features/member/presentation/widgets/detail/section_label.dart';
+
+class MemberDetailPage extends ConsumerWidget {
+  const MemberDetailPage({super.key, required this.memberId});
+  final int memberId;
+
+  String _initials(String fullName) {
+    final parts = fullName
+        .trim()
+        .split(' ')
+        .where((p) => p.isNotEmpty)
+        .toList();
+
+    if (parts.isEmpty) return '?';
+    if (parts.length >= 2) return '${parts[0][0]}${parts[1][0]}'.toUpperCase();
+    return parts[0][0].toUpperCase();
+  }
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final membersAsync = ref.watch(memberDataProvider);
+
+    return membersAsync.when(
+      data: (members) {
+        final member = members.firstWhere(
+          (m) => m.id == memberId,
+          orElse: () => throw Exception('Membre introuvable'),
+        );
+        return Scaffold(
+          backgroundColor: AppColor.scaffoldBackground,
+          appBar: AppBar(
+            leading: IconButton(
+              icon: const Icon(Icons.arrow_back_ios_new_rounded),
+              onPressed: () => context.pop(),
+            ),
+            title: const AppText(
+              label: 'Fiche membre',
+              fontWeight: FontWeight.w600,
+            ),
+            centerTitle: true,
+            actions: [
+              IconButton(
+                icon: const Icon(Icons.more_horiz_rounded),
+                onPressed: () {},
+              ),
+            ],
+          ),
+          body: ListView(
+            padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 20.h),
+            children: [
+              HeroCard(member: member, initials: _initials(member.fullName)),
+              SizedBox(height: 20.h),
+              ActionRow(member: member),
+              SizedBox(height: 16.h),
+              SectionLabel(label: 'Coordonnées'),
+              SizedBox(height: 8.h),
+              InfoCard(
+                rows: [
+                  InfoRow(
+                    icon: Icons.phone_outlined,
+                    color: AppColor.blue,
+                    label: 'Téléphone',
+                    value: member.numberPhone,
+                  ),
+                  InfoRow(
+                    icon: Icons.location_on_outlined,
+                    color: AppColor.green,
+                    label: 'Adresse',
+                    value: member.address,
+                  ),
+                ],
+              ),
+              SizedBox(height: 20.h),
+              SectionLabel(label: 'Scolarité'),
+              SizedBox(height: 8.h),
+              InfoCard(
+                rows: [
+                  InfoRow(
+                    icon: Icons.school_outlined,
+                    color: AppColor.purple,
+                    label: 'École',
+                    value: member.school,
+                  ),
+                  InfoRow(
+                    icon: Icons.confirmation_number,
+                    color: AppColor.juan,
+                    label: "Carte d'étudiant",
+                    value: member.cde,
+                  ),
+                  InfoRow(
+                    icon: Icons.workspace_premium_outlined,
+                    color: AppColor.darkOrange,
+                    label: 'Niveau',
+                    value: member.level,
+                  ),
+                ],
+              ),
+              SizedBox(height: 20.h),
+              SectionLabel(label: 'Statut'),
+              SizedBox(height: 8.h),
+              InfoCard(
+                rows: [
+                  InfoRow(
+                    icon: Icons.badge_outlined,
+                    color: AppColor.green,
+                    label: 'Statut',
+                    value: member.statut,
+                  ),
+                  if (member.createdAt != null)
+                    InfoRow(
+                      icon: Icons.calendar_today_outlined,
+                      color: Colors.grey,
+                      label: 'Membre depuis',
+                      value: member.createdAt!,
+                    ),
+                ],
+              ),
+            ],
+          ),
+        );
+      },
+      error: (e, _) => Scaffold(
+        body: Center(
+          child: AppText(label: 'Erreur: $e', color: AppColor.red),
+        ),
+      ),
+      loading: () => Scaffold(
+        body: Center(child: CircularProgressIndicator(color: AppColor.blue)),
+      ),
+    );
+  }
+}

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:login_with_unite_test_and_clean_architecture/core/contants/colors/app_color.dart';
 import 'package:login_with_unite_test_and_clean_architecture/features/member/data/models/member_filters_model.dart';
-import 'package:login_with_unite_test_and_clean_architecture/features/member/presentation/widgets/active_chip.dart';
+import 'package:login_with_unite_test_and_clean_architecture/features/member/presentation/widgets/member/active_chip.dart';
 
 class ActiveFiltersBar extends StatelessWidget {
   final MemberFiltersModel filters;

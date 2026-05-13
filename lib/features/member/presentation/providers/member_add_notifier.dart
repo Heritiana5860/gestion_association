@@ -13,12 +13,29 @@ class MemberAddNotifier extends AsyncNotifier<void> {
     final usecase = ref.read(memberUsecaseProvider);
     state = AsyncLoading();
 
-    state = await AsyncValue.guard(() async {
-      await usecase.callAddMember(model: model);
-    });
+    state = await AsyncValue.guard(() => usecase.callAddMember(model: model));
 
-    ref.read(memberDataProvider.notifier).refresh();
-    ref.read(memberDataStats.notifier).refresh();
+    if (state is! AsyncError) {
+      ref.read(memberDataProvider.notifier).refresh();
+      ref.read(memberDataStats.notifier).refresh();
+    }
+  }
+
+  Future<void> updateMember({
+    required int id,
+    required MemberModel model,
+  }) async {
+    final usecase = ref.read(memberUsecaseProvider);
+    state = AsyncLoading();
+
+    state = await AsyncValue.guard(
+      () => usecase.callUpdateMember(id: id, model: model),
+    );
+
+    if (state is! AsyncError) {
+      await ref.read(memberDataProvider.notifier).refresh();
+      ref.read(memberDataStats.notifier).refresh();
+    }
   }
 }
 

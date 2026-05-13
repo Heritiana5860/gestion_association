@@ -3,8 +3,8 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:login_with_unite_test_and_clean_architecture/core/contants/colors/app_color.dart';
 import 'package:login_with_unite_test_and_clean_architecture/core/widgets/app_text.dart';
 import 'package:login_with_unite_test_and_clean_architecture/features/member/data/models/member_filters_model.dart';
-import 'package:login_with_unite_test_and_clean_architecture/features/member/presentation/widgets/choice_chip.dart';
-import 'package:login_with_unite_test_and_clean_architecture/features/member/presentation/widgets/sheet_section.dart';
+import 'package:login_with_unite_test_and_clean_architecture/features/member/presentation/widgets/member/choice_chip.dart';
+import 'package:login_with_unite_test_and_clean_architecture/features/member/presentation/widgets/member/sheet_section.dart';
 
 class FilterBottomSheet extends StatefulWidget {
   final MemberFiltersModel current;

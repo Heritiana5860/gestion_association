@@ -12,6 +12,7 @@ class AppText extends StatelessWidget {
     this.wordSpacing,
     this.maxLines,
     this.overflow,
+    this.letterSpacing,
   });
 
   final String label;
@@ -22,6 +23,7 @@ class AppText extends StatelessWidget {
   final double? wordSpacing;
   final int? maxLines;
   final TextOverflow? overflow;
+  final double? letterSpacing;
 
   @override
   Widget build(BuildContext context) {
@@ -35,6 +37,7 @@ class AppText extends StatelessWidget {
         fontWeight: fontWeight,
         height: height,
         wordSpacing: wordSpacing,
+        letterSpacing: letterSpacing,
       ),
     );
   }

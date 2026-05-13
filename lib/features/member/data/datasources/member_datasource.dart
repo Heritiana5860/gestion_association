@@ -9,7 +9,9 @@ class MemberDatasource {
 
   const MemberDatasource({required this.dio});
 
-  Future<List<MemberEntity>> fetchMembers({Map<String, dynamic>? params}) async {
+  Future<List<MemberEntity>> fetchMembers({
+    Map<String, dynamic>? params,
+  }) async {
     final baseUrl = dotenv.env['url'] ?? "";
     final response = await dio.get(
       "${baseUrl}member/",
@@ -35,12 +37,23 @@ class MemberDatasource {
         options: Options(headers: {"Content-Type": "application/json"}),
       );
     } on DioException catch (e) {
-      if (e.response != null) {
-        debugPrint("Données d'erreur du serveur: ${e.response?.data}");
-        debugPrint("Statut d'erreur: ${e.response?.statusCode}");
-      } else {
-        debugPrint("Erreur de configuration ou de connexion: ${e.message}");
-      }
+      debugPrint("Erreur add: ${e.response?.data} | ${e.message}");
+      rethrow;
+    }
+  }
+
+  Future<void> update({required int id, required MemberModel model}) async {
+    final baseUrl = dotenv.env['url'] ?? "";
+
+    try {
+      await dio.put(
+        "${baseUrl}member/$id/",
+        data: model.toJson(),
+        options: Options(headers: {"Content-Type": "application/json"}),
+      );
+    } on DioException catch (e) {
+      debugPrint("Erreur add: ${e.response?.data} | ${e.message}");
+      rethrow;
     }
   }
 }

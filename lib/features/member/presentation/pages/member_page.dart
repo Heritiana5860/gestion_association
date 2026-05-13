@@ -6,14 +6,15 @@ import 'package:login_with_unite_test_and_clean_architecture/core/contants/color
 import 'package:login_with_unite_test_and_clean_architecture/core/widgets/app_input.dart';
 import 'package:login_with_unite_test_and_clean_architecture/core/widgets/app_text.dart';
 import 'package:login_with_unite_test_and_clean_architecture/core/widgets/global_padding.dart';
+import 'package:login_with_unite_test_and_clean_architecture/core/widgets/list_animated.dart';
 import 'package:login_with_unite_test_and_clean_architecture/features/member/data/models/member_filters_model.dart';
 import 'package:login_with_unite_test_and_clean_architecture/features/member/presentation/providers/member_notifier.dart';
 import 'package:login_with_unite_test_and_clean_architecture/features/member/presentation/providers/member_search_provider.dart';
-import 'package:login_with_unite_test_and_clean_architecture/features/member/presentation/widgets/active_filters_bar.dart';
-import 'package:login_with_unite_test_and_clean_architecture/features/member/presentation/widgets/add_member_dialog.dart';
-import 'package:login_with_unite_test_and_clean_architecture/features/member/presentation/widgets/filter_bottom_sheet.dart';
-import 'package:login_with_unite_test_and_clean_architecture/features/member/presentation/widgets/filter_icon_button.dart';
-import 'package:login_with_unite_test_and_clean_architecture/features/member/presentation/widgets/list_member_card.dart';
+import 'package:login_with_unite_test_and_clean_architecture/features/member/presentation/widgets/member/active_filters_bar.dart';
+import 'package:login_with_unite_test_and_clean_architecture/features/member/presentation/widgets/member/add_member_dialog.dart';
+import 'package:login_with_unite_test_and_clean_architecture/features/member/presentation/widgets/member/filter_bottom_sheet.dart';
+import 'package:login_with_unite_test_and_clean_architecture/features/member/presentation/widgets/member/filter_icon_button.dart';
+import 'package:login_with_unite_test_and_clean_architecture/features/member/presentation/widgets/member/list_member_card.dart';
 
 class MemberPage extends ConsumerStatefulWidget {
   const MemberPage({super.key});
@@ -67,8 +68,7 @@ class _MemberPageState extends ConsumerState<MemberPage> {
       ),
       body: Padding(
         padding: globalPadding(),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+        child: ListAnimated(
           children: [
             // Recherche + Entonnoir
             Row(

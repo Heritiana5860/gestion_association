@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:google_nav_bar/google_nav_bar.dart';
 import 'package:login_with_unite_test_and_clean_architecture/core/contants/colors/app_color.dart';
 import 'package:login_with_unite_test_and_clean_architecture/core/contants/keys/route_keys.dart';
 import 'package:login_with_unite_test_and_clean_architecture/core/widgets/app_text.dart';
 import 'package:login_with_unite_test_and_clean_architecture/features/auth/presentation/pages/auth_login_page.dart';
 import 'package:login_with_unite_test_and_clean_architecture/features/auth/presentation/pages/auth_register_page.dart';
 import 'package:login_with_unite_test_and_clean_architecture/features/home/presentation/pages/home_page.dart';
+import 'package:login_with_unite_test_and_clean_architecture/features/member/presentation/pages/member_detail_page.dart';
 import 'package:login_with_unite_test_and_clean_architecture/features/member/presentation/pages/member_page.dart';
 
 final router = GoRouter(
@@ -20,6 +22,14 @@ final router = GoRouter(
       path: RouteKeys.inscriptionUrl,
       name: RouteKeys.inscriptionName,
       builder: (context, state) => const AuthRegisterPage(),
+    ),
+    GoRoute(
+      path: RouteKeys.memberDetailUrl,
+      name: RouteKeys.memberDetailName,
+      builder: (context, state) {
+        final memberId = state.extra as int;
+        return MemberDetailPage(memberId: memberId);
+      },
     ),
 
     StatefulShellRoute.indexedStack(
@@ -37,35 +47,34 @@ final router = GoRouter(
         ),
         drawer: Drawer(),
         body: navigationShell,
-        bottomNavigationBar: BottomNavigationBar(
-          backgroundColor: AppColor.white,
-          items: const [
-            BottomNavigationBarItem(
-              icon: Icon(Icons.home),
-              label: 'Home',
-              backgroundColor: AppColor.white,
+        bottomNavigationBar: Container(
+          color: AppColor.white,
+          child: SafeArea(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+              child: GNav(
+                gap: 8,
+                color: AppColor.textDescription,
+                activeColor: AppColor.blue,
+                tabBackgroundColor: AppColor.blue.withValues(alpha: 0.1),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 16,
+                  vertical: 10,
+                ),
+                selectedIndex: navigationShell.currentIndex,
+                onTabChange: (index) => navigationShell.goBranch(index),
+                tabs: const [
+                  GButton(icon: Icons.home_outlined, text: 'Home'),
+                  GButton(icon: Icons.people_outline, text: 'Member'),
+                  GButton(
+                    icon: Icons.account_balance_wallet_outlined,
+                    text: 'Cotisation',
+                  ),
+                  GButton(icon: Icons.event_outlined, text: 'Événement'),
+                ],
+              ),
             ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.people),
-              label: 'Member',
-              backgroundColor: AppColor.white,
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.money),
-              label: 'Cotisation',
-              backgroundColor: AppColor.white,
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.event),
-              label: 'Evénement',
-              backgroundColor: AppColor.white,
-            ),
-          ],
-          type: BottomNavigationBarType.fixed,
-          unselectedItemColor: AppColor.textDescription,
-          selectedItemColor: AppColor.blue,
-          currentIndex: navigationShell.currentIndex,
-          onTap: (value) => navigationShell.goBranch(value),
+          ),
         ),
       ),
       branches: [

@@ -15,6 +15,14 @@ class MemberRepositoryImpl implements MemberRepository {
 
   @override
   Future<void> addMember({required MemberModel model}) async {
-    return await datasource.add(model: model);
+    await datasource.add(model: model);
+  }
+
+  @override
+  Future<void> updateMember({
+    required int id,
+    required MemberModel model,
+  }) async {
+    await datasource.update(id: id, model: model);
   }
 }

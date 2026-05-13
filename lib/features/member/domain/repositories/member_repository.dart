@@ -4,4 +4,5 @@ import 'package:login_with_unite_test_and_clean_architecture/features/member/dom
 abstract class MemberRepository {
   Future<List<MemberEntity>> members({Map<String, dynamic>? params});
   Future<void> addMember({required MemberModel model});
+  Future<void> updateMember({required int id, required MemberModel model});
 }

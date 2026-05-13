@@ -13,4 +13,8 @@ class MemberUsecase {
   Future<void> callAddMember({required MemberModel model}) {
     return repository.addMember(model: model);
   }
+
+  Future<void> callUpdateMember({required int id, required MemberModel model}) {
+    return repository.updateMember(id: id, model: model);
+  }
 }

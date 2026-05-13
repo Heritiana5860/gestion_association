@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:go_router/go_router.dart';
 import 'package:login_with_unite_test_and_clean_architecture/core/contants/colors/app_color.dart';
 import 'package:login_with_unite_test_and_clean_architecture/core/widgets/app_text.dart';
 import 'package:login_with_unite_test_and_clean_architecture/features/member/domain/entities/member_entity.dart';
@@ -36,7 +37,10 @@ class ListMemberCard extends StatelessWidget {
         ),
         subtitle: AppText(label: member.numberPhone),
         trailing: IconButton(
-          onPressed: () {},
+          onPressed: () {
+            if (!context.mounted) return;
+            context.pushNamed("member-detail", extra: member.id);
+          },
           icon: const Icon(Icons.visibility_rounded),
         ),
       ),
