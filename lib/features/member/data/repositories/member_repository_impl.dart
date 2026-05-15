@@ -30,4 +30,9 @@ class MemberRepositoryImpl implements MemberRepository {
   Future<MemberEntity> detailMember({required int id}) async {
     return await datasource.detail(id: id);
   }
+
+  @override
+  Future<void> deleteMember({required int id}) async {
+    return await datasource.delete(id: id);
+  }
 }

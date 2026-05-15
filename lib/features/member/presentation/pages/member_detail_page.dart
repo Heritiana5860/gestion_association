@@ -4,16 +4,26 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:login_with_unite_test_and_clean_architecture/core/contants/colors/app_color.dart';
 import 'package:login_with_unite_test_and_clean_architecture/core/widgets/app_text.dart';
+import 'package:login_with_unite_test_and_clean_architecture/features/member/presentation/providers/member_delete_notifier.dart';
 import 'package:login_with_unite_test_and_clean_architecture/features/member/presentation/providers/member_detail_provider.dart';
+import 'package:login_with_unite_test_and_clean_architecture/features/member/presentation/providers/member_notifier.dart';
+import 'package:login_with_unite_test_and_clean_architecture/features/member/presentation/providers/member_stats_notifier.dart';
 import 'package:login_with_unite_test_and_clean_architecture/features/member/presentation/widgets/detail/action_row.dart';
 import 'package:login_with_unite_test_and_clean_architecture/features/member/presentation/widgets/detail/hero_card.dart';
 import 'package:login_with_unite_test_and_clean_architecture/features/member/presentation/widgets/detail/info_card.dart';
 import 'package:login_with_unite_test_and_clean_architecture/features/member/presentation/widgets/detail/info_row.dart';
 import 'package:login_with_unite_test_and_clean_architecture/features/member/presentation/widgets/detail/section_label.dart';
 
-class MemberDetailPage extends ConsumerWidget {
+class MemberDetailPage extends ConsumerStatefulWidget {
   const MemberDetailPage({super.key, required this.memberId});
   final int memberId;
+
+  @override
+  ConsumerState<MemberDetailPage> createState() => _MemberDetailPageState();
+}
+
+class _MemberDetailPageState extends ConsumerState<MemberDetailPage> {
+  String selectedValue = 'Nothing selected';
 
   String _initials(String fullName) {
     final parts = fullName
@@ -28,8 +38,8 @@ class MemberDetailPage extends ConsumerWidget {
   }
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final membersAsync = ref.watch(detailProvider(memberId));
+  Widget build(BuildContext context) {
+    final membersAsync = ref.watch(detailProvider(widget.memberId));
 
     return membersAsync.when(
       data: (member) {
@@ -46,9 +56,52 @@ class MemberDetailPage extends ConsumerWidget {
             ),
             centerTitle: true,
             actions: [
-              IconButton(
-                icon: const Icon(Icons.more_horiz_rounded),
-                onPressed: () {},
+              PopupMenuButton(
+                icon: Icon(Icons.more_horiz_rounded, color: AppColor.grey),
+                color: AppColor.white,
+                elevation: 8,
+                shadowColor: Colors.black.withValues(alpha: 0.12),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12.r),
+                ),
+                offset: Offset(0, 8),
+                onSelected: (value) {
+                  if (value == 'delete') {
+                    ref.read(deleteMemberProvider(widget.memberId));
+                    context.pop();
+                    ref.read(memberDataProvider.notifier).refresh();
+                    ref.read(memberDataStats.notifier).refresh();
+                  }
+                },
+                itemBuilder: (context) => [
+                  PopupMenuItem(
+                    value: 'delete',
+                    height: 44.h,
+                    child: Row(
+                      children: [
+                        Container(
+                          padding: EdgeInsets.all(6.r),
+                          decoration: BoxDecoration(
+                            color: AppColor.red.withValues(alpha: 0.08),
+                            borderRadius: BorderRadius.circular(8.r),
+                          ),
+                          child: Icon(
+                            Icons.delete_outline_rounded,
+                            color: AppColor.red,
+                            size: 16.r,
+                          ),
+                        ),
+                        SizedBox(width: 10.w),
+                        AppText(
+                          label: 'Supprimer',
+                          fontSize: 14.sp,
+                          fontWeight: FontWeight.w500,
+                          color: AppColor.red,
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
               ),
             ],
           ),

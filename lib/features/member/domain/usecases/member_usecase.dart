@@ -21,4 +21,8 @@ class MemberUsecase {
   Future<MemberEntity> callDetailMember({required int id}) {
     return repository.detailMember(id: id);
   }
+
+  Future<void> callDeleteMember({required int id}) {
+    return repository.deleteMember(id: id);
+  }
 }

@@ -61,10 +61,18 @@ class _MemberPageState extends ConsumerState<MemberPage> {
     return Scaffold(
       backgroundColor: AppColor.scaffoldBackground,
       floatingActionButton: FloatingActionButton(
-        backgroundColor: AppColor.blue.withValues(alpha: 0.9),
-        shape: const CircleBorder(),
         onPressed: _createMember,
-        child: Icon(Icons.person_add_alt, color: AppColor.white),
+        backgroundColor: AppColor.white,
+        elevation: 4,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(16.r),
+          side: BorderSide(color: AppColor.blue, width: 1.5),
+        ),
+        child: Icon(
+          Icons.person_add_alt_rounded,
+          color: AppColor.blue,
+          size: 22.r,
+        ),
       ),
       body: Padding(
         padding: globalPadding(),

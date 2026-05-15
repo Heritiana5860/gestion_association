@@ -66,4 +66,9 @@ class MemberDatasource {
 
     return MemberModel.fromJson(data);
   }
+
+  Future<void> delete({required int id}) async {
+    final baseUrl = dotenv.env['url'] ?? "";
+    await dio.delete("${baseUrl}member/$id/");
+  }
 }

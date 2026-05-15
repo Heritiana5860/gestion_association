@@ -6,4 +6,5 @@ abstract class MemberRepository {
   Future<void> addMember({required MemberModel model});
   Future<void> updateMember({required int id, required MemberModel model});
   Future<MemberEntity> detailMember({required int id});
+  Future<void> deleteMember({required int id});
 }
