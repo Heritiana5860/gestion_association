@@ -13,6 +13,7 @@ import 'package:login_with_unite_test_and_clean_architecture/core/widgets/app_te
 import 'package:login_with_unite_test_and_clean_architecture/features/member/data/models/member_model.dart';
 import 'package:login_with_unite_test_and_clean_architecture/features/member/domain/entities/member_entity.dart';
 import 'package:login_with_unite_test_and_clean_architecture/features/member/presentation/providers/member_add_notifier.dart';
+import 'package:login_with_unite_test_and_clean_architecture/features/member/presentation/providers/member_detail_provider.dart';
 import 'package:login_with_unite_test_and_clean_architecture/features/member/presentation/providers/member_notifier.dart';
 import 'package:login_with_unite_test_and_clean_architecture/features/member/presentation/widgets/member/dialog_header.dart';
 
@@ -87,6 +88,7 @@ class _AddMemberDialogState extends ConsumerState<AddMemberDialog> {
     ref
         .read(newMemberProvider.notifier)
         .updateMember(id: widget.member!.id ?? 0, model: model);
+    ref.invalidate(detailProvider);
   }
 
   @override

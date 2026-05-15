@@ -4,7 +4,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:login_with_unite_test_and_clean_architecture/core/contants/colors/app_color.dart';
 import 'package:login_with_unite_test_and_clean_architecture/core/widgets/app_text.dart';
-import 'package:login_with_unite_test_and_clean_architecture/features/member/presentation/providers/member_notifier.dart';
+import 'package:login_with_unite_test_and_clean_architecture/features/member/presentation/providers/member_detail_provider.dart';
 import 'package:login_with_unite_test_and_clean_architecture/features/member/presentation/widgets/detail/action_row.dart';
 import 'package:login_with_unite_test_and_clean_architecture/features/member/presentation/widgets/detail/hero_card.dart';
 import 'package:login_with_unite_test_and_clean_architecture/features/member/presentation/widgets/detail/info_card.dart';
@@ -29,14 +29,10 @@ class MemberDetailPage extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final membersAsync = ref.watch(memberDataProvider);
+    final membersAsync = ref.watch(detailProvider(memberId));
 
     return membersAsync.when(
-      data: (members) {
-        final member = members.firstWhere(
-          (m) => m.id == memberId,
-          orElse: () => throw Exception('Membre introuvable'),
-        );
+      data: (member) {
         return Scaffold(
           backgroundColor: AppColor.scaffoldBackground,
           appBar: AppBar(

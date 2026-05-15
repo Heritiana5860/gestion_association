@@ -25,4 +25,9 @@ class MemberRepositoryImpl implements MemberRepository {
   }) async {
     await datasource.update(id: id, model: model);
   }
+
+  @override
+  Future<MemberEntity> detailMember({required int id}) async {
+    return await datasource.detail(id: id);
+  }
 }

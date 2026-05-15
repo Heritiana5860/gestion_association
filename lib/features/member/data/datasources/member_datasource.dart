@@ -56,4 +56,14 @@ class MemberDatasource {
       rethrow;
     }
   }
+
+  Future<MemberEntity> detail({required int id}) async {
+    final baseUrl = dotenv.env['url'] ?? "";
+
+    final response = await dio.get("${baseUrl}member/$id/");
+
+    final dynamic data = response.data;
+
+    return MemberModel.fromJson(data);
+  }
 }
