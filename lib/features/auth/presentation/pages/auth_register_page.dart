@@ -12,6 +12,7 @@ import 'package:login_with_unite_test_and_clean_architecture/core/contants/sizes
 import 'package:login_with_unite_test_and_clean_architecture/core/widgets/app_button.dart';
 import 'package:login_with_unite_test_and_clean_architecture/core/widgets/app_input.dart';
 import 'package:login_with_unite_test_and_clean_architecture/core/widgets/app_text.dart';
+import 'package:login_with_unite_test_and_clean_architecture/core/widgets/auth/header_text.dart';
 import 'package:login_with_unite_test_and_clean_architecture/core/widgets/errors/error_message.dart';
 import 'package:login_with_unite_test_and_clean_architecture/core/widgets/list_animated.dart';
 import 'package:login_with_unite_test_and_clean_architecture/features/auth/data/models/auth_register_model.dart';
@@ -90,7 +91,7 @@ class _AuthRegisterPageState extends ConsumerState<AuthRegisterPage> {
                 key: formKey,
                 child: ListAnimated(
                   children: [
-                    Logo(),
+                    HeaderText(),
 
                     SizedBox(height: SizeHeight.twentyHeight),
                     AppText(
