@@ -1,6 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:login_with_unite_test_and_clean_architecture/core/network/autorisation_token.dart';
 import 'package:login_with_unite_test_and_clean_architecture/features/member/data/models/member_model.dart';
 import 'package:login_with_unite_test_and_clean_architecture/features/member/domain/entities/member_entity.dart';
 
@@ -16,6 +17,7 @@ class MemberDatasource {
     final response = await dio.get(
       "${baseUrl}member/",
       queryParameters: params,
+      options: Options(headers: await AutorisationToken.headers()),
     );
 
     final List<dynamic> data = response.data;
@@ -34,7 +36,7 @@ class MemberDatasource {
       await dio.post(
         "${baseUrl}member/",
         data: model.toJson(),
-        options: Options(headers: {"Content-Type": "application/json"}),
+        options: Options(headers: await AutorisationToken.headers()),
       );
     } on DioException catch (e) {
       debugPrint("Erreur add: ${e.response?.data} | ${e.message}");
@@ -49,7 +51,7 @@ class MemberDatasource {
       await dio.put(
         "${baseUrl}member/$id/",
         data: model.toJson(),
-        options: Options(headers: {"Content-Type": "application/json"}),
+        options: Options(headers: await AutorisationToken.headers()),
       );
     } on DioException catch (e) {
       debugPrint("Erreur add: ${e.response?.data} | ${e.message}");
@@ -60,7 +62,10 @@ class MemberDatasource {
   Future<MemberEntity> detail({required int id}) async {
     final baseUrl = dotenv.env['url'] ?? "";
 
-    final response = await dio.get("${baseUrl}member/$id/");
+    final response = await dio.get(
+      "${baseUrl}member/$id/",
+      options: Options(headers: await AutorisationToken.headers()),
+    );
 
     final dynamic data = response.data;
 
@@ -69,6 +74,9 @@ class MemberDatasource {
 
   Future<void> delete({required int id}) async {
     final baseUrl = dotenv.env['url'] ?? "";
-    await dio.delete("${baseUrl}member/$id/");
+    await dio.delete(
+      "${baseUrl}member/$id/",
+      options: Options(headers: await AutorisationToken.headers()),
+    );
   }
 }

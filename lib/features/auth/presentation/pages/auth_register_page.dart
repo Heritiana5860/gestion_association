@@ -1,5 +1,6 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -11,18 +12,21 @@ import 'package:login_with_unite_test_and_clean_architecture/core/contants/sizes
 import 'package:login_with_unite_test_and_clean_architecture/core/widgets/app_button.dart';
 import 'package:login_with_unite_test_and_clean_architecture/core/widgets/app_input.dart';
 import 'package:login_with_unite_test_and_clean_architecture/core/widgets/app_text.dart';
+import 'package:login_with_unite_test_and_clean_architecture/core/widgets/errors/error_message.dart';
 import 'package:login_with_unite_test_and_clean_architecture/core/widgets/list_animated.dart';
+import 'package:login_with_unite_test_and_clean_architecture/features/auth/data/models/auth_register_model.dart';
+import 'package:login_with_unite_test_and_clean_architecture/features/auth/presentation/providers/register/register_notifier.dart';
 import 'package:login_with_unite_test_and_clean_architecture/features/auth/presentation/widgets/logo.dart';
 import 'package:login_with_unite_test_and_clean_architecture/features/auth/presentation/widgets/sociaux_card.dart';
 
-class AuthRegisterPage extends StatefulWidget {
+class AuthRegisterPage extends ConsumerStatefulWidget {
   const AuthRegisterPage({super.key});
 
   @override
-  State<AuthRegisterPage> createState() => _AuthRegisterPageState();
+  ConsumerState<AuthRegisterPage> createState() => _AuthRegisterPageState();
 }
 
-class _AuthRegisterPageState extends State<AuthRegisterPage> {
+class _AuthRegisterPageState extends ConsumerState<AuthRegisterPage> {
   final formKey = GlobalKey<FormState>();
   bool isVisibled = true;
   late TapGestureRecognizer _tapRecognizer;
@@ -42,8 +46,39 @@ class _AuthRegisterPageState extends State<AuthRegisterPage> {
     context.goNamed(RouteKeys.loginName);
   }
 
+  void _submit() {
+    final model = AuthRegisterModel(
+      fullName: fullName.text.trim(),
+      username: username.text.trim(),
+      password: password.text,
+    );
+
+    if (formKey.currentState!.validate()) {
+      ref.read(newUserProvider.notifier).createNewUser(model: model);
+
+      clear();
+    }
+  }
+
+  void clear() {
+    fullName.clear();
+    username.clear();
+    password.clear();
+    confirm.clear();
+  }
+
   @override
   Widget build(BuildContext context) {
+    final newUser = ref.watch(newUserProvider);
+    final isLoading = newUser is AsyncLoading;
+
+    ref.listen<AsyncValue<void>>(newUserProvider, (previous, next) {
+      next.whenOrNull(
+        data: (_) => context.goNamed(RouteKeys.homeName),
+        error: (error, stackTrace) => ErrorMessage(),
+      );
+    });
+
     return Scaffold(
       backgroundColor: AppColor.scaffoldBackground,
       body: SafeArea(
@@ -189,10 +224,8 @@ class _AuthRegisterPageState extends State<AuthRegisterPage> {
                     SizedBox(height: SizeHeight.twentyHeight),
 
                     AppButton(
-                      label: "Sign up",
-                      onPressed: () {
-                        if (formKey.currentState!.validate()) {}
-                      },
+                      label: isLoading ? "Création..." : "Créer compte",
+                      onPressed: isLoading ? null : _submit,
                     ),
 
                     SizedBox(height: SizeHeight.twentyFourHeight),
@@ -203,7 +236,7 @@ class _AuthRegisterPageState extends State<AuthRegisterPage> {
                         Padding(
                           padding: EdgeInsets.symmetric(horizontal: 6.w),
                           child: AppText(
-                            label: "Or",
+                            label: "Ou",
                             color: AppColor.textDescription,
                             fontWeight: FontWeight.w600,
                           ),
@@ -277,6 +310,10 @@ class _AuthRegisterPageState extends State<AuthRegisterPage> {
   @override
   void dispose() {
     _tapRecognizer.dispose();
+    fullName.dispose();
+    username.dispose();
+    password.dispose();
+    confirm.dispose();
     super.dispose();
   }
 }

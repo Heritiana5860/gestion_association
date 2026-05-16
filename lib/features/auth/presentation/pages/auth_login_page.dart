@@ -1,5 +1,6 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -11,21 +12,27 @@ import 'package:login_with_unite_test_and_clean_architecture/core/contants/sizes
 import 'package:login_with_unite_test_and_clean_architecture/core/widgets/app_button.dart';
 import 'package:login_with_unite_test_and_clean_architecture/core/widgets/app_input.dart';
 import 'package:login_with_unite_test_and_clean_architecture/core/widgets/app_text.dart';
+import 'package:login_with_unite_test_and_clean_architecture/core/widgets/errors/error_message.dart';
 import 'package:login_with_unite_test_and_clean_architecture/core/widgets/list_animated.dart';
+import 'package:login_with_unite_test_and_clean_architecture/features/auth/data/models/auth_model.dart';
+import 'package:login_with_unite_test_and_clean_architecture/features/auth/presentation/providers/login/auth_login_notifier.dart';
 import 'package:login_with_unite_test_and_clean_architecture/features/auth/presentation/widgets/logo.dart';
 import 'package:login_with_unite_test_and_clean_architecture/features/auth/presentation/widgets/sociaux_card.dart';
 
-class AuthLoginPage extends StatefulWidget {
+class AuthLoginPage extends ConsumerStatefulWidget {
   const AuthLoginPage({super.key});
 
   @override
-  State<AuthLoginPage> createState() => _AuthLoginPageState();
+  ConsumerState<AuthLoginPage> createState() => _AuthLoginPageState();
 }
 
-class _AuthLoginPageState extends State<AuthLoginPage> {
+class _AuthLoginPageState extends ConsumerState<AuthLoginPage> {
   final formKey = GlobalKey<FormState>();
   late TapGestureRecognizer _tapRecognizer;
   bool isVisibled = true;
+
+  final username = TextEditingController();
+  final password = TextEditingController();
 
   @override
   void initState() {
@@ -38,13 +45,33 @@ class _AuthLoginPageState extends State<AuthLoginPage> {
   }
 
   void _submit() {
+    final model = AuthModel(
+      username: username.text.trim(),
+      password: password.text,
+    );
     if (formKey.currentState!.validate()) {
-      context.goNamed(RouteKeys.homeName);
+      ref.read(login.notifier).signIn(model: model);
+      clear();
     }
+  }
+
+  void clear() {
+    username.clear();
+    password.clear();
   }
 
   @override
   Widget build(BuildContext context) {
+    final auth = ref.watch(login);
+    final isLoading = auth is AsyncLoading;
+
+    ref.listen<AsyncValue<void>>(login, (previous, next) {
+      next.whenOrNull(
+        data: (data) => context.goNamed(RouteKeys.homeName),
+        error: (error, _) => ErrorMessage(),
+      );
+    });
+
     return Scaffold(
       backgroundColor: AppColor.scaffoldBackground,
       body: SafeArea(
@@ -70,6 +97,7 @@ class _AuthLoginPageState extends State<AuthLoginPage> {
                     SizedBox(height: SizeHeight.twentyFourHeight),
 
                     AppInput(
+                      controller: username,
                       labelText: "Nom d'utilisateur",
                       prefixIcon: Icons.person,
                       keyboardType: TextInputType.text,
@@ -96,6 +124,7 @@ class _AuthLoginPageState extends State<AuthLoginPage> {
                     ),
                     SizedBox(height: SizeHeight.tenHeight),
                     AppInput(
+                      controller: password,
                       labelText: "Mot de passe",
                       prefixIcon: Icons.lock,
                       obscureText: isVisibled,
@@ -125,7 +154,10 @@ class _AuthLoginPageState extends State<AuthLoginPage> {
 
                     SizedBox(height: SizeHeight.twentyHeight),
 
-                    AppButton(label: "Sign in", onPressed: _submit),
+                    AppButton(
+                      label: isLoading ? "Connexion..." : "Se connecter",
+                      onPressed: isLoading ? null : _submit,
+                    ),
 
                     SizedBox(height: SizeHeight.twentyFourHeight),
 
@@ -209,6 +241,8 @@ class _AuthLoginPageState extends State<AuthLoginPage> {
   @override
   void dispose() {
     _tapRecognizer.dispose();
+    username.dispose();
+    password.dispose();
     super.dispose();
   }
 }

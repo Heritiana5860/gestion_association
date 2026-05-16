@@ -9,8 +9,8 @@ class MemberRepositoryImpl implements MemberRepository {
   const MemberRepositoryImpl({required this.datasource});
 
   @override
-  Future<List<MemberEntity>> members({Map<String, dynamic>? params}) async {
-    return await datasource.fetchMembers(params: params);
+  Future<List<MemberEntity>> members({Map<String, dynamic>? params}) {
+    return datasource.fetchMembers(params: params);
   }
 
   @override
@@ -27,12 +27,12 @@ class MemberRepositoryImpl implements MemberRepository {
   }
 
   @override
-  Future<MemberEntity> detailMember({required int id}) async {
-    return await datasource.detail(id: id);
+  Future<MemberEntity> detailMember({required int id}) {
+    return datasource.detail(id: id);
   }
 
   @override
-  Future<void> deleteMember({required int id}) async {
-    return await datasource.delete(id: id);
+  Future<void> deleteMember({required int id}) {
+    return datasource.delete(id: id);
   }
 }

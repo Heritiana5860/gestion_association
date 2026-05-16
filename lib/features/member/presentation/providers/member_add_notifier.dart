@@ -16,8 +16,8 @@ class MemberAddNotifier extends AsyncNotifier<void> {
     state = await AsyncValue.guard(() => usecase.callAddMember(model: model));
 
     if (state is! AsyncError) {
-      ref.read(memberDataProvider.notifier).refresh();
-      ref.read(memberDataStats.notifier).refresh();
+      await ref.read(memberDataProvider.notifier).refresh();
+      await ref.read(memberDataStats.notifier).refresh();
     }
   }
 
@@ -34,7 +34,7 @@ class MemberAddNotifier extends AsyncNotifier<void> {
 
     if (state is! AsyncError) {
       await ref.read(memberDataProvider.notifier).refresh();
-      ref.read(memberDataStats.notifier).refresh();
+      await ref.read(memberDataStats.notifier).refresh();
     }
   }
 }

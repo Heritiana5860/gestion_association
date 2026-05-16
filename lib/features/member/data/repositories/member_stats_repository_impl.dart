@@ -8,7 +8,7 @@ class MemberStatsRepositoryImpl implements MemberStatsRepository {
   const MemberStatsRepositoryImpl({required this.datasource});
 
   @override
-  Future<MemberStatsEntity> memberStats() async {
-    return await datasource.stats();
+  Future<MemberStatsEntity> memberStats() {
+    return datasource.stats();
   }
 }

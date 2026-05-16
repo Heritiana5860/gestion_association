@@ -1,10 +1,45 @@
+import 'package:dio/dio.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:login_with_unite_test_and_clean_architecture/core/contants/keys/info_key.dart';
+import 'package:login_with_unite_test_and_clean_architecture/core/contants/keys/token_key.dart';
+import 'package:login_with_unite_test_and_clean_architecture/core/contants/keys/url_key.dart';
 import 'package:login_with_unite_test_and_clean_architecture/features/auth/data/models/auth_model.dart';
 
 class AuthLoginDatasource {
   final FlutterSecureStorage storage;
+  final Dio dio;
 
-  const AuthLoginDatasource({required this.storage});
+  const AuthLoginDatasource({required this.storage, required this.dio});
 
-  Future<void> authSubmit({required AuthModel model}) async {}
+  Future<void> authSubmit({required AuthModel model}) async {
+    final url = dotenv.env[UrlKey.urlKey];
+
+    try {
+      final response = await dio.post("${url}token/", data: model.toJson());
+
+      await Future.wait([
+        storage.write(
+          key: TokenKey.token,
+          value: response.data[TokenKey.token],
+        ),
+        storage.write(
+          key: TokenKey.refresh,
+          value: response.data[TokenKey.refresh],
+        ),
+        storage.write(
+          key: InfoKey.fullName,
+          value: response.data[InfoKey.fullName],
+        ),
+        storage.write(
+          key: InfoKey.username,
+          value: response.data[InfoKey.username],
+        ),
+      ]);
+    } on DioException catch (e) {
+      debugPrint("Erreur lors de l'authentification: $e");
+      rethrow;
+    }
+  }
 }
