@@ -9,11 +9,11 @@ import 'package:login_with_unite_test_and_clean_architecture/core/contants/keys/
 import 'package:login_with_unite_test_and_clean_architecture/core/contants/sizes/size_font.dart';
 import 'package:login_with_unite_test_and_clean_architecture/core/contants/sizes/size_height.dart';
 import 'package:login_with_unite_test_and_clean_architecture/core/contants/sizes/size_padding.dart';
+import 'package:login_with_unite_test_and_clean_architecture/core/errors/auth/failure.dart';
 import 'package:login_with_unite_test_and_clean_architecture/core/widgets/app_button.dart';
 import 'package:login_with_unite_test_and_clean_architecture/core/widgets/app_input.dart';
 import 'package:login_with_unite_test_and_clean_architecture/core/widgets/app_text.dart';
 import 'package:login_with_unite_test_and_clean_architecture/core/widgets/auth/header_text.dart';
-import 'package:login_with_unite_test_and_clean_architecture/core/widgets/errors/error_message.dart';
 import 'package:login_with_unite_test_and_clean_architecture/core/widgets/list_animated.dart';
 import 'package:login_with_unite_test_and_clean_architecture/features/auth/data/models/auth_model.dart';
 import 'package:login_with_unite_test_and_clean_architecture/features/auth/presentation/providers/login/auth_login_notifier.dart';
@@ -51,7 +51,6 @@ class _AuthLoginPageState extends ConsumerState<AuthLoginPage> {
     );
     if (formKey.currentState!.validate()) {
       ref.read(login.notifier).signIn(model: model);
-      clear();
     }
   }
 
@@ -67,8 +66,25 @@ class _AuthLoginPageState extends ConsumerState<AuthLoginPage> {
 
     ref.listen<AsyncValue<void>>(login, (previous, next) {
       next.whenOrNull(
-        data: (data) => context.goNamed(RouteKeys.homeName),
-        error: (error, _) => ErrorMessage(),
+        data: (data) {
+          clear();
+          context.goNamed(RouteKeys.homeName);
+        },
+        error: (error, _) {
+          String errorMessage = "Une erreur est survenue.";
+          if (error is AuthFailure) {
+            errorMessage = error.message;
+          }
+
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(errorMessage),
+              backgroundColor: Colors.redAccent,
+              behavior: SnackBarBehavior.floating,
+              duration: const Duration(seconds: 4),
+            ),
+          );
+        },
       );
     });
 
