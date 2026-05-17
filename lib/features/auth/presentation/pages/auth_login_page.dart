@@ -66,7 +66,7 @@ class _AuthLoginPageState extends ConsumerState<AuthLoginPage> {
 
     ref.listen<AsyncValue<void>>(login, (previous, next) {
       next.whenOrNull(
-        data: (data) {
+        data: (_) {
           clear();
           context.goNamed(RouteKeys.homeName);
         },
@@ -78,7 +78,7 @@ class _AuthLoginPageState extends ConsumerState<AuthLoginPage> {
 
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
-              content: Text(errorMessage),
+              content: AppText(label: errorMessage),
               backgroundColor: Colors.redAccent,
               behavior: SnackBarBehavior.floating,
               duration: const Duration(seconds: 4),
@@ -114,6 +114,7 @@ class _AuthLoginPageState extends ConsumerState<AuthLoginPage> {
 
                     AppInput(
                       controller: username,
+                      enabled: !isLoading,
                       labelText: "Nom d'utilisateur",
                       prefixIcon: Icons.person,
                       keyboardType: TextInputType.text,
@@ -141,6 +142,7 @@ class _AuthLoginPageState extends ConsumerState<AuthLoginPage> {
                     SizedBox(height: SizeHeight.tenHeight),
                     AppInput(
                       controller: password,
+                      enabled: !isLoading,
                       labelText: "Mot de passe",
                       prefixIcon: Icons.lock,
                       obscureText: isVisibled,

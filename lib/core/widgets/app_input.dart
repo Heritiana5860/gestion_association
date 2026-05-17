@@ -13,6 +13,7 @@ class AppInput extends StatelessWidget {
     this.validator,
     this.keyboardType,
     this.onChanged,
+    this.enabled,
   });
   final TextEditingController? controller;
   final String? labelText;
@@ -22,6 +23,7 @@ class AppInput extends StatelessWidget {
   final String? Function(String?)? validator;
   final TextInputType? keyboardType;
   final void Function(String)? onChanged;
+  final bool? enabled;
 
   @override
   Widget build(BuildContext context) {
@@ -29,6 +31,7 @@ class AppInput extends StatelessWidget {
       controller: controller,
       obscureText: obscureText,
       keyboardType: keyboardType,
+      enabled: enabled,
       decoration: InputDecoration(
         labelText: labelText,
         border: OutlineInputBorder(

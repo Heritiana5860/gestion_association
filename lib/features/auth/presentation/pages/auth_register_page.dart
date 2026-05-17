@@ -55,8 +55,6 @@ class _AuthRegisterPageState extends ConsumerState<AuthRegisterPage> {
 
     if (formKey.currentState!.validate()) {
       ref.read(newUserProvider.notifier).createNewUser(model: model);
-
-      clear();
     }
   }
 
@@ -74,7 +72,10 @@ class _AuthRegisterPageState extends ConsumerState<AuthRegisterPage> {
 
     ref.listen<AsyncValue<void>>(newUserProvider, (previous, next) {
       next.whenOrNull(
-        data: (_) => context.goNamed(RouteKeys.homeName),
+        data: (_) {
+          clear();
+          context.goNamed(RouteKeys.homeName);
+        },
         error: (error, stackTrace) => ErrorMessage(),
       );
     });
@@ -103,6 +104,7 @@ class _AuthRegisterPageState extends ConsumerState<AuthRegisterPage> {
                     SizedBox(height: SizeHeight.twentyFourHeight),
                     AppInput(
                       controller: fullName,
+                      enabled: !isLoading,
                       labelText: "Nom complet",
                       prefixIcon: Icons.person,
                       keyboardType: TextInputType.text,
@@ -130,6 +132,7 @@ class _AuthRegisterPageState extends ConsumerState<AuthRegisterPage> {
                     SizedBox(height: SizeHeight.tenHeight),
                     AppInput(
                       controller: username,
+                      enabled: !isLoading,
                       labelText: "Nom d'utilisateur",
                       prefixIcon: Icons.person,
                       keyboardType: TextInputType.text,
@@ -157,6 +160,7 @@ class _AuthRegisterPageState extends ConsumerState<AuthRegisterPage> {
                     SizedBox(height: SizeHeight.tenHeight),
                     AppInput(
                       controller: password,
+                      enabled: !isLoading,
                       labelText: "Mot de passe",
                       prefixIcon: Icons.lock,
                       obscureText: isVisibled,
@@ -190,6 +194,7 @@ class _AuthRegisterPageState extends ConsumerState<AuthRegisterPage> {
                     SizedBox(height: SizeHeight.tenHeight),
                     AppInput(
                       controller: confirm,
+                      enabled: !isLoading,
                       labelText: "Confirme mot de passe",
                       prefixIcon: Icons.lock,
                       obscureText: isVisibled,
