@@ -6,7 +6,7 @@ import 'package:login_with_unite_test_and_clean_architecture/core/contants/color
 import 'package:login_with_unite_test_and_clean_architecture/core/widgets/app_text.dart';
 import 'package:login_with_unite_test_and_clean_architecture/core/widgets/global_padding.dart';
 import 'package:login_with_unite_test_and_clean_architecture/core/widgets/list_animated.dart';
-import 'package:login_with_unite_test_and_clean_architecture/features/cotisation/presentation/providers/cotisation_stats_notifier.dart';
+import 'package:login_with_unite_test_and_clean_architecture/features/cotisation/presentation/providers/stats/cotisation_stats_notifier.dart';
 import 'package:login_with_unite_test_and_clean_architecture/features/cotisation/presentation/widgets/cotisation_stats_card.dart';
 import 'package:login_with_unite_test_and_clean_architecture/features/home/presentation/widgets/banner.dart';
 import 'package:login_with_unite_test_and_clean_architecture/features/home/presentation/widgets/bar_row.dart';

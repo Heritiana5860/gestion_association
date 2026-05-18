@@ -6,6 +6,7 @@ import 'package:login_with_unite_test_and_clean_architecture/core/contants/keys/
 import 'package:login_with_unite_test_and_clean_architecture/core/widgets/app_text.dart';
 import 'package:login_with_unite_test_and_clean_architecture/features/auth/presentation/pages/auth_login_page.dart';
 import 'package:login_with_unite_test_and_clean_architecture/features/auth/presentation/pages/auth_register_page.dart';
+import 'package:login_with_unite_test_and_clean_architecture/features/cotisation/presentation/pages/cotisation_page.dart';
 import 'package:login_with_unite_test_and_clean_architecture/features/home/presentation/pages/home_page.dart';
 import 'package:login_with_unite_test_and_clean_architecture/features/member/presentation/pages/member_detail_page.dart';
 import 'package:login_with_unite_test_and_clean_architecture/features/member/presentation/pages/member_page.dart';
@@ -101,7 +102,7 @@ final router = GoRouter(
             GoRoute(
               path: '/cotisation',
               name: 'cotisation',
-              builder: (context, state) => Container(),
+              builder: (context, state) => CotisationPage(),
             ),
           ],
         ),

@@ -3,26 +3,27 @@ import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:login_with_unite_test_and_clean_architecture/core/contants/keys/url_key.dart';
 import 'package:login_with_unite_test_and_clean_architecture/core/network/autorisation_token.dart';
-import 'package:login_with_unite_test_and_clean_architecture/features/cotisation/data/models/cotisation_stats_model.dart';
-import 'package:login_with_unite_test_and_clean_architecture/features/cotisation/domain/entities/cotisation_stats_entity.dart';
+import 'package:login_with_unite_test_and_clean_architecture/features/cotisation/data/models/cotisation_model.dart';
+import 'package:login_with_unite_test_and_clean_architecture/features/cotisation/domain/entities/cotisation_entity.dart';
 
-class CotisationStatsDatasource {
+class CotisationDatasource {
   final Dio dio;
 
-  const CotisationStatsDatasource({required this.dio});
+  const CotisationDatasource({required this.dio});
 
-  Future<CotisationStatsEntity> fetchCotisationStats() async {
+  Future<List<CotisationEntity>> cotisation() async {
     final url = dotenv.env[UrlKey.urlKey] ?? "";
-
     try {
       final response = await dio.get(
-        "${url}cotisation/statistics/",
+        "${url}cotisation/",
         options: Options(headers: await AutorisationToken.headers()),
       );
 
-      return CotisationStatsModel.fromJson(response.data);
+      final List<dynamic> data = response.data;
+
+      return data.map((e) => CotisationModel.fromJson(e)).toList();
     } on DioException catch (e) {
-      debugPrint("Erreur: $e");
+      debugPrint("Error: $e");
       rethrow;
     }
   }
