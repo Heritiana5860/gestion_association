@@ -13,6 +13,7 @@ class AppText extends StatelessWidget {
     this.maxLines,
     this.overflow,
     this.letterSpacing,
+    this.textAlign,
   });
 
   final String label;
@@ -24,6 +25,7 @@ class AppText extends StatelessWidget {
   final int? maxLines;
   final TextOverflow? overflow;
   final double? letterSpacing;
+  final TextAlign? textAlign;
 
   @override
   Widget build(BuildContext context) {
@@ -31,6 +33,7 @@ class AppText extends StatelessWidget {
       label,
       maxLines: maxLines,
       overflow: overflow,
+      textAlign: textAlign,
       style: GoogleFonts.dmSans(
         color: color,
         fontSize: fontSize,

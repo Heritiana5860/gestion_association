@@ -66,11 +66,13 @@ class _AuthLoginPageState extends ConsumerState<AuthLoginPage> {
 
     ref.listen<AsyncValue<void>>(login, (previous, next) {
       next.whenOrNull(
-        data: (_) {
+        data: (d) {
+          
           clear();
           context.goNamed(RouteKeys.homeName);
         },
         error: (error, _) {
+          debugPrint("error: $error");
           String errorMessage = "Une erreur est survenue.";
           if (error is AuthFailure) {
             errorMessage = error.message;

@@ -5,6 +5,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:login_with_unite_test_and_clean_architecture/core/contants/colors/app_color.dart';
 import 'package:login_with_unite_test_and_clean_architecture/core/widgets/app_input.dart';
 import 'package:login_with_unite_test_and_clean_architecture/core/widgets/app_text.dart';
+import 'package:login_with_unite_test_and_clean_architecture/core/widgets/button_foating_card.dart';
 import 'package:login_with_unite_test_and_clean_architecture/core/widgets/global_padding.dart';
 import 'package:login_with_unite_test_and_clean_architecture/core/widgets/list_animated.dart';
 import 'package:login_with_unite_test_and_clean_architecture/features/member/data/models/member_filters_model.dart';
@@ -60,19 +61,9 @@ class _MemberPageState extends ConsumerState<MemberPage> {
 
     return Scaffold(
       backgroundColor: AppColor.scaffoldBackground,
-      floatingActionButton: FloatingActionButton(
+      floatingActionButton: ButtonFoatingCard(
+        icon: Icons.person_add_alt_rounded,
         onPressed: _createMember,
-        backgroundColor: AppColor.white,
-        elevation: 4,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(16.r),
-          side: BorderSide(color: AppColor.blue, width: 1.5),
-        ),
-        child: Icon(
-          Icons.person_add_alt_rounded,
-          color: AppColor.blue,
-          size: 22.r,
-        ),
       ),
       body: Padding(
         padding: globalPadding(),

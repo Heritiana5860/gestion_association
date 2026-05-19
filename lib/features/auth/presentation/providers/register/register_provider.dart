@@ -8,7 +8,7 @@ import 'package:login_with_unite_test_and_clean_architecture/features/auth/domai
 final datasourceProvider = Provider((ref) {
   final dio = ref.watch(dioProvider);
   final storage = ref.watch(secureStorageProvider);
-  return AuthRegisterDatasource(dio: dio, storage: storage);
+  return AuthRegisterDatasource(dio: dio, storage: storage, ref: ref);
 });
 
 final repositoryProvider = Provider((ref) {

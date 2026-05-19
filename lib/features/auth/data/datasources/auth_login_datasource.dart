@@ -6,6 +6,7 @@ import 'package:login_with_unite_test_and_clean_architecture/core/contants/keys/
 import 'package:login_with_unite_test_and_clean_architecture/core/contants/keys/url_key.dart';
 import 'package:login_with_unite_test_and_clean_architecture/core/errors/auth/failure.dart';
 import 'package:login_with_unite_test_and_clean_architecture/features/auth/data/models/auth_model.dart';
+import 'package:login_with_unite_test_and_clean_architecture/features/auth/domain/entities/info_entity.dart';
 
 class AuthLoginDatasource {
   final FlutterSecureStorage storage;
@@ -13,7 +14,7 @@ class AuthLoginDatasource {
 
   const AuthLoginDatasource({required this.storage, required this.dio});
 
-  Future<void> authSubmit({required AuthModel model}) async {
+  Future<InfoEntity> authSubmit({required AuthModel model}) async {
     final url = dotenv.env[UrlKey.urlKey];
 
     try {
@@ -28,17 +29,13 @@ class AuthLoginDatasource {
           key: TokenKey.refresh,
           value: response.data[TokenKey.refresh],
         ),
-        storage.write(
-          key: InfoKey.fullName,
-          value: response.data[InfoKey.fullName],
-        ),
-        storage.write(
-          key: InfoKey.username,
-          value: response.data[InfoKey.username],
-        ),
       ]);
-    } on DioException catch (e) {
 
+      return InfoEntity(
+        fullName: response.data[InfoKey.fName],
+        username: response.data[InfoKey.username],
+      );
+    } on DioException catch (e) {
       // Interception fine des codes HTTP
       if (e.type == DioExceptionType.connectionTimeout ||
           e.type == DioExceptionType.receiveTimeout) {
