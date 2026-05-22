@@ -3,16 +3,20 @@ import 'package:login_with_unite_test_and_clean_architecture/core/contants/color
 import 'package:login_with_unite_test_and_clean_architecture/core/widgets/app_text.dart';
 
 class ErrorMessage extends StatelessWidget {
-  const ErrorMessage({super.key});
+  const ErrorMessage({
+    super.key,
+    this.message = "Une erreur lors de la connexion au serveur.",
+  });
+
+  final String message;
 
   @override
   Widget build(BuildContext context) {
     return ScaffoldMessenger(
       child: SnackBar(
         backgroundColor: AppColor.red,
-        content: AppText(label: "Une erreur lors de la connexion au serveur."),
+        content: AppText(label: message),
       ),
     );
   }
 }
-

@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:login_with_unite_test_and_clean_architecture/features/auth/data/models/auth_register_model.dart';
+import 'package:login_with_unite_test_and_clean_architecture/features/auth/presentation/providers/info_provider.dart';
 import 'package:login_with_unite_test_and_clean_architecture/features/auth/presentation/providers/register/register_provider.dart';
 
 class RegisterNotifier extends AsyncNotifier<void> {
@@ -11,8 +12,11 @@ class RegisterNotifier extends AsyncNotifier<void> {
     final usecase = ref.read(usecaseRegisterProvider);
 
     state = AsyncLoading();
-    state = await AsyncValue.guard(() async {
-      await usecase.newUser(model: model);
+    final result = await usecase.newUser(model: model);
+
+    result.fold((failure) => throw Exception(failure.message), (info) {
+      ref.read(infoProvider.notifier).state = info;
+      state = const AsyncValue.data(null);
     });
   }
 }

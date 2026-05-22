@@ -17,6 +17,7 @@ import 'package:login_with_unite_test_and_clean_architecture/core/widgets/errors
 import 'package:login_with_unite_test_and_clean_architecture/core/widgets/list_animated.dart';
 import 'package:login_with_unite_test_and_clean_architecture/features/auth/data/models/auth_register_model.dart';
 import 'package:login_with_unite_test_and_clean_architecture/features/auth/presentation/providers/register/register_notifier.dart';
+import 'package:login_with_unite_test_and_clean_architecture/features/auth/presentation/widgets/logo.dart';
 import 'package:login_with_unite_test_and_clean_architecture/features/auth/presentation/widgets/sociaux_card.dart';
 
 class AuthRegisterPage extends ConsumerStatefulWidget {
@@ -29,6 +30,7 @@ class AuthRegisterPage extends ConsumerStatefulWidget {
 class _AuthRegisterPageState extends ConsumerState<AuthRegisterPage> {
   final formKey = GlobalKey<FormState>();
   bool isVisibled = true;
+  bool isConfirmVisibled = true;
   late TapGestureRecognizer _tapRecognizer;
 
   final fullName = TextEditingController();
@@ -76,7 +78,7 @@ class _AuthRegisterPageState extends ConsumerState<AuthRegisterPage> {
           clear();
           context.goNamed(RouteKeys.homeName);
         },
-        error: (error, stackTrace) => ErrorMessage(),
+        error: (error, _) => ErrorMessage(message: error.toString()),
       );
     });
 
@@ -91,17 +93,12 @@ class _AuthRegisterPageState extends ConsumerState<AuthRegisterPage> {
                 key: formKey,
                 child: ListAnimated(
                   children: [
+                    Logo(),
+
                     HeaderText(),
 
-                    SizedBox(height: SizeHeight.twentyHeight),
-                    AppText(
-                      label: "Create your account",
-                      color: AppColor.textDescription,
-                      fontSize: SizeFont.medium,
-                      fontWeight: FontWeight.w600,
-                    ),
-
                     SizedBox(height: SizeHeight.twentyFourHeight),
+
                     AppInput(
                       controller: fullName,
                       enabled: !isLoading,
@@ -197,16 +194,18 @@ class _AuthRegisterPageState extends ConsumerState<AuthRegisterPage> {
                       enabled: !isLoading,
                       labelText: "Confirme mot de passe",
                       prefixIcon: Icons.lock,
-                      obscureText: isVisibled,
+                      obscureText: isConfirmVisibled,
                       keyboardType: TextInputType.visiblePassword,
                       suffixIcon: IconButton(
                         onPressed: () {
                           setState(() {
-                            isVisibled = !isVisibled;
+                            isConfirmVisibled = !isConfirmVisibled;
                           });
                         },
                         icon: Icon(
-                          isVisibled ? Icons.visibility : Icons.visibility_off,
+                          isConfirmVisibled
+                              ? Icons.visibility
+                              : Icons.visibility_off,
                         ),
                       ),
                       validator: (value) {

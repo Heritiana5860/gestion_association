@@ -10,7 +10,7 @@ class HeaderText extends StatelessWidget {
   Widget build(BuildContext context) {
     return AppText(
       label: "TRAGNAMBO",
-      fontSize: 24.sp,
+      fontSize: 20.sp,
       fontWeight: FontWeight.w800,
       color: AppColor.blue,
       letterSpacing: 1.6,

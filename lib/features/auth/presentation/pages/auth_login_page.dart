@@ -17,6 +17,7 @@ import 'package:login_with_unite_test_and_clean_architecture/core/widgets/auth/h
 import 'package:login_with_unite_test_and_clean_architecture/core/widgets/list_animated.dart';
 import 'package:login_with_unite_test_and_clean_architecture/features/auth/data/models/auth_model.dart';
 import 'package:login_with_unite_test_and_clean_architecture/features/auth/presentation/providers/login/auth_login_notifier.dart';
+import 'package:login_with_unite_test_and_clean_architecture/features/auth/presentation/widgets/logo.dart';
 import 'package:login_with_unite_test_and_clean_architecture/features/auth/presentation/widgets/sociaux_card.dart';
 
 class AuthLoginPage extends ConsumerStatefulWidget {
@@ -67,7 +68,6 @@ class _AuthLoginPageState extends ConsumerState<AuthLoginPage> {
     ref.listen<AsyncValue<void>>(login, (previous, next) {
       next.whenOrNull(
         data: (d) {
-          
           clear();
           context.goNamed(RouteKeys.homeName);
         },
@@ -101,16 +101,9 @@ class _AuthLoginPageState extends ConsumerState<AuthLoginPage> {
                 key: formKey,
                 child: ListAnimated(
                   children: [
+                    Logo(),
+
                     HeaderText(),
-
-                    SizedBox(height: SizeHeight.twentyHeight),
-
-                    AppText(
-                      label: "Login to your account",
-                      color: AppColor.textDescription,
-                      fontSize: SizeFont.medium,
-                      fontWeight: FontWeight.w600,
-                    ),
 
                     SizedBox(height: SizeHeight.twentyFourHeight),
 
