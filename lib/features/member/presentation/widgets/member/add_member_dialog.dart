@@ -121,7 +121,12 @@ class _AddMemberDialogState extends ConsumerState<AddMemberDialog> {
           context.pop();
         },
         error: (error, _) {
-          debugPrint("Erreur: $error");
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              backgroundColor: AppColor.red,
+              content: AppText(label: "$error", color: AppColor.white),
+            ),
+          );
         },
       );
     });

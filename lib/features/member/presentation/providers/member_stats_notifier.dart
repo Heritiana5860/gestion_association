@@ -7,7 +7,12 @@ class MemberStatsNotifier extends AsyncNotifier<MemberStatsEntity> {
   @override
   FutureOr<MemberStatsEntity> build() async {
     final usecase = ref.watch(memberStatsUsecase);
-    return await usecase.call();
+    final result = await usecase.call();
+
+    return result.fold(
+      (failure) => throw Exception(failure.message),
+      (stats) => stats,
+    );
   }
 
   Future<void> refresh() async {

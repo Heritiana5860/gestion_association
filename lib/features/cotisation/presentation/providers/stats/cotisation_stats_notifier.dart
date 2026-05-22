@@ -10,6 +10,11 @@ class CotisationStatsNotifier extends AsyncNotifier<CotisationStatsEntity> {
 
     return usecase.call();
   }
+
+  Future<void> refresh() async {
+    ref.invalidateSelf();
+    await future;
+  }
 }
 
 final cotisationStats =

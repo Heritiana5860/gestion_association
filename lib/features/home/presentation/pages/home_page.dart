@@ -33,20 +33,6 @@ class _HomePageState extends ConsumerState<HomePage> {
         child: SingleChildScrollView(
           child: ListAnimated(
             children: [
-              AppText(
-                label: "Salut Beto!",
-                fontSize: 16.sp,
-                color: AppColor.blue,
-                fontWeight: FontWeight.w800,
-              ),
-              AppText(
-                label: "On espère que tu vas bien aujourd'hui!",
-                fontSize: 13.sp,
-                color: AppColor.textDescription,
-              ),
-
-              SizedBox(height: 16.h),
-
               BannerCard(),
 
               SizedBox(height: 16.h),
