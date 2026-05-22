@@ -5,7 +5,6 @@ import 'package:go_router/go_router.dart';
 import 'package:login_with_unite_test_and_clean_architecture/core/contants/colors/app_color.dart';
 import 'package:login_with_unite_test_and_clean_architecture/core/widgets/app_input.dart';
 import 'package:login_with_unite_test_and_clean_architecture/core/widgets/app_text.dart';
-import 'package:login_with_unite_test_and_clean_architecture/core/widgets/errors/error_message.dart';
 import 'package:login_with_unite_test_and_clean_architecture/core/widgets/global_padding.dart';
 import 'package:login_with_unite_test_and_clean_architecture/features/cotisation/domain/entities/cotisation_entity.dart';
 import 'package:login_with_unite_test_and_clean_architecture/features/cotisation/presentation/providers/cotisation/cotisation_notifier.dart';
@@ -71,7 +70,9 @@ class _CotisationPageState extends ConsumerState<CotisationPage> {
                   ),
                 );
               },
-              error: (error, _) => ErrorMessage(),
+              error: (error, _) => Center(
+                child: AppText(label: "Erreur: $error", color: AppColor.red),
+              ),
               loading: () => Center(
                 child: CircularProgressIndicator(color: AppColor.blue),
               ),

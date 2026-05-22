@@ -13,7 +13,6 @@ import 'package:login_with_unite_test_and_clean_architecture/core/widgets/app_bu
 import 'package:login_with_unite_test_and_clean_architecture/core/widgets/app_input.dart';
 import 'package:login_with_unite_test_and_clean_architecture/core/widgets/app_text.dart';
 import 'package:login_with_unite_test_and_clean_architecture/core/widgets/auth/header_text.dart';
-import 'package:login_with_unite_test_and_clean_architecture/core/widgets/errors/error_message.dart';
 import 'package:login_with_unite_test_and_clean_architecture/core/widgets/list_animated.dart';
 import 'package:login_with_unite_test_and_clean_architecture/features/auth/data/models/auth_register_model.dart';
 import 'package:login_with_unite_test_and_clean_architecture/features/auth/presentation/providers/register/register_notifier.dart';
@@ -78,7 +77,14 @@ class _AuthRegisterPageState extends ConsumerState<AuthRegisterPage> {
           clear();
           context.goNamed(RouteKeys.homeName);
         },
-        error: (error, _) => ErrorMessage(message: error.toString()),
+        error: (error, _) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              backgroundColor: AppColor.red,
+              content: AppText(label: "$error", color: AppColor.white),
+            ),
+          );
+        },
       );
     });
 

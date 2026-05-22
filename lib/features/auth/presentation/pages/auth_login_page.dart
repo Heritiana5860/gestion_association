@@ -9,7 +9,6 @@ import 'package:login_with_unite_test_and_clean_architecture/core/contants/keys/
 import 'package:login_with_unite_test_and_clean_architecture/core/contants/sizes/size_font.dart';
 import 'package:login_with_unite_test_and_clean_architecture/core/contants/sizes/size_height.dart';
 import 'package:login_with_unite_test_and_clean_architecture/core/contants/sizes/size_padding.dart';
-import 'package:login_with_unite_test_and_clean_architecture/core/errors/auth/failure.dart';
 import 'package:login_with_unite_test_and_clean_architecture/core/widgets/app_button.dart';
 import 'package:login_with_unite_test_and_clean_architecture/core/widgets/app_input.dart';
 import 'package:login_with_unite_test_and_clean_architecture/core/widgets/app_text.dart';
@@ -72,18 +71,10 @@ class _AuthLoginPageState extends ConsumerState<AuthLoginPage> {
           context.goNamed(RouteKeys.homeName);
         },
         error: (error, _) {
-          debugPrint("error: $error");
-          String errorMessage = "Une erreur est survenue.";
-          if (error is AuthFailure) {
-            errorMessage = error.message;
-          }
-
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
-              content: AppText(label: errorMessage),
-              backgroundColor: Colors.redAccent,
-              behavior: SnackBarBehavior.floating,
-              duration: const Duration(seconds: 4),
+              backgroundColor: AppColor.red,
+              content: AppText(label: "$error", color: AppColor.white),
             ),
           );
         },
