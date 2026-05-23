@@ -8,7 +8,10 @@ abstract class MemberRepository {
     Map<String, dynamic>? params,
   });
   Future<Either<Failure, void>> addMember({required MemberModel model});
-  Future<void> updateMember({required int id, required MemberModel model});
-  Future<MemberEntity> detailMember({required int id});
-  Future<void> deleteMember({required int id});
+  Future<Either<Failure, void>> updateMember({
+    required int id,
+    required MemberModel model,
+  });
+  Future<Either<Failure, MemberEntity>> detailMember({required int id});
+  Future<Either<Failure, void>> deleteMember({required int id});
 }

@@ -38,11 +38,17 @@ class MemberAddNotifier extends AsyncNotifier<void> {
       () => usecase.callUpdateMember(id: id, model: model),
     );
 
-    if (state is! AsyncError) {
+    final result = await usecase.callUpdateMember(id: id, model: model);
+
+    result.fold((l) => state = AsyncError(l.message, StackTrace.current), (
+      r,
+    ) async {
       await ref.read(memberDataProvider.notifier).refresh();
       await ref.read(memberDataStats.notifier).refresh();
       await ref.read(cotisationStats.notifier).refresh();
-    }
+
+      AsyncValue.data(null);
+    });
   }
 }
 

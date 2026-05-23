@@ -88,7 +88,6 @@ class _AddMemberDialogState extends ConsumerState<AddMemberDialog> {
     ref
         .read(newMemberProvider.notifier)
         .updateMember(id: widget.member!.id ?? 0, model: model);
-    ref.invalidate(detailProvider);
   }
 
   @override
@@ -118,6 +117,7 @@ class _AddMemberDialogState extends ConsumerState<AddMemberDialog> {
       next.whenOrNull(
         data: (_) {
           ref.watch(memberDataProvider);
+          ref.invalidate(detailProvider);
           context.pop();
         },
         error: (error, _) {

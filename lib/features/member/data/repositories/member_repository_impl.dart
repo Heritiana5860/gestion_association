@@ -53,20 +53,56 @@ class MemberRepositoryImpl implements MemberRepository {
   }
 
   @override
-  Future<void> updateMember({
+  Future<Either<Failure, void>> updateMember({
     required int id,
     required MemberModel model,
   }) async {
-    await datasource.update(id: id, model: model);
+    try {
+      final response = await datasource.update(id: id, model: model);
+      return Right(response);
+    } on SocketException {
+      return Left(NetworkError());
+    } on DioException catch (e) {
+      if (e.response?.statusCode == 400) {
+        return Left(ValidationError(e.response?.data));
+      }
+      return Left(ServerError());
+    } on Exception {
+      return Left(ServerError());
+    }
   }
 
   @override
-  Future<MemberEntity> detailMember({required int id}) {
-    return datasource.detail(id: id);
+  Future<Either<Failure, MemberEntity>> detailMember({required int id}) async {
+    try {
+      final response = await datasource.detail(id: id);
+      return Right(response);
+    } on SocketException {
+      return Left(NetworkError());
+    } on DioException catch (e) {
+      if (e.response?.statusCode == 400) {
+        return Left(e.response?.data);
+      }
+      return Left(ServerError());
+    } on Exception {
+      return Left(ServerError());
+    }
   }
 
   @override
-  Future<void> deleteMember({required int id}) {
-    return datasource.delete(id: id);
+  Future<Either<Failure, void>> deleteMember({required int id}) async {
+    try {
+      final response = await datasource.delete(id: id);
+      return Right(response);
+    } on SocketException {
+      return Left(NetworkError());
+    } on DioException catch (e) {
+      if (e.response?.statusCode == 400) {
+        return Left(ValidationError(e.response?.data));
+      }
+      return Left(ServerError());
+    } on Exception {
+      return Left(ServerError());
+    }
   }
 }

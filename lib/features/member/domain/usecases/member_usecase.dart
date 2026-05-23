@@ -18,15 +18,18 @@ class MemberUsecase {
     return repository.addMember(model: model);
   }
 
-  Future<void> callUpdateMember({required int id, required MemberModel model}) {
+  Future<Either<Failure, void>> callUpdateMember({
+    required int id,
+    required MemberModel model,
+  }) {
     return repository.updateMember(id: id, model: model);
   }
 
-  Future<MemberEntity> callDetailMember({required int id}) {
+  Future<Either<Failure, MemberEntity>> callDetailMember({required int id}) {
     return repository.detailMember(id: id);
   }
 
-  Future<void> callDeleteMember({required int id}) {
+  Future<Either<Failure, void>> callDeleteMember({required int id}) {
     return repository.deleteMember(id: id);
   }
 }
