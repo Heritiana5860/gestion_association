@@ -20,6 +20,8 @@ class MemberDatasource {
       options: Options(headers: await AutorisationToken.headers()),
     );
 
+    debugPrint("List membres: $response");
+
     final List<dynamic> data = response.data;
 
     if (data.isEmpty) {

@@ -144,7 +144,7 @@ class _AddMemberDialogState extends ConsumerState<AddMemberDialog> {
               mainAxisSize: MainAxisSize.min,
               children: [
                 // Header
-                DialogHeader(),
+                DialogHeader(headerTitle: "Nouveau membre"),
 
                 SizedBox(height: 12.h),
 

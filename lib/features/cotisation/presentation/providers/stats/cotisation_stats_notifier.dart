@@ -1,14 +1,17 @@
 import 'dart:async';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:login_with_unite_test_and_clean_architecture/core/errors/validation_error.dart';
 import 'package:login_with_unite_test_and_clean_architecture/features/cotisation/domain/entities/cotisation_stats_entity.dart';
 import 'package:login_with_unite_test_and_clean_architecture/features/cotisation/presentation/providers/stats/cotisation_stats_provider.dart';
 
 class CotisationStatsNotifier extends AsyncNotifier<CotisationStatsEntity> {
   @override
-  FutureOr<CotisationStatsEntity> build() {
+  FutureOr<CotisationStatsEntity> build() async {
     final usecase = ref.watch(usecaseCotisationStatsProvider);
 
-    return usecase.call();
+    final result = await usecase.call();
+
+    return result.fold((l) => throw ValidationError(l.message), (r) => r);
   }
 
   Future<void> refresh() async {

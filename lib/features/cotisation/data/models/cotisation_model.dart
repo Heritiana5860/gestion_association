@@ -12,7 +12,7 @@ class CotisationModel extends CotisationEntity {
 
   factory CotisationModel.fromJson(Map<String, dynamic> json) {
     return CotisationModel(
-      amount: (json['amount'] as num).toDouble(),
+      amount:  double.parse(json['amount']),
       isUpdate: json['is_updated'] as String,
       member: MemberModel.fromJson(json['member'] as Map<String, dynamic>),
       year: json['year'] as String,

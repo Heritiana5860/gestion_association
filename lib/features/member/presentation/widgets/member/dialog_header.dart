@@ -5,7 +5,9 @@ import 'package:login_with_unite_test_and_clean_architecture/core/contants/color
 import 'package:login_with_unite_test_and_clean_architecture/core/widgets/app_text.dart';
 
 class DialogHeader extends StatelessWidget {
-  const DialogHeader({super.key});
+  const DialogHeader({super.key, required this.headerTitle});
+
+  final String headerTitle;
 
   @override
   Widget build(BuildContext context) {
@@ -18,7 +20,7 @@ class DialogHeader extends StatelessWidget {
         children: [
           Expanded(
             child: AppText(
-              label: "Nouveau membre",
+              label: headerTitle,
               color: AppColor.blue,
               fontSize: 16.sp,
               fontWeight: FontWeight.w700,
