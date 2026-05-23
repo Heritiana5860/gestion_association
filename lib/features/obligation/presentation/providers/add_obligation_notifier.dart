@@ -11,9 +11,12 @@ class AddObligationNotifier extends AsyncNotifier<void> {
     final usecase = ref.read(usecaseAddObligationProvider);
 
     state = AsyncLoading();
-    state = await AsyncValue.guard(() async {
-      await usecase.callAdd(model: model);
-    });
+
+    final result = await usecase.callAdd(model: model);
+    result.fold(
+      (l) => state = AsyncError(l.message, StackTrace.current),
+      (r) => state = AsyncValue.data(null),
+    );
   }
 }
 

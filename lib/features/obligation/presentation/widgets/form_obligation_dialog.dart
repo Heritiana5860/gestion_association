@@ -9,6 +9,7 @@ import 'package:login_with_unite_test_and_clean_architecture/core/widgets/app_in
 import 'package:login_with_unite_test_and_clean_architecture/core/widgets/app_text.dart';
 import 'package:login_with_unite_test_and_clean_architecture/features/obligation/data/models/obligation_model.dart';
 import 'package:login_with_unite_test_and_clean_architecture/features/obligation/presentation/providers/add_obligation_notifier.dart';
+import 'package:login_with_unite_test_and_clean_architecture/features/obligation/presentation/providers/obligation_notifier.dart';
 
 class FormObligationDialog extends ConsumerStatefulWidget {
   const FormObligationDialog({super.key});
@@ -57,6 +58,7 @@ class _FormObligationDialogState extends ConsumerState<FormObligationDialog> {
     ref.listen<AsyncValue<void>>(insertObligationProvider, (previous, next) {
       next.whenOrNull(
         data: (_) {
+          ref.read(obligationsProvider.notifier).refresh();
           _clear();
           context.pop();
         },
