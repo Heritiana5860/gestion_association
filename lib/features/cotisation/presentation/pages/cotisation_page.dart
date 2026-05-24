@@ -19,6 +19,18 @@ class CotisationPage extends ConsumerStatefulWidget {
 
 class _CotisationPageState extends ConsumerState<CotisationPage> {
   final search = TextEditingController();
+  String _lastQuery = '';
+
+  @override
+  void initState() {
+    super.initState();
+    search.addListener(() {
+      if (search.text != _lastQuery) {
+        _lastQuery = search.text;
+        ref.read(cotisationDataProvider.notifier).search(search.text);
+      }
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -150,7 +162,12 @@ class CotisationCard extends StatelessWidget {
 }
 
 class BuildItem extends StatelessWidget {
-  const BuildItem({super.key, required this.label, required this.value, this.color = AppColor.black});
+  const BuildItem({
+    super.key,
+    required this.label,
+    required this.value,
+    this.color = AppColor.black,
+  });
 
   final String label;
   final String value;
@@ -161,11 +178,7 @@ class BuildItem extends StatelessWidget {
     return Row(
       children: [
         AppText(label: label),
-        AppText(
-          label: value,
-          color: color,
-          fontWeight: FontWeight.bold,
-        ),
+        AppText(label: value, color: color, fontWeight: FontWeight.bold),
       ],
     );
   }

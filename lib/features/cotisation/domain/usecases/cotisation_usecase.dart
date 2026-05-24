@@ -9,8 +9,8 @@ class CotisationUsecase {
 
   const CotisationUsecase({required this.repository});
 
-  Future<Either<Failure, List<CotisationEntity>>> call() {
-    return repository.fetchCotisation();
+  Future<Either<Failure, List<CotisationEntity>>> call({String? search}) {
+    return repository.fetchCotisation(search: search);
   }
 
   Future<Either<Failure, void>> addCotisationCall({

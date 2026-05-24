@@ -4,7 +4,7 @@ import 'package:login_with_unite_test_and_clean_architecture/features/cotisation
 import 'package:login_with_unite_test_and_clean_architecture/features/cotisation/domain/entities/cotisation_entity.dart';
 
 abstract class CotisationRepository {
-  Future<Either<Failure, List<CotisationEntity>>> fetchCotisation();
+  Future<Either<Failure, List<CotisationEntity>>> fetchCotisation({String? search});
   Future<Either<Failure, void>> addCotisation({
     required AddCotisationModel model,
   });

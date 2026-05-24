@@ -16,9 +16,11 @@ class CotisationRepositoryImpl implements CotisationRepository {
   const CotisationRepositoryImpl({required this.datasource});
 
   @override
-  Future<Either<Failure, List<CotisationEntity>>> fetchCotisation() async {
+  Future<Either<Failure, List<CotisationEntity>>> fetchCotisation({
+    String? search,
+  }) async {
     try {
-      final response = await datasource.cotisation();
+      final response = await datasource.cotisation(search: search);
       return Right(response);
     } on SocketException {
       return Left(NetworkError());
