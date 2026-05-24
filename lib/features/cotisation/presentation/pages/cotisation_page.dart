@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
+import 'package:intl/intl.dart';
 import 'package:login_with_unite_test_and_clean_architecture/core/contants/colors/app_color.dart';
 import 'package:login_with_unite_test_and_clean_architecture/core/widgets/app_input.dart';
 import 'package:login_with_unite_test_and_clean_architecture/core/widgets/app_text.dart';
@@ -120,7 +121,22 @@ class CotisationCard extends StatelessWidget {
           maxLines: 1,
           overflow: TextOverflow.ellipsis,
         ),
-        subtitle: AppText(label: item.isUpdate),
+        subtitle: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            BuildItem(label: "Montant: ", value: "${item.amount} Ar"),
+            BuildItem(label: "Année: ", value: "${item.year}"),
+            BuildItem(
+              label: "Dernier mise à jour: ",
+              value: item.isUpdate.isNotEmpty
+                  ? DateFormat(
+                      'dd/MM/yyyy',
+                    ).format(DateTime.parse(item.isUpdate))
+                  : '-',
+            ),
+          ],
+        ),
         trailing: IconButton(
           onPressed: () {
             if (!context.mounted) return;
@@ -129,6 +145,28 @@ class CotisationCard extends StatelessWidget {
           icon: const Icon(Icons.visibility_rounded),
         ),
       ),
+    );
+  }
+}
+
+class BuildItem extends StatelessWidget {
+  const BuildItem({super.key, required this.label, required this.value, this.color = AppColor.black});
+
+  final String label;
+  final String value;
+  final Color color;
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: [
+        AppText(label: label),
+        AppText(
+          label: value,
+          color: color,
+          fontWeight: FontWeight.bold,
+        ),
+      ],
     );
   }
 }

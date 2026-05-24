@@ -1,3 +1,4 @@
+
 class MemberEntity {
   final int? id;
   final String fullName;

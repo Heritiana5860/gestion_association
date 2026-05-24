@@ -4,7 +4,8 @@ class CotisationEntity {
   final int? id;
   final double amount;
   final String isUpdate;
-  final String year;
+  final int year;
+  final bool? isPaid;
   final MemberEntity member;
 
   const CotisationEntity({
@@ -12,6 +13,6 @@ class CotisationEntity {
     required this.isUpdate,
     required this.year,
     required this.member,
-    this.id,
+    this.id, this.isPaid,
   });
 }
