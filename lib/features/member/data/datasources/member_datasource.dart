@@ -17,8 +17,9 @@ class MemberDatasource {
     final response = await dio.get(
       "${baseUrl}member/",
       queryParameters: params,
-      // options: Options(headers: await AutorisationToken.headers()),
     );
+
+    debugPrint("response: $response");
 
     final List<dynamic> data = response.data;
 

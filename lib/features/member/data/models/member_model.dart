@@ -1,3 +1,4 @@
+import 'package:login_with_unite_test_and_clean_architecture/features/cotisation/data/models/cotisation_inline_model.dart';
 import 'package:login_with_unite_test_and_clean_architecture/features/member/domain/entities/member_entity.dart';
 
 class MemberModel extends MemberEntity {
@@ -12,6 +13,7 @@ class MemberModel extends MemberEntity {
     required super.level,
     required super.statut,
     super.createdAt,
+    super.cotisations,
   });
 
   factory MemberModel.fromJson(Map<String, dynamic> json) {
@@ -26,6 +28,9 @@ class MemberModel extends MemberEntity {
       level: json['level'] as String,
       statut: json['statut'] as String,
       createdAt: json['created_at'] as String?,
+      cotisations: (json['cotisations'] as List<dynamic>)
+          .map((e) => CotisationInlineModel.fromJson(e as Map<String, dynamic>))
+          .toList(),
     );
   }
 

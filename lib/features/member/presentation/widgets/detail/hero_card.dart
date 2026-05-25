@@ -51,6 +51,12 @@ class HeroCard extends StatelessWidget {
                 color: AppColor.green,
               ),
               BadgeCard(label: member.level, color: const Color(0xFF854F0B)),
+              BadgeCard(
+                label: member.cotisations!.first.isPaid ? "Payé" : "${member.cotisations?.first.amount} Ar",
+                color: member.cotisations!.first.isPaid
+                    ? AppColor.green
+                    : AppColor.orange,
+              ),
             ],
           ),
         ],

@@ -120,6 +120,7 @@ class _AddMemberDialogState extends ConsumerState<AddMemberDialog> {
           ref.watch(memberDataProvider);
           ref.invalidate(detailProvider);
           ref.read(cotisationDataProvider.notifier).refresh();
+          
           context.pop();
         },
         error: (error, _) {
