@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
 import 'package:login_with_unite_test_and_clean_architecture/core/contants/colors/app_color.dart';
 import 'package:login_with_unite_test_and_clean_architecture/core/contants/keys/route_keys.dart';
+import 'package:login_with_unite_test_and_clean_architecture/core/providers/flutter_secure_storage_provider.dart';
 import 'package:login_with_unite_test_and_clean_architecture/core/widgets/app_text.dart';
 import 'package:login_with_unite_test_and_clean_architecture/features/auth/presentation/pages/auth_login_page.dart';
 import 'package:login_with_unite_test_and_clean_architecture/features/auth/presentation/pages/auth_register_page.dart';
@@ -187,7 +188,7 @@ final routerProvider = Provider<GoRouter>((ref) {
                       icon: Icons.logout_rounded,
                       label: "Déconnexion",
                       color: AppColor.red,
-                      onTap: () {},
+                      onTap: () => _logout(context: context, ref: ref),
                     ),
                   ],
                 ),
@@ -289,4 +290,14 @@ Widget _buildDrawerItem({
     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.r)),
     onTap: onTap,
   );
+}
+
+Future<void> _logout({required Ref ref, required BuildContext context}) async {
+  final storage = ref.read(secureStorageProvider);
+
+  await storage.deleteAll();
+
+  if (context.mounted) {
+    context.goNamed(RouteKeys.loginName);
+  }
 }

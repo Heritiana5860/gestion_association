@@ -9,6 +9,7 @@ import 'package:login_with_unite_test_and_clean_architecture/core/widgets/app_te
 import 'package:login_with_unite_test_and_clean_architecture/core/widgets/global_padding.dart';
 import 'package:login_with_unite_test_and_clean_architecture/features/cotisation/domain/entities/cotisation_entity.dart';
 import 'package:login_with_unite_test_and_clean_architecture/features/cotisation/presentation/providers/cotisation/cotisation_notifier.dart';
+import 'package:login_with_unite_test_and_clean_architecture/features/cotisation/presentation/widgets/build_item.dart';
 
 class CotisationPage extends ConsumerStatefulWidget {
   const CotisationPage({super.key});
@@ -73,13 +74,17 @@ class _CotisationPageState extends ConsumerState<CotisationPage> {
                   );
                 }
                 return Expanded(
-                  child: ListView.builder(
-                    itemCount: cotis.length,
-                    itemBuilder: (context, index) {
-                      final item = cotis[index];
+                  child: RefreshIndicator(
+                    onRefresh: () =>
+                        ref.read(cotisationDataProvider.notifier).refresh(),
+                    child: ListView.builder(
+                      itemCount: cotis.length,
+                      itemBuilder: (context, index) {
+                        final item = cotis[index];
 
-                      return CotisationCard(item: item);
-                    },
+                        return CotisationCard(item: item);
+                      },
+                    ),
                   ),
                 );
               },
@@ -137,7 +142,11 @@ class CotisationCard extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            BuildItem(label: "Montant: ", value: "${item.amount} Ar"),
+            BuildItem(
+              label: "Montant: ",
+              value: "${item.amount} Ar",
+              color: item.isPaid! ? AppColor.green : AppColor.red,
+            ),
             BuildItem(label: "Année: ", value: "${item.year}"),
             BuildItem(
               label: "Dernier mise à jour: ",
@@ -157,29 +166,6 @@ class CotisationCard extends StatelessWidget {
           icon: const Icon(Icons.visibility_rounded),
         ),
       ),
-    );
-  }
-}
-
-class BuildItem extends StatelessWidget {
-  const BuildItem({
-    super.key,
-    required this.label,
-    required this.value,
-    this.color = AppColor.black,
-  });
-
-  final String label;
-  final String value;
-  final Color color;
-
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      children: [
-        AppText(label: label),
-        AppText(label: value, color: color, fontWeight: FontWeight.bold),
-      ],
     );
   }
 }

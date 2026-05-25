@@ -10,6 +10,7 @@ import 'package:login_with_unite_test_and_clean_architecture/core/widgets/app_ch
 import 'package:login_with_unite_test_and_clean_architecture/core/widgets/app_dropdown.dart';
 import 'package:login_with_unite_test_and_clean_architecture/core/widgets/app_input.dart';
 import 'package:login_with_unite_test_and_clean_architecture/core/widgets/app_text.dart';
+import 'package:login_with_unite_test_and_clean_architecture/features/cotisation/presentation/providers/cotisation/cotisation_notifier.dart';
 import 'package:login_with_unite_test_and_clean_architecture/features/member/data/models/member_model.dart';
 import 'package:login_with_unite_test_and_clean_architecture/features/member/domain/entities/member_entity.dart';
 import 'package:login_with_unite_test_and_clean_architecture/features/member/presentation/providers/member_add_notifier.dart';
@@ -118,6 +119,7 @@ class _AddMemberDialogState extends ConsumerState<AddMemberDialog> {
         data: (_) {
           ref.watch(memberDataProvider);
           ref.invalidate(detailProvider);
+          ref.read(cotisationDataProvider.notifier).refresh();
           context.pop();
         },
         error: (error, _) {

@@ -2,7 +2,6 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:login_with_unite_test_and_clean_architecture/core/contants/keys/url_key.dart';
-import 'package:login_with_unite_test_and_clean_architecture/core/network/autorisation_token.dart';
 import 'package:login_with_unite_test_and_clean_architecture/features/obligation/data/models/obligation_model.dart';
 import 'package:login_with_unite_test_and_clean_architecture/features/obligation/domain/entities/obligation_entity.dart';
 
@@ -18,7 +17,7 @@ class AddObligationDatasource {
       await dio.post(
         "${url}annuel/fix_statut_amount/",
         data: model.toJson(),
-        options: Options(headers: await AutorisationToken.headers()),
+        // options: Options(headers: await AutorisationToken.headers()),
       );
     } on DioException catch (e) {
       debugPrint("Erreur: $e");
@@ -32,7 +31,7 @@ class AddObligationDatasource {
     try {
       final response = await dio.get(
         "${url}annuel/",
-        options: Options(headers: await AutorisationToken.headers()),
+        // options: Options(headers: await AutorisationToken.headers()),
       );
       debugPrint("response: $response");
 

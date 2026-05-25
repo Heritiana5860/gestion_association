@@ -4,6 +4,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:login_with_unite_test_and_clean_architecture/core/contants/colors/app_color.dart';
 import 'package:login_with_unite_test_and_clean_architecture/core/widgets/app_text.dart';
+import 'package:login_with_unite_test_and_clean_architecture/features/cotisation/presentation/providers/cotisation/cotisation_notifier.dart';
 import 'package:login_with_unite_test_and_clean_architecture/features/member/presentation/providers/member_delete_notifier.dart';
 import 'package:login_with_unite_test_and_clean_architecture/features/member/presentation/providers/member_detail_provider.dart';
 import 'package:login_with_unite_test_and_clean_architecture/features/member/presentation/providers/member_notifier.dart';
@@ -68,9 +69,11 @@ class _MemberDetailPageState extends ConsumerState<MemberDetailPage> {
                 onSelected: (value) {
                   if (value == 'delete') {
                     ref.read(deleteMemberProvider(widget.memberId));
-                    context.pop();
                     ref.read(memberDataProvider.notifier).refresh();
                     ref.read(memberDataStats.notifier).refresh();
+                    ref.read(cotisationDataProvider.notifier).refresh();
+
+                    context.pop();
                   }
                 },
                 itemBuilder: (context) => [
