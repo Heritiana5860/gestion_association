@@ -7,6 +7,7 @@ class RouteKeys {
   static const String memberUrl = "/member";
   static const String memberDetailUrl = "/member-detail";
   static const String obligationUrl = "/obligation";
+  static const String eventDetailUrl = "/event-detail";
 
   static const String loginName = "login";
   static const String inscriptionName = "inscription";
@@ -14,4 +15,5 @@ class RouteKeys {
   static const String memberName = "member";
   static const String memberDetailName = "member-detail";
   static const String obligationName = "obligation";
+  static const String eventDetailName = "event-detail";
 }

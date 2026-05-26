@@ -1,3 +1,5 @@
+import 'package:device_preview/device_preview.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -8,7 +10,16 @@ import 'package:login_with_unite_test_and_clean_architecture/core/routes/config.
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await dotenv.load();
-  runApp(ProviderScope(child: MyApp()));
+  // runApp(ProviderScope(child: MyApp()));
+
+  runApp(
+    ProviderScope(
+      child: DevicePreview(
+        enabled: !kReleaseMode,
+        builder: (context) => MyApp(), // Wrap your app
+      ),
+    ),
+  );
 }
 
 class MyApp extends ConsumerWidget {

@@ -11,6 +11,8 @@ import 'package:login_with_unite_test_and_clean_architecture/features/auth/prese
 import 'package:login_with_unite_test_and_clean_architecture/features/auth/presentation/pages/auth_register_page.dart';
 import 'package:login_with_unite_test_and_clean_architecture/features/auth/presentation/providers/info_provider.dart';
 import 'package:login_with_unite_test_and_clean_architecture/features/cotisation/presentation/pages/cotisation_page.dart';
+import 'package:login_with_unite_test_and_clean_architecture/features/event/presentation/pages/event_detail_page.dart';
+import 'package:login_with_unite_test_and_clean_architecture/features/event/presentation/pages/event_page.dart';
 import 'package:login_with_unite_test_and_clean_architecture/features/home/presentation/pages/home_page.dart';
 import 'package:login_with_unite_test_and_clean_architecture/features/member/presentation/pages/member_detail_page.dart';
 import 'package:login_with_unite_test_and_clean_architecture/features/member/presentation/pages/member_page.dart';
@@ -43,10 +45,19 @@ final routerProvider = Provider<GoRouter>((ref) {
         name: RouteKeys.obligationName,
         builder: (context, state) => const ObligationPage(),
       ),
+      GoRoute(
+        path: RouteKeys.eventDetailUrl,
+        name: RouteKeys.eventDetailName,
+        builder: (context, state) {
+          final eventId = state.extra as int;
+          return EventDetailPage(eventId: eventId);
+        },
+      ),
 
       StatefulShellRoute.indexedStack(
         builder: (context, state, navigationShell) {
           return Scaffold(
+            backgroundColor: AppColor.scaffoldBackground,
             appBar: AppBar(
               title: AppText(
                 label: "Home",
@@ -262,7 +273,7 @@ final routerProvider = Provider<GoRouter>((ref) {
               GoRoute(
                 path: '/event',
                 name: 'event',
-                builder: (context, state) => const HomePage(),
+                builder: (context, state) => const EventPage(),
               ),
             ],
           ),
