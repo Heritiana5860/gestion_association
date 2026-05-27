@@ -2,11 +2,13 @@ import 'dart:io';
 
 import 'package:dartz/dartz.dart';
 import 'package:dio/dio.dart';
+import 'package:flutter/foundation.dart';
 import 'package:login_with_unite_test_and_clean_architecture/core/errors/failure.dart';
 import 'package:login_with_unite_test_and_clean_architecture/core/errors/network_error.dart';
 import 'package:login_with_unite_test_and_clean_architecture/core/errors/server_error.dart';
 import 'package:login_with_unite_test_and_clean_architecture/core/errors/validation_error.dart';
 import 'package:login_with_unite_test_and_clean_architecture/features/event/data/datasources/event_datasource.dart';
+import 'package:login_with_unite_test_and_clean_architecture/features/event/data/models/event_model.dart';
 import 'package:login_with_unite_test_and_clean_architecture/features/event/domain/entities/event_entity.dart';
 import 'package:login_with_unite_test_and_clean_architecture/features/event/domain/repositories/event_repository.dart';
 
@@ -44,6 +46,24 @@ class EventRepositoryImpl implements EventRepository {
     } on DioException catch (e) {
       if (e.response?.statusCode == 400) {
         return Left(ValidationError(e.response?.data));
+      }
+      return Left(ServerError());
+    } on Exception {
+      return Left(ServerError());
+    }
+  }
+
+  @override
+  Future<Either<Failure, void>> submitEvent({required EventModel model}) async {
+    try {
+      final response = await datasource.submit(model: model);
+      return Right(response);
+    } on SocketException {
+      return Left(NetworkError());
+    } on DioException catch (e) {
+      if (e.response?.statusCode == 400) {
+        debugPrint("Erreur: ${e.response?.data}");
+        return Left(ValidationError("Error"));
       }
       return Left(ServerError());
     } on Exception {

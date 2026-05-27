@@ -25,4 +25,10 @@ class EventDatasource {
 
     return EventModel.fromJson(response.data);
   }
+
+  Future<void> submit({required EventModel model}) async {
+    final url = dotenv.env[UrlKey.urlKey] ?? "";
+
+    await dio.post("${url}event/", data: model.toJson());
+  }
 }

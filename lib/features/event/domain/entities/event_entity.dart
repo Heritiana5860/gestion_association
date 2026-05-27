@@ -1,7 +1,7 @@
 import 'package:login_with_unite_test_and_clean_architecture/features/member/domain/entities/member_entity.dart';
 
 class EventEntity {
-  final int id;
+  final int? id;
   final String eventName;
   final String eventDescription;
   final String eventDate;
