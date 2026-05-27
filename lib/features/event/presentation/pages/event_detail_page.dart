@@ -6,6 +6,7 @@ import 'package:login_with_unite_test_and_clean_architecture/core/widgets/app_te
 import 'package:login_with_unite_test_and_clean_architecture/core/widgets/button_foating_card.dart';
 import 'package:login_with_unite_test_and_clean_architecture/features/event/presentation/providers/event_detail_notifier.dart';
 import 'package:login_with_unite_test_and_clean_architecture/features/event/presentation/widgets/detail/event_detail_body.dart';
+import 'package:mobile_scanner/mobile_scanner.dart';
 
 class EventDetailPage extends ConsumerStatefulWidget {
   const EventDetailPage({super.key, this.eventId});
@@ -24,9 +25,23 @@ class _EventDetailPageState extends ConsumerState<EventDetailPage> {
     return Scaffold(
       backgroundColor: AppColor.scaffoldBackground,
       floatingActionButton: ButtonFoatingCard(
-        onPressed: () {},
+        onPressed: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => Scaffold(
+                body: MobileScanner(
+                  onDetect: (result) {
+                    debugPrint(result.barcodes.first.rawValue);
+                  },
+                ),
+              ),
+            ),
+          );
+        },
         icon: Icons.qr_code_rounded,
       ),
+
       body: eventDetail.when(
         data: (event) => EventDetailBody(event: event),
         loading: () => const Center(

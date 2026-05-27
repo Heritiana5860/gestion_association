@@ -10,15 +10,6 @@ void main() async {
   await dotenv.load();
 
   runApp(ProviderScope(child: MyApp()));
-
-  // runApp(
-  //   ProviderScope(
-  //     child: DevicePreview(
-  //       enabled: !kReleaseMode,
-  //       builder: (context) => MyApp(), // Wrap your app
-  //     ),
-  //   ),
-  // );
 }
 
 class MyApp extends ConsumerWidget {
