@@ -21,8 +21,7 @@ class EventDatasource {
   Future<EventEntity> eventDetail({required int id}) async {
     final url = dotenv.env[UrlKey.urlKey] ?? "";
 
-    final response = await dio.get("${url}event/", queryParameters: {"id": id});
-
+    final response = await dio.get("${url}event/$id/");
     return EventModel.fromJson(response.data);
   }
 

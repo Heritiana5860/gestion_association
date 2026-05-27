@@ -49,8 +49,8 @@ final routerProvider = Provider<GoRouter>((ref) {
         path: RouteKeys.eventDetailUrl,
         name: RouteKeys.eventDetailName,
         builder: (context, state) {
-          final eventId = state.extra as int;
-          return EventDetailPage(eventId: eventId);
+          final eventId = state.extra as int?;
+          return EventDetailPage(eventId: eventId!);
         },
       ),
 

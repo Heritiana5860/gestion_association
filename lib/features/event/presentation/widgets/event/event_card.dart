@@ -5,7 +5,7 @@ import 'package:login_with_unite_test_and_clean_architecture/core/contants/color
 import 'package:login_with_unite_test_and_clean_architecture/core/contants/keys/route_keys.dart';
 import 'package:login_with_unite_test_and_clean_architecture/core/widgets/app_text.dart';
 import 'package:login_with_unite_test_and_clean_architecture/features/event/domain/entities/event_entity.dart';
-import 'package:login_with_unite_test_and_clean_architecture/features/event/presentation/widgets/build_content.dart';
+import 'package:login_with_unite_test_and_clean_architecture/features/event/presentation/widgets/event/build_content.dart';
 
 class EventCard extends StatelessWidget {
   const EventCard({super.key, required this.event});
