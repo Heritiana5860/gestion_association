@@ -107,14 +107,20 @@ class _NewEventDialogState extends ConsumerState<NewEventDialog> {
 
   String _formatTimeForApi(TimeOfDay time) {
     if (_selectedDate == null) return '';
-    final dt = DateTime(
+
+    // Créer le DateTime en heure locale
+    final localDt = DateTime(
       _selectedDate!.year,
       _selectedDate!.month,
       _selectedDate!.day,
       time.hour,
       time.minute,
     );
-    return dt.toIso8601String().split('.').first;
+
+    // Convertir en UTC et ajouter "Z"
+    final utcDt = localDt.toUtc();
+    return "${utcDt.toIso8601String().split('.').first}Z";
+    // Retourne: "2026-06-05T18:00:00Z" ← correct
   }
 
   // Garder pour l'affichage UI si besoin

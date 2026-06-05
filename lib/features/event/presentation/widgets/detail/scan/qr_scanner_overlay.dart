@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:login_with_unite_test_and_clean_architecture/core/contants/colors/app_color.dart';
+import 'package:login_with_unite_test_and_clean_architecture/core/widgets/app_text.dart';
 import 'package:login_with_unite_test_and_clean_architecture/features/event/presentation/widgets/detail/scan/corner_painter.dart';
 import 'package:login_with_unite_test_and_clean_architecture/features/event/presentation/widgets/detail/scan/dark_overlay_with_hole.dart';
 
@@ -135,24 +136,20 @@ class _QrScannerOverlayState extends State<QrScannerOverlay>
           right: 0,
           child: Column(
             children: [
-              Text(
-                'Placez le QR code dans le cadre',
+              AppText(
+                label: 'Placez le QR code dans le cadre',
                 textAlign: TextAlign.center,
-                style: TextStyle(
-                  color: Colors.white.withValues(alpha: 0.85),
-                  fontSize: 14,
-                  fontWeight: FontWeight.w500,
-                  letterSpacing: 0.3,
-                ),
+                color: Colors.white.withValues(alpha: 0.85),
+                fontSize: 14,
+                fontWeight: FontWeight.w500,
+                letterSpacing: 0.3,
               ),
               const SizedBox(height: 6),
-              Text(
-                'La détection est automatique',
+              AppText(
+                label: 'La détection est automatique',
                 textAlign: TextAlign.center,
-                style: TextStyle(
-                  color: Colors.white.withValues(alpha: 0.5),
-                  fontSize: 12,
-                ),
+                color: Colors.white.withValues(alpha: 0.5),
+                fontSize: 12,
               ),
             ],
           ),

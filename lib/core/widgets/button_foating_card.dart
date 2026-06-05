@@ -3,13 +3,9 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:login_with_unite_test_and_clean_architecture/core/contants/colors/app_color.dart';
 
 class ButtonFoatingCard extends StatelessWidget {
-  const ButtonFoatingCard({
-    super.key,
-    required this.icon,
-    required this.onPressed,
-  });
+  const ButtonFoatingCard({super.key, required this.icon, this.onPressed});
 
-  final void Function() onPressed;
+  final void Function()? onPressed;
   final IconData icon;
 
   @override

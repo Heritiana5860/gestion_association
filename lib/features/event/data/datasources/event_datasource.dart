@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:login_with_unite_test_and_clean_architecture/core/contants/keys/url_key.dart';
 import 'package:login_with_unite_test_and_clean_architecture/features/event/data/models/event_model.dart';
@@ -22,6 +23,8 @@ class EventDatasource {
     final url = dotenv.env[UrlKey.urlKey] ?? "";
 
     final response = await dio.get("${url}event/$id/");
+
+    debugPrint("response: $response");
     return EventModel.fromJson(response.data);
   }
 
