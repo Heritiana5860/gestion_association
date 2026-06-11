@@ -62,6 +62,7 @@ class _MemberPageState extends ConsumerState<MemberPage> {
     return Scaffold(
       backgroundColor: AppColor.scaffoldBackground,
       floatingActionButton: ButtonFoatingCard(
+        heroTag: "member-btn",
         icon: Icons.person_add_alt_rounded,
         onPressed: _createMember,
       ),

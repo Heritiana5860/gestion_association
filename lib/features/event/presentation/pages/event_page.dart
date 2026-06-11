@@ -30,6 +30,7 @@ class _EventPageState extends ConsumerState<EventPage> {
     return Scaffold(
       backgroundColor: AppColor.scaffoldBackground,
       floatingActionButton: ButtonFoatingCard(
+        heroTag: "event-btn",
         onPressed: openDialog,
         icon: Icons.event_note,
       ),

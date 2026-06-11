@@ -50,6 +50,7 @@ class _ObligationPageState extends ConsumerState<ObligationPage> {
       ),
 
       floatingActionButton: ButtonFoatingCard(
+        heroTag: "obligation-btn",
         icon: Icons.add_rounded,
         onPressed: _openDialog,
       ),

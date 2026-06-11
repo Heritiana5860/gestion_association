@@ -45,6 +45,7 @@ class _EventDetailPageState extends ConsumerState<EventDetailPage> {
           final enabled = isWithinEventTime(event);
 
           return ButtonFoatingCard(
+            heroTag: "event-detail-btn",
             onPressed: enabled
                 ? () {
                     Navigator.push(
