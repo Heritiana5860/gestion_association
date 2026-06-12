@@ -66,8 +66,11 @@ class _EventPageState extends ConsumerState<EventPage> {
                 ),
               );
             },
-            error: (error, _) =>
-                SliverFillRemaining(child: BuildErrorState(error: error)),
+            error: (error, _) {
+              debugPrint("Erreur: $error");
+              return SliverFillRemaining(child: BuildErrorState(error: error));
+            },
+
             loading: () => SliverFillRemaining(
               child: Center(
                 child: CircularProgressIndicator(

@@ -1,5 +1,4 @@
 import 'package:dio/dio.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:login_with_unite_test_and_clean_architecture/core/contants/keys/info_key.dart';
@@ -18,8 +17,6 @@ class AuthRegisterDatasource {
     final url = dotenv.env[UrlKey.urlKey] ?? '';
 
     final response = await dio.post("${url}register/", data: model.toJson());
-
-    debugPrint("response: $response");
 
     await Future.wait([
       storage.write(key: TokenKey.token, value: response.data[TokenKey.token]),

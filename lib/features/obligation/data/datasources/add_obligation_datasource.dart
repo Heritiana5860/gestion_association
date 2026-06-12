@@ -31,9 +31,7 @@ class AddObligationDatasource {
     try {
       final response = await dio.get(
         "${url}annuel/",
-        // options: Options(headers: await AutorisationToken.headers()),
       );
-      debugPrint("response: $response");
 
       final List<dynamic> data = response.data;
 

@@ -7,4 +7,8 @@ abstract class EventRepository {
   Future<Either<Failure, List<EventEntity>>> fetchEvent();
   Future<Either<Failure, EventEntity>> fetchDetailEvent({required int id});
   Future<Either<Failure, void>> submitEvent({required EventModel model});
+  Future<Either<Failure, String>> addComingMember({
+    required int eventId,
+    required String memberCde,
+  });
 }

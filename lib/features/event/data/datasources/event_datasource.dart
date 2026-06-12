@@ -1,5 +1,4 @@
 import 'package:dio/dio.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:login_with_unite_test_and_clean_architecture/core/contants/keys/url_key.dart';
 import 'package:login_with_unite_test_and_clean_architecture/features/event/data/models/event_model.dart';
@@ -24,7 +23,6 @@ class EventDatasource {
 
     final response = await dio.get("${url}event/$id/");
 
-    debugPrint("response: $response");
     return EventModel.fromJson(response.data);
   }
 
@@ -32,5 +30,19 @@ class EventDatasource {
     final url = dotenv.env[UrlKey.urlKey] ?? "";
 
     await dio.post("${url}event/", data: model.toJson());
+  }
+
+  Future<Map<String, dynamic>> addComingMember({
+    required int eventId,
+    required String memberCde,
+  }) async {
+    final url = dotenv.env[UrlKey.urlKey] ?? "";
+
+    final response = await dio.post(
+      "${url}event/$eventId/add_coming_member/",
+      data: {"member_cde": memberCde},
+    );
+
+    return response.data as Map<String, dynamic>;
   }
 }

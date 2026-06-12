@@ -19,8 +19,6 @@ class MemberDatasource {
       queryParameters: params,
     );
 
-    debugPrint("response: $response");
-
     final List<dynamic> data = response.data;
 
     if (data.isEmpty) {

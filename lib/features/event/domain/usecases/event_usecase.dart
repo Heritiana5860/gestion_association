@@ -20,4 +20,11 @@ class EventUsecase {
   Future<Either<Failure, void>> callSubmit({required EventModel model}) {
     return repository.submitEvent(model: model);
   }
+
+  Future<Either<Failure, String>> callAddComingMember({
+    required int eventId,
+    required String memberCde,
+  }) {
+    return repository.addComingMember(eventId: eventId, memberCde: memberCde);
+  }
 }

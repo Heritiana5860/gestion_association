@@ -18,7 +18,6 @@ class _QrScannerOverlayState extends State<QrScannerOverlay>
   late AnimationController _scanController;
   late Animation<double> _scanAnimation;
 
-  // Dimensions du cadre (adapte selon ton projet)
   static const double frameWidth = 240;
   static const double frameHeight = 240;
 
@@ -46,7 +45,6 @@ class _QrScannerOverlayState extends State<QrScannerOverlay>
   Widget build(BuildContext context) {
     return Stack(
       children: [
-        // Fond sombre avec découpe centrale
         ColorFiltered(
           colorFilter: const ColorFilter.mode(
             Colors.transparent,
@@ -54,9 +52,7 @@ class _QrScannerOverlayState extends State<QrScannerOverlay>
           ),
           child: Stack(
             children: [
-              // Overlay sombre global
               Container(color: Colors.black.withValues(alpha: 0.65)),
-              // "Trou" transparent au centre
               Center(
                 child: Container(
                   width: frameWidth,
@@ -70,17 +66,15 @@ class _QrScannerOverlayState extends State<QrScannerOverlay>
             ],
           ),
         ),
-        // Alternative propre via ClipPath
         DarkOverlayWithHole(frameWidth: frameWidth, frameHeight: frameHeight),
 
-        // Cadre + coins animés
         Center(
           child: SizedBox(
             width: frameWidth,
             height: frameHeight,
             child: CustomPaint(
               painter: CornerPainter(
-                color: AppColor.blue, // remplace par ta couleur
+                color: AppColor.blue, 
                 strokeWidth: 3.5,
                 cornerLength: 28,
               ),
@@ -88,7 +82,6 @@ class _QrScannerOverlayState extends State<QrScannerOverlay>
           ),
         ),
 
-        // Ligne de scan animée
         Center(
           child: SizedBox(
             width: frameWidth - 24,
@@ -129,7 +122,6 @@ class _QrScannerOverlayState extends State<QrScannerOverlay>
           ),
         ),
 
-        // Texte d'instruction
         Positioned(
           bottom: MediaQuery.of(context).size.height * 0.28,
           left: 0,
@@ -155,7 +147,6 @@ class _QrScannerOverlayState extends State<QrScannerOverlay>
           ),
         ),
 
-        // Bouton fermer
         SafeArea(
           child: Padding(
             padding: const EdgeInsets.all(12),

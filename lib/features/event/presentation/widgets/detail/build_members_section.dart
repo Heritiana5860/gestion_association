@@ -1,17 +1,49 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:login_with_unite_test_and_clean_architecture/core/contants/colors/app_color.dart';
+import 'package:login_with_unite_test_and_clean_architecture/core/widgets/app_input.dart';
 import 'package:login_with_unite_test_and_clean_architecture/core/widgets/app_text.dart';
 import 'package:login_with_unite_test_and_clean_architecture/features/event/domain/entities/event_entity.dart';
 
-class BuildMembersSection extends StatelessWidget {
+class BuildMembersSection extends StatefulWidget {
   const BuildMembersSection({super.key, required this.event});
 
   final EventEntity event;
 
   @override
+  State<BuildMembersSection> createState() => _BuildMembersSectionState();
+}
+
+class _BuildMembersSectionState extends State<BuildMembersSection> {
+  final search = TextEditingController();
+  String searchText = "";
+
+  @override
+  void initState() {
+    super.initState();
+    search.addListener(() {
+      setState(() {
+        searchText = search.text.toLowerCase();
+      });
+    });
+  }
+
+  @override
+  void dispose() {
+    search.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    final members = event.members ?? [];
+    final allMembers = widget.event.members ?? [];
+
+    final filteredMembers = allMembers.where((member) {
+      return member.fullName.toLowerCase().contains(searchText) ||
+          member.numberPhone.contains(searchText) ||
+          member.cde.toLowerCase().contains(searchText) ||
+          member.address.toLowerCase().contains(searchText);
+    }).toList();
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -44,7 +76,7 @@ class BuildMembersSection extends StatelessWidget {
                 borderRadius: BorderRadius.circular(20.r),
               ),
               child: AppText(
-                label: "${members.length}",
+                label: "${filteredMembers.length}",
                 fontSize: 12.sp,
                 fontWeight: FontWeight.w600,
                 color: AppColor.blue,
@@ -53,7 +85,16 @@ class BuildMembersSection extends StatelessWidget {
           ],
         ),
         SizedBox(height: 10.h),
-        if (members.isEmpty)
+
+        AppInput(
+          labelText: "Recherche...",
+          prefixIcon: Icons.search,
+          controller: search,
+        ),
+
+        SizedBox(height: 10.h),
+
+        if (filteredMembers.isEmpty)
           Container(
             width: double.infinity,
             padding: EdgeInsets.symmetric(vertical: 24.h),
@@ -88,14 +129,14 @@ class BuildMembersSection extends StatelessWidget {
             child: ListView.separated(
               shrinkWrap: true,
               physics: const NeverScrollableScrollPhysics(),
-              itemCount: members.length,
+              itemCount: filteredMembers.length,
               separatorBuilder: (_, _) => Divider(
                 height: 1,
                 indent: 56.w,
                 color: Colors.grey.withValues(alpha: 0.1),
               ),
               itemBuilder: (context, index) {
-                final member = members[index];
+                final member = filteredMembers[index];
                 // Initials from member name
                 final nameParts = (member.fullName).trim().split(' ');
                 final initials = nameParts.length >= 2

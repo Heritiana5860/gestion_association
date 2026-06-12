@@ -70,4 +70,38 @@ class EventRepositoryImpl implements EventRepository {
       return Left(ServerError());
     }
   }
+
+  @override
+  Future<Either<Failure, String>> addComingMember({
+    required int eventId,
+    required String memberCde,
+  }) async {
+    try {
+      final response = await datasource.addComingMember(
+        eventId: eventId,
+        memberCde: memberCde,
+      );
+
+      if (response.containsKey('status')) {
+        return Right(response['status'] as String);
+      }
+      if (response.containsKey('Closed')) {
+        return Left(ValidationError(response['Closed']));
+      }
+      if (response.containsKey('error')) {
+        return Left(ValidationError(response['error']));
+      }
+
+      return const Right("Membre ajouté");
+    } on SocketException {
+      return Left(NetworkError());
+    } on DioException catch (e) {
+      if (e.response?.statusCode == 400) {
+        return Left(ValidationError(e.response?.data));
+      }
+      return Left(ServerError());
+    } on Exception {
+      return Left(ServerError());
+    }
+  }
 }
