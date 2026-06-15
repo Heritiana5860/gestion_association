@@ -8,6 +8,9 @@ class RouteKeys {
   static const String memberDetailUrl = "/member-detail";
   static const String obligationUrl = "/obligation";
   static const String eventDetailUrl = "/event-detail";
+  static const String presidentUrl = "/president";
+  static const String cadreUrl = "/cadre";
+  static const String honneurUrl = "/honneur";
 
   static const String loginName = "login";
   static const String inscriptionName = "inscription";
@@ -16,4 +19,7 @@ class RouteKeys {
   static const String memberDetailName = "member-detail";
   static const String obligationName = "obligation";
   static const String eventDetailName = "event-detail";
+  static const String presidentName = "president";
+  static const String cadreName = "cadre";
+  static const String honneurName = "honneur";
 }

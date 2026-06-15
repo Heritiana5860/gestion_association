@@ -8,11 +8,11 @@ import 'package:login_with_unite_test_and_clean_architecture/core/contants/color
 import 'package:login_with_unite_test_and_clean_architecture/core/contants/keys/route_keys.dart';
 import 'package:login_with_unite_test_and_clean_architecture/core/contants/sizes/size_font.dart';
 import 'package:login_with_unite_test_and_clean_architecture/core/contants/sizes/size_height.dart';
-import 'package:login_with_unite_test_and_clean_architecture/core/contants/sizes/size_padding.dart';
 import 'package:login_with_unite_test_and_clean_architecture/core/widgets/app_button.dart';
 import 'package:login_with_unite_test_and_clean_architecture/core/widgets/app_input.dart';
 import 'package:login_with_unite_test_and_clean_architecture/core/widgets/app_text.dart';
 import 'package:login_with_unite_test_and_clean_architecture/core/widgets/auth/header_text.dart';
+import 'package:login_with_unite_test_and_clean_architecture/core/widgets/global_padding.dart';
 import 'package:login_with_unite_test_and_clean_architecture/core/widgets/list_animated.dart';
 import 'package:login_with_unite_test_and_clean_architecture/features/auth/data/models/auth_model.dart';
 import 'package:login_with_unite_test_and_clean_architecture/features/auth/presentation/providers/login/auth_login_notifier.dart';
@@ -85,7 +85,7 @@ class _AuthLoginPageState extends ConsumerState<AuthLoginPage> {
       backgroundColor: AppColor.scaffoldBackground,
       body: SafeArea(
         child: Padding(
-          padding: EdgeInsets.all(SizePadding.globalPadding),
+          padding: globalPadding(),
           child: Center(
             child: SingleChildScrollView(
               child: Form(

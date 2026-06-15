@@ -17,6 +17,9 @@ import 'package:login_with_unite_test_and_clean_architecture/features/home/prese
 import 'package:login_with_unite_test_and_clean_architecture/features/member/presentation/pages/member_detail_page.dart';
 import 'package:login_with_unite_test_and_clean_architecture/features/member/presentation/pages/member_page.dart';
 import 'package:login_with_unite_test_and_clean_architecture/features/obligation/presentation/pages/obligation_page.dart';
+import 'package:login_with_unite_test_and_clean_architecture/features/rad/presentation/pages/cadre_page.dart';
+import 'package:login_with_unite_test_and_clean_architecture/features/rad/presentation/pages/honneur_page.dart';
+import 'package:login_with_unite_test_and_clean_architecture/features/rad/presentation/pages/president_page.dart';
 
 final routerProvider = Provider<GoRouter>((ref) {
   return GoRouter(
@@ -54,20 +57,33 @@ final routerProvider = Provider<GoRouter>((ref) {
         },
       ),
 
+      GoRoute(
+        path: RouteKeys.presidentUrl,
+        name: RouteKeys.presidentName,
+        builder: (context, state) => const PresidentPage(),
+      ),
+      GoRoute(
+        path: RouteKeys.cadreUrl,
+        name: RouteKeys.cadreName,
+        builder: (context, state) => const CadrePage(),
+      ),
+      GoRoute(
+        path: RouteKeys.honneurUrl,
+        name: RouteKeys.honneurName,
+        builder: (context, state) => const HonneurPage(),
+      ),
+
       StatefulShellRoute.indexedStack(
         builder: (context, state, navigationShell) {
           return Scaffold(
             backgroundColor: AppColor.scaffoldBackground,
             appBar: AppBar(
               title: AppText(
-                label: "Home",
+                label: "Lonoky ho NGETROKY!",
                 fontWeight: FontWeight.w600,
                 color: AppColor.blue,
               ),
               centerTitle: true,
-              actions: [
-                IconButton(onPressed: () {}, icon: Icon(Icons.notifications)),
-              ],
             ),
             drawer: Drawer(
               backgroundColor: AppColor.scaffoldBackground,
@@ -164,16 +180,31 @@ final routerProvider = Provider<GoRouter>((ref) {
                           child: Column(
                             children: [
                               _buildDrawerItem(
-                                icon: Icons.person_outline,
-                                label: "Profile",
-                                onTap: () {},
-                              ),
-
-                              _buildDrawerItem(
                                 icon: Icons.account_balance_wallet_outlined,
                                 label: "Obligation",
                                 onTap: () =>
                                     context.pushNamed(RouteKeys.obligationName),
+                              ),
+
+                              _buildDrawerItem(
+                                icon: Icons.grade,
+                                label: "Président d'honneur",
+                                onTap: () =>
+                                    context.pushNamed(RouteKeys.honneurName),
+                              ),
+
+                              _buildDrawerItem(
+                                icon: Icons.admin_panel_settings_outlined,
+                                label: "Président",
+                                onTap: () =>
+                                    context.pushNamed(RouteKeys.presidentName),
+                              ),
+
+                              _buildDrawerItem(
+                                icon: Icons.people_outline,
+                                label: "Jeune cadre",
+                                onTap: () =>
+                                    context.pushNamed(RouteKeys.cadreName),
                               ),
 
                               _buildDrawerItem(
