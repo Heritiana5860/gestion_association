@@ -3,9 +3,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:login_with_unite_test_and_clean_architecture/core/contants/colors/app_color.dart';
 import 'package:login_with_unite_test_and_clean_architecture/core/widgets/button_foating_card.dart';
+import 'package:login_with_unite_test_and_clean_architecture/core/widgets/empty_list.dart';
 import 'package:login_with_unite_test_and_clean_architecture/core/widgets/global_padding.dart';
 import 'package:login_with_unite_test_and_clean_architecture/features/event/presentation/providers/event_notifier.dart';
-import 'package:login_with_unite_test_and_clean_architecture/features/event/presentation/widgets/event/build_empty_state.dart';
 import 'package:login_with_unite_test_and_clean_architecture/features/event/presentation/widgets/event/build_error_state.dart';
 import 'package:login_with_unite_test_and_clean_architecture/features/event/presentation/widgets/event/build_header.dart';
 import 'package:login_with_unite_test_and_clean_architecture/features/event/presentation/widgets/event/event_card.dart';
@@ -52,7 +52,12 @@ class _EventPageState extends ConsumerState<EventPage> {
           events.when(
             data: (eventList) {
               if (eventList.isEmpty) {
-                return SliverFillRemaining(child: BuildEmptyState());
+                return SliverFillRemaining(
+                  child: EmptyList(
+                    label: "Aucun événement trouvé",
+                    icon: Icons.event,
+                  ),
+                );
               }
               return SliverPadding(
                 padding: EdgeInsets.symmetric(horizontal: 16.w),

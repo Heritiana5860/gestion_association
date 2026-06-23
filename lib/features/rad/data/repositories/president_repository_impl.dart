@@ -5,6 +5,7 @@ import 'package:login_with_unite_test_and_clean_architecture/core/errors/network
 import 'package:login_with_unite_test_and_clean_architecture/core/errors/validation_error.dart';
 import 'package:login_with_unite_test_and_clean_architecture/features/rad/data/datasources/president_datasource.dart';
 import 'package:login_with_unite_test_and_clean_architecture/features/rad/data/models/president_model.dart';
+import 'package:login_with_unite_test_and_clean_architecture/features/rad/domain/entities/president_entity.dart';
 import 'package:login_with_unite_test_and_clean_architecture/features/rad/domain/repositories/president_repository.dart';
 
 class PresidentRepositoryImpl implements PresidentRepository {
@@ -21,6 +22,18 @@ class PresidentRepositoryImpl implements PresidentRepository {
       return Right(res);
     } on SocketException {
       return const Left(NetworkError());
+    } on Exception catch (e) {
+      return Left(ValidationError(e.toString()));
+    }
+  }
+
+  @override
+  Future<Either<Failure, List<PresidentEntity>>> getPresidents() async {
+    try {
+      final res = await datasource.fetchPresident();
+      return Right(res);
+    } on SocketException {
+      return Left(NetworkError());
     } on Exception catch (e) {
       return Left(ValidationError(e.toString()));
     }

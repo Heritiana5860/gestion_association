@@ -1,5 +1,4 @@
 import 'dart:async';
-
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:login_with_unite_test_and_clean_architecture/features/rad/data/models/president_model.dart';
 import 'package:login_with_unite_test_and_clean_architecture/features/rad/presentation/providers/president_provider.dart';

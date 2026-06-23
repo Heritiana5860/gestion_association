@@ -6,6 +6,7 @@ import 'package:login_with_unite_test_and_clean_architecture/core/contants/color
 import 'package:login_with_unite_test_and_clean_architecture/core/widgets/app_input.dart';
 import 'package:login_with_unite_test_and_clean_architecture/core/widgets/app_text.dart';
 import 'package:login_with_unite_test_and_clean_architecture/core/widgets/button_foating_card.dart';
+import 'package:login_with_unite_test_and_clean_architecture/core/widgets/empty_list.dart';
 import 'package:login_with_unite_test_and_clean_architecture/core/widgets/global_padding.dart';
 import 'package:login_with_unite_test_and_clean_architecture/core/widgets/list_animated.dart';
 import 'package:login_with_unite_test_and_clean_architecture/features/member/data/models/member_filters_model.dart';
@@ -140,20 +141,9 @@ class _MemberPageState extends ConsumerState<MemberPage> {
                 data: (lists) {
                   if (lists.isEmpty) {
                     return Center(
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Icon(
-                            Icons.search_off,
-                            size: 48.sp,
-                            color: AppColor.blue.withValues(alpha: 0.4),
-                          ),
-                          SizedBox(height: 8.h),
-                          AppText(
-                            label: "Aucun membre trouvé",
-                            color: Colors.grey,
-                          ),
-                        ],
+                      child: EmptyList(
+                        label: "Aucun membre trouvé",
+                        icon: Icons.people_outline_rounded,
                       ),
                     );
                   }

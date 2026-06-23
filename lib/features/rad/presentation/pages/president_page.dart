@@ -2,14 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:login_with_unite_test_and_clean_architecture/core/contants/colors/app_color.dart';
-import 'package:login_with_unite_test_and_clean_architecture/core/widgets/app_button.dart';
 import 'package:login_with_unite_test_and_clean_architecture/core/widgets/app_input.dart';
 import 'package:login_with_unite_test_and_clean_architecture/core/widgets/app_text.dart';
 import 'package:login_with_unite_test_and_clean_architecture/core/widgets/button_foating_card.dart';
+import 'package:login_with_unite_test_and_clean_architecture/core/widgets/empty_list.dart';
 import 'package:login_with_unite_test_and_clean_architecture/core/widgets/global_padding.dart';
-import 'package:login_with_unite_test_and_clean_architecture/features/member/presentation/widgets/member/dialog_header.dart';
-import 'package:login_with_unite_test_and_clean_architecture/features/rad/data/models/president_model.dart';
-import 'package:login_with_unite_test_and_clean_architecture/features/rad/presentation/providers/president_notifier.dart';
+import 'package:login_with_unite_test_and_clean_architecture/features/rad/presentation/providers/get_president_provider.dart';
+import 'package:login_with_unite_test_and_clean_architecture/features/rad/presentation/widgets/build_info.dart';
+import 'package:login_with_unite_test_and_clean_architecture/features/rad/presentation/widgets/president_dialog.dart';
 
 class PresidentPage extends ConsumerStatefulWidget {
   const PresidentPage({super.key});
@@ -19,12 +19,33 @@ class PresidentPage extends ConsumerStatefulWidget {
 }
 
 class _PresidentPageState extends ConsumerState<PresidentPage> {
+  final searchController = TextEditingController();
+  String searchText = "";
+
   void _openPresidentDialog() {
     showDialog(context: context, builder: (context) => PresidentDialog());
   }
 
   @override
+  void initState() {
+    super.initState();
+    searchController.addListener(() {
+      setState(() {
+        searchText = searchController.text.trim().toLowerCase();
+      });
+    });
+  }
+
+  @override
+  void dispose() {
+    searchController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
+    final presidentData = ref.watch(getPresidentProvider);
+
     return Scaffold(
       backgroundColor: AppColor.scaffoldBackground,
       appBar: AppBar(title: AppText(label: "Président(s)"), centerTitle: true),
@@ -33,161 +54,158 @@ class _PresidentPageState extends ConsumerState<PresidentPage> {
         icon: Icons.person_pin_rounded,
         onPressed: _openPresidentDialog,
       ),
-      body: Padding(
-        padding: globalPadding(),
-        child: CustomScrollView(
-          slivers: [
-            SliverToBoxAdapter(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  AppText(
-                    label: "Les président(s) de l'association",
-                    fontWeight: FontWeight.w800,
-                    fontSize: 18.sp,
-                  ),
-                  AppText(
-                    label:
-                        "Le président est le représentant légal de l'association. Il est élu par les membres de l'association.",
-                    color: AppColor.textDescription,
-                  ),
-                ],
-              ),
-            ),
-
-            SliverAnimatedGrid(
-              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 2,
-                mainAxisSpacing: 10,
-                crossAxisSpacing: 10,
-              ),
-              itemBuilder: (context, index, animation) {
-                return ScaleTransition(
-                  scale: animation,
-                  child: Container(
-                    decoration: BoxDecoration(
-                      color: AppColor.white,
-                      borderRadius: BorderRadius.circular(10),
-                      boxShadow: [
-                        BoxShadow(
-                          color: AppColor.black.withValues(alpha: 0.1),
-                          blurRadius: 5,
-                          offset: Offset(0, 2),
-                        ),
-                      ],
-                    ),
-                    child: Center(child: AppText(label: "President")),
-                  ),
-                );
-              },
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-class PresidentDialog extends ConsumerStatefulWidget {
-  const PresidentDialog({super.key});
-
-  @override
-  ConsumerState<PresidentDialog> createState() => _PresidentDialogState();
-}
-
-class _PresidentDialogState extends ConsumerState<PresidentDialog> {
-  final formKey = GlobalKey<FormState>();
-
-  final nom = TextEditingController();
-  final contact = TextEditingController();
-  final bio = TextEditingController();
-  final mandat = TextEditingController();
-
-  void _createPresident() {
-    try {
-      final model = PresidentModel(
-        nom: nom.text,
-        contact: contact.text,
-        year: mandat.text,
-        bio: bio.text,
-      );
-
-      if (formKey.currentState!.validate()) {
-        ref.read(presidenProvider.notifier).addPresident(model: model);
-      }
-    } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          backgroundColor: AppColor.red,
-          content: AppText(label: "Erreur: $e", color: AppColor.white),
-        ),
-      );
-    }
-  }
-
-  @override
-  void dispose() {
-    nom.dispose();
-    contact.dispose();
-    bio.dispose();
-    mandat.dispose();
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    final presidents = ref.watch(presidenProvider);
-    final isLoading = presidents is AsyncLoading;
-
-    ref.listen(presidenProvider, (_, next) {
-      next.whenOrNull(
-        data: (_) {
-          Navigator.pop(context);
-        },
-      );
-    });
-
-    return Dialog(
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8.r)),
-      backgroundColor: AppColor.scaffoldBackground,
-      insetPadding: EdgeInsets.all(12.r),
-      child: Form(
-        key: formKey,
+      body: RefreshIndicator(
+        onRefresh: () => ref.read(getPresidentProvider.notifier).refresh(),
         child: Padding(
-          padding: EdgeInsets.all(12.r),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            spacing: 12.h,
-            children: [
-              DialogHeader(headerTitle: "Nouveau Président(e)"),
-              AppInput(
-                controller: nom,
-                keyboardType: TextInputType.text,
-                labelText: "Nom complet",
-              ),
-              AppInput(
-                controller: contact,
-                keyboardType: TextInputType.phone,
-                labelText: "Contact",
-              ),
-              AppInput(
-                controller: mandat,
-                keyboardType: TextInputType.number,
-                labelText: "Anné de mandat",
-              ),
-              AppInput(
-                controller: bio,
-                keyboardType: TextInputType.text,
-                labelText: "Bio ou slogan",
-              ),
-              Divider(color: AppColor.white),
+          padding: globalPadding(),
+          child: CustomScrollView(
+            slivers: [
+              SliverToBoxAdapter(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    AppText(
+                      label: "Les président(s) de l'association",
+                      fontWeight: FontWeight.w800,
+                      fontSize: 18.sp,
+                    ),
+                    AppText(
+                      label:
+                          "Le président est le représentant légal de l'association. Il est élu par les membres de l'association.",
+                      color: AppColor.textDescription,
+                    ),
 
-              // Footer
-              SizedBox(
-                width: double.maxFinite,
-                child: AppButton(
-                  label: isLoading ? "Ajouter en cours..." : "Enregistrer",
-                  onPressed: _createPresident,
+                    SizedBox(height: 12.h),
+                  ],
+                ),
+              ),
+
+              SliverToBoxAdapter(
+                child: Padding(
+                  padding: EdgeInsets.only(bottom: 12.h),
+                  child: AppInput(
+                    controller: searchController,
+                    labelText: "Recherche...",
+                    prefixIcon: Icons.search,
+                    suffixIcon: searchText.isNotEmpty
+                        ? IconButton(
+                            icon: const Icon(Icons.clear),
+                            onPressed: () => searchController.clear(),
+                          )
+                        : null,
+                  ),
+                ),
+              ),
+
+              presidentData.when(
+                data: (items) {
+                  final filteredItems = items.where((item) {
+                    final nomMatch = item.nom.toLowerCase().contains(
+                      searchText,
+                    );
+                    final contactMatch = item.contact.toLowerCase().contains(
+                      searchText,
+                    );
+                    final yearMatch = item.year.toLowerCase().contains(
+                      searchText,
+                    );
+
+                    return nomMatch || contactMatch || yearMatch;
+                  }).toList();
+
+                  if (filteredItems.isEmpty) {
+                    return SliverFillRemaining(
+                      hasScrollBody: false,
+                      child: Center(
+                        child: Padding(
+                          padding: EdgeInsets.symmetric(
+                            horizontal: 32.w,
+                            vertical: 16.h,
+                          ),
+                          child: EmptyList(
+                            label: "Aucun président trouvé",
+                            icon: Icons.people_outline_rounded,
+                          ),
+                        ),
+                      ),
+                    );
+                  }
+                  return SliverAnimatedGrid(
+                    initialItemCount: filteredItems.length,
+                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: 2,
+                      mainAxisSpacing: 10,
+                      crossAxisSpacing: 10,
+                    ),
+                    itemBuilder: (context, index, animation) {
+                      final item = filteredItems[index];
+
+                      return ScaleTransition(
+                        scale: animation,
+                        child: Container(
+                          padding: EdgeInsets.all(10.r),
+                          decoration: BoxDecoration(
+                            color: AppColor.white,
+                            borderRadius: BorderRadius.circular(10),
+                            boxShadow: [
+                              BoxShadow(
+                                color: AppColor.black.withValues(alpha: 0.1),
+                                blurRadius: 5,
+                                offset: Offset(0, 2),
+                              ),
+                            ],
+                          ),
+                          child: Column(
+                            spacing: 6.h,
+                            children: [
+                              CircleAvatar(
+                                radius: 24.r,
+                                backgroundColor: AppColor.blue.withValues(
+                                  alpha: 0.1,
+                                ),
+                                child: Center(
+                                  child: AppText(
+                                    label: item.nom[0],
+                                    color: AppColor.blue,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                              ),
+                              AppText(
+                                label: item.nom,
+                                fontWeight: FontWeight.w700,
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                              BuildInfo(
+                                label: item.year,
+                                icon: Icons.date_range,
+                              ),
+                              BuildInfo(label: item.contact, icon: Icons.phone),
+                              BuildInfo(
+                                label: item.bio.isEmpty ? "..." : item.bio,
+                                icon: Icons.star_purple500_rounded,
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                            ],
+                          ),
+                        ),
+                      );
+                    },
+                  );
+                },
+                error: (error, _) => SliverFillRemaining(
+                  hasScrollBody: false,
+                  child: Center(
+                    child: AppText(label: "$error", color: AppColor.red),
+                  ),
+                ),
+                loading: () => const SliverFillRemaining(
+                  hasScrollBody: false,
+                  child: Center(
+                    child: CircularProgressIndicator(color: AppColor.blue),
+                  ),
                 ),
               ),
             ],

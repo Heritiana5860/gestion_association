@@ -57,13 +57,16 @@ class _CotisationPageState extends ConsumerState<CotisationPage> {
                         children: [
                           Icon(
                             Icons.inbox_outlined,
-                            size: 48.r,
-                            color: AppColor.blue.withValues(alpha: 0.4),
+                            size: 64.r,
+                            color: AppColor.textDescription.withValues(
+                              alpha: 0.5,
+                            ),
                           ),
                           AppText(
                             label: "Aucune cotisation enregistrée",
-                            fontSize: 14.sp,
-                            color: AppColor.blue.withValues(alpha: 0.4),
+                            fontWeight: FontWeight.bold,
+                            fontSize: 16.sp,
+                            textAlign: TextAlign.center,
                           ),
                         ],
                       ),
