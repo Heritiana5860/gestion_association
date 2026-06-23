@@ -110,6 +110,16 @@ class _AddMemberDialogState extends ConsumerState<AddMemberDialog> {
   bool get _isEditing => widget.member != null;
 
   @override
+  void dispose() {
+    fullNameController.dispose();
+    numberPhoneController.dispose();
+    cdeController.dispose();
+    adresseController.dispose();
+    etablissementController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     final newMember = ref.watch(newMemberProvider);
     final isLoading = newMember is AsyncLoading;
