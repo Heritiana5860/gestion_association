@@ -90,42 +90,45 @@ class _PresidentDialogState extends ConsumerState<PresidentDialog> {
         key: formKey,
         child: Padding(
           padding: EdgeInsets.all(12.r),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            spacing: 12.h,
-            children: [
-              DialogHeader(headerTitle: "Nouveau Président(e)"),
-              AppInput(
-                controller: nom,
-                keyboardType: TextInputType.text,
-                labelText: "Nom complet",
-              ),
-              AppInput(
-                controller: contact,
-                keyboardType: TextInputType.phone,
-                labelText: "Contact",
-              ),
-              AppInput(
-                controller: mandat,
-                keyboardType: TextInputType.number,
-                labelText: "Anné de mandat",
-              ),
-              AppInput(
-                controller: bio,
-                keyboardType: TextInputType.text,
-                labelText: "Bio ou slogan",
-              ),
-              Divider(color: AppColor.white),
-
-              // Footer
-              SizedBox(
-                width: double.maxFinite,
-                child: AppButton(
-                  label: isLoading ? "Ajouter en cours..." : "Enregistrer",
-                  onPressed: _createPresident,
+          child: SingleChildScrollView(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              spacing: 12.h,
+              children: [
+                DialogHeader(headerTitle: "Nouveau Président(e)"),
+                AppInput(
+                  controller: nom,
+                  keyboardType: TextInputType.text,
+                  labelText: "Nom complet",
                 ),
-              ),
-            ],
+                AppInput(
+                  controller: contact,
+                  keyboardType: TextInputType.phone,
+                  labelText: "Contact",
+                  maxLength: 10,
+                ),
+                AppInput(
+                  controller: mandat,
+                  keyboardType: TextInputType.number,
+                  labelText: "Année de mandat",
+                ),
+                AppInput(
+                  controller: bio,
+                  keyboardType: TextInputType.text,
+                  labelText: "Bio ou slogan",
+                ),
+                Divider(color: AppColor.white),
+
+                // Footer
+                SizedBox(
+                  width: double.maxFinite,
+                  child: AppButton(
+                    label: isLoading ? "Ajouter en cours..." : "Enregistrer",
+                    onPressed: _createPresident,
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
       ),

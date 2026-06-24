@@ -24,6 +24,7 @@ class DialogHeader extends StatelessWidget {
               color: AppColor.blue,
               fontSize: 16.sp,
               fontWeight: FontWeight.w700,
+              overflow: TextOverflow.ellipsis,
             ),
           ),
           SizedBox(width: 6.w),

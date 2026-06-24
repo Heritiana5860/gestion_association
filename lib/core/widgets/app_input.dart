@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:login_with_unite_test_and_clean_architecture/core/contants/colors/app_color.dart';
 
@@ -15,6 +16,8 @@ class AppInput extends StatelessWidget {
     this.onChanged,
     this.enabled,
     this.readOnly = false,
+    this.maxLength,
+    this.inputFormatters,
   });
   final TextEditingController? controller;
   final String? labelText;
@@ -26,6 +29,8 @@ class AppInput extends StatelessWidget {
   final void Function(String)? onChanged;
   final bool? enabled;
   final bool readOnly;
+  final int? maxLength;
+  final List<TextInputFormatter>? inputFormatters;
 
   @override
   Widget build(BuildContext context) {
@@ -35,6 +40,8 @@ class AppInput extends StatelessWidget {
       keyboardType: keyboardType,
       enabled: enabled,
       readOnly: readOnly,
+      maxLength: maxLength,
+      inputFormatters: inputFormatters,
       decoration: InputDecoration(
         labelText: labelText,
         border: OutlineInputBorder(

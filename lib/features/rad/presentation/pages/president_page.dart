@@ -7,9 +7,10 @@ import 'package:login_with_unite_test_and_clean_architecture/core/widgets/app_te
 import 'package:login_with_unite_test_and_clean_architecture/core/widgets/button_foating_card.dart';
 import 'package:login_with_unite_test_and_clean_architecture/core/widgets/empty_list.dart';
 import 'package:login_with_unite_test_and_clean_architecture/core/widgets/global_padding.dart';
+import 'package:login_with_unite_test_and_clean_architecture/core/widgets/rad/header_card_rad.dart';
 import 'package:login_with_unite_test_and_clean_architecture/features/rad/presentation/providers/get_president_provider.dart';
-import 'package:login_with_unite_test_and_clean_architecture/features/rad/presentation/widgets/build_info.dart';
-import 'package:login_with_unite_test_and_clean_architecture/features/rad/presentation/widgets/president_dialog.dart';
+import 'package:login_with_unite_test_and_clean_architecture/features/rad/presentation/widgets/president/president_card.dart';
+import 'package:login_with_unite_test_and_clean_architecture/features/rad/presentation/widgets/president/president_dialog.dart';
 
 class PresidentPage extends ConsumerStatefulWidget {
   const PresidentPage({super.key});
@@ -60,24 +61,10 @@ class _PresidentPageState extends ConsumerState<PresidentPage> {
           padding: globalPadding(),
           child: CustomScrollView(
             slivers: [
-              SliverToBoxAdapter(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    AppText(
-                      label: "Les président(s) de l'association",
-                      fontWeight: FontWeight.w800,
-                      fontSize: 18.sp,
-                    ),
-                    AppText(
-                      label:
-                          "Le président est le représentant légal de l'association. Il est élu par les membres de l'association.",
-                      color: AppColor.textDescription,
-                    ),
-
-                    SizedBox(height: 12.h),
-                  ],
-                ),
+              HeaderCardRAD(
+                title: "Les présidents de l'association",
+                description:
+                    "Le président est le représentant légal de l'association. Élu par les membres, il assure la direction, veille au respect des statuts et porte la voix de l'association auprès des partenaires extérieurs.",
               ),
 
               SliverToBoxAdapter(
@@ -137,88 +124,7 @@ class _PresidentPageState extends ConsumerState<PresidentPage> {
                     itemBuilder: (context, index) {
                       final item = filteredItems[index];
 
-                      return Container(
-                        padding: EdgeInsets.all(12.r),
-                        decoration: BoxDecoration(
-                          color: AppColor.white,
-                          borderRadius: BorderRadius.circular(12.r),
-                          boxShadow: [
-                            BoxShadow(
-                              color: AppColor.black.withValues(alpha: 0.05),
-                              blurRadius: 6,
-                              offset: const Offset(0, 3),
-                            ),
-                          ],
-                        ),
-                        child: Row(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            // 1. L'avatar à gauche
-                            CircleAvatar(
-                              radius: 26.r,
-                              backgroundColor: AppColor.blue.withValues(
-                                alpha: 0.1,
-                              ),
-                              child: AppText(
-                                label: item.nom.isNotEmpty
-                                    ? item.nom[0].toUpperCase()
-                                    : "?",
-                                color: AppColor.blue,
-                                fontWeight: FontWeight.bold,
-                                fontSize: 18.sp,
-                              ),
-                            ),
-                            SizedBox(width: 14.w),
-
-                            // 2. Les informations alignées à droite de l'avatar
-                            Expanded(
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                spacing: 4.h,
-                                children: [
-                                  AppText(
-                                    label: item.nom,
-                                    fontWeight: FontWeight.w800,
-                                    fontSize: 15.sp,
-                                  ),
-
-                                  // Ligne d'infos secondaires côte à côte pour gagner de la place verticalement
-                                  Row(
-                                    children: [
-                                      Expanded(
-                                        child: BuildInfo(
-                                          label: item.year,
-                                          icon: Icons.date_range,
-                                        ),
-                                      ),
-                                      Expanded(
-                                        child: BuildInfo(
-                                          label: item.contact,
-                                          icon: Icons.phone,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-
-                                  if (item.bio.isNotEmpty) ...[
-                                    Divider(
-                                      color: AppColor.scaffoldBackground,
-                                      height: 12.h,
-                                    ),
-                                    AppText(
-                                      label: item.bio,
-                                      color: AppColor.textDescription,
-                                      fontSize: 12.sp,
-                                      maxLines: 2,
-                                      overflow: TextOverflow.ellipsis,
-                                    ),
-                                  ],
-                                ],
-                              ),
-                            ),
-                          ],
-                        ),
-                      );
+                      return PresidentCard(item: item);
                     },
                   );
                 },
