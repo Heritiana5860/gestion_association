@@ -8,7 +8,7 @@ import 'package:login_with_unite_test_and_clean_architecture/core/widgets/button
 import 'package:login_with_unite_test_and_clean_architecture/core/widgets/empty_list.dart';
 import 'package:login_with_unite_test_and_clean_architecture/core/widgets/global_padding.dart';
 import 'package:login_with_unite_test_and_clean_architecture/core/widgets/rad/header_card_rad.dart';
-import 'package:login_with_unite_test_and_clean_architecture/features/rad/presentation/providers/get_president_provider.dart';
+import 'package:login_with_unite_test_and_clean_architecture/features/rad/presentation/providers/president/get_president_provider.dart';
 import 'package:login_with_unite_test_and_clean_architecture/features/rad/presentation/widgets/president/president_card.dart';
 import 'package:login_with_unite_test_and_clean_architecture/features/rad/presentation/widgets/president/president_dialog.dart';
 

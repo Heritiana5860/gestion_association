@@ -7,42 +7,42 @@ import 'package:login_with_unite_test_and_clean_architecture/core/widgets/app_bu
 import 'package:login_with_unite_test_and_clean_architecture/core/widgets/app_input.dart';
 import 'package:login_with_unite_test_and_clean_architecture/core/widgets/app_text.dart';
 import 'package:login_with_unite_test_and_clean_architecture/features/member/presentation/widgets/member/dialog_header.dart';
-import 'package:login_with_unite_test_and_clean_architecture/features/rad/data/models/president_model.dart';
-import 'package:login_with_unite_test_and_clean_architecture/features/rad/presentation/providers/president/get_president_provider.dart';
-import 'package:login_with_unite_test_and_clean_architecture/features/rad/presentation/providers/president/president_notifier.dart';
+import 'package:login_with_unite_test_and_clean_architecture/features/rad/data/models/cadre_model.dart';
+import 'package:login_with_unite_test_and_clean_architecture/features/rad/presentation/providers/cadre/cadre_notifier.dart';
+import 'package:login_with_unite_test_and_clean_architecture/features/rad/presentation/providers/cadre/fetch_cadre_notifier.dart';
 
-class PresidentDialog extends ConsumerStatefulWidget {
-  const PresidentDialog({super.key});
+class CadreDialog extends ConsumerStatefulWidget {
+  const CadreDialog({super.key});
 
   @override
-  ConsumerState<PresidentDialog> createState() => _PresidentDialogState();
+  ConsumerState<CadreDialog> createState() => _CadreDialogState();
 }
 
-class _PresidentDialogState extends ConsumerState<PresidentDialog> {
+class _CadreDialogState extends ConsumerState<CadreDialog> {
   final formKey = GlobalKey<FormState>();
 
   final nom = TextEditingController();
+  final fonction = TextEditingController();
   final contact = TextEditingController();
-  final bio = TextEditingController();
-  final mandat = TextEditingController();
+  final address = TextEditingController();
 
-  void _createPresident() {
+  void _createCadre() {
     try {
-      final model = PresidentModel(
+      final model = CadreModel(
         nom: nom.text,
+        fonction: fonction.text,
         contact: contact.text,
-        year: mandat.text,
-        bio: bio.text,
+        address: address.text,
       );
 
       if (formKey.currentState!.validate()) {
-        ref.read(presidenProvider.notifier).addPresident(model: model);
+        ref.read(cadreProvider.notifier).addNewCadre(model: model);
       }
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           backgroundColor: AppColor.red,
-          content: AppText(label: "Erreur: $e", color: AppColor.white),
+          content: AppText(label: "$e", color: AppColor.white),
         ),
       );
     }
@@ -51,29 +51,29 @@ class _PresidentDialogState extends ConsumerState<PresidentDialog> {
   @override
   void dispose() {
     nom.dispose();
+    fonction.dispose();
     contact.dispose();
-    bio.dispose();
-    mandat.dispose();
+    address.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    final presidents = ref.watch(presidenProvider);
-    final isLoading = presidents is AsyncLoading;
+    final cadre = ref.watch(cadreProvider);
+    final isLoading = cadre is AsyncLoading;
 
-    ref.listen<AsyncValue<void>>(presidenProvider, (_, next) {
+    ref.listen<AsyncValue<void>>(cadreProvider, (_, next) {
       next.whenOrNull(
-        data: (_) {
+        data: (data) {
           context.pop();
 
-          ref.read(getPresidentProvider.notifier).refresh();
+          ref.read(fetchCadre.notifier).refresh();
 
           ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
+            SnackBar(
               backgroundColor: AppColor.green,
               content: AppText(
-                label: "Président ajouté avec succès !",
+                label: "Jeune cadre ajouté avec succès.",
                 color: AppColor.white,
               ),
             ),
@@ -95,11 +95,17 @@ class _PresidentDialogState extends ConsumerState<PresidentDialog> {
               mainAxisSize: MainAxisSize.min,
               spacing: 12.h,
               children: [
-                DialogHeader(headerTitle: "Nouveau Président(e)"),
+                DialogHeader(headerTitle: "Nouveau jeune cadre"),
+
                 AppInput(
                   controller: nom,
                   keyboardType: TextInputType.text,
                   labelText: "Nom complet",
+                ),
+                AppInput(
+                  controller: fonction,
+                  keyboardType: TextInputType.text,
+                  labelText: "Fonction",
                 ),
                 AppInput(
                   controller: contact,
@@ -108,23 +114,17 @@ class _PresidentDialogState extends ConsumerState<PresidentDialog> {
                   maxLength: 10,
                 ),
                 AppInput(
-                  controller: mandat,
-                  keyboardType: TextInputType.number,
-                  labelText: "Année de mandat",
-                ),
-                AppInput(
-                  controller: bio,
+                  controller: address,
                   keyboardType: TextInputType.text,
-                  labelText: "Bio ou slogan",
+                  labelText: "Adresse",
                 ),
                 Divider(color: AppColor.white),
 
-                // Footer
                 SizedBox(
                   width: double.maxFinite,
                   child: AppButton(
                     label: isLoading ? "Ajouter en cours..." : "Enregistrer",
-                    onPressed: _createPresident,
+                    onPressed: _createCadre,
                   ),
                 ),
               ],

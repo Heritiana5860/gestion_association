@@ -3,13 +3,13 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:login_with_unite_test_and_clean_architecture/core/contants/colors/app_color.dart';
 import 'package:login_with_unite_test_and_clean_architecture/core/widgets/app_text.dart';
 import 'package:login_with_unite_test_and_clean_architecture/core/widgets/card/card_style.dart';
-import 'package:login_with_unite_test_and_clean_architecture/features/rad/domain/entities/honneur_entity.dart';
+import 'package:login_with_unite_test_and_clean_architecture/features/rad/domain/entities/cadre_entity.dart';
 import 'package:login_with_unite_test_and_clean_architecture/features/rad/presentation/widgets/build_info.dart';
 
-class HonneurCard extends StatelessWidget {
-  const HonneurCard({super.key, required this.item});
+class CadreCard extends StatelessWidget {
+  const CadreCard({super.key, required this.item});
 
-  final HonneurEntity item;
+  final CadreEntity item;
 
   @override
   Widget build(BuildContext context) {
@@ -42,20 +42,7 @@ class HonneurCard extends StatelessWidget {
                   fontSize: 15.sp,
                 ),
 
-                // Ligne d'infos secondaires côte à côte pour gagner de la place verticalement
-                Row(
-                  children: [
-                    Expanded(
-                      child: BuildInfo(
-                        label: item.year,
-                        icon: Icons.date_range,
-                      ),
-                    ),
-                    Expanded(
-                      child: BuildInfo(label: item.contact, icon: Icons.phone),
-                    ),
-                  ],
-                ),
+                BuildInfo(label: item.contact, icon: Icons.phone),
 
                 BuildInfo(label: item.fonction, icon: Icons.verified),
 

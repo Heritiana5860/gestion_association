@@ -2,7 +2,7 @@ import 'dart:async';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:login_with_unite_test_and_clean_architecture/features/rad/domain/entities/president_entity.dart';
-import 'package:login_with_unite_test_and_clean_architecture/features/rad/presentation/providers/president_provider.dart';
+import 'package:login_with_unite_test_and_clean_architecture/features/rad/presentation/providers/president/president_provider.dart';
 
 class GetPresidentProvider extends AsyncNotifier<List<PresidentEntity>> {
   @override
