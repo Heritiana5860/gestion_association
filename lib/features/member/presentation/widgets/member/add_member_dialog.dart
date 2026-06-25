@@ -130,7 +130,10 @@ class _AddMemberDialogState extends ConsumerState<AddMemberDialog> {
           ref.watch(memberDataProvider);
           ref.invalidate(detailProvider);
           ref.read(cotisationDataProvider.notifier).refresh();
-          
+          if (widget.member!.id != null) {
+            ref.invalidate(detailProvider(widget.member!.id!));
+          }
+
           context.pop();
         },
         error: (error, _) {
@@ -177,6 +180,7 @@ class _AddMemberDialogState extends ConsumerState<AddMemberDialog> {
                   labelText: "Numero téléphone",
                   controller: numberPhoneController,
                   keyboardType: TextInputType.phone,
+                  maxLength: 10,
                   validator: (value) {
                     if (value == null) {
                       return ValidatorText.obligatorField;

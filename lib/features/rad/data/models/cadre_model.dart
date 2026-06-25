@@ -2,6 +2,7 @@ import 'package:login_with_unite_test_and_clean_architecture/features/rad/domain
 
 class CadreModel extends CadreEntity {
   const CadreModel({
+    super.id,
     required super.nom,
     required super.fonction,
     required super.contact,
@@ -10,6 +11,7 @@ class CadreModel extends CadreEntity {
 
   factory CadreModel.fromJson(Map<String, dynamic> json) {
     return CadreModel(
+      id: json['id'] as int?,
       nom: json['nom'] as String,
       fonction: json['fonction'] as String,
       contact: json['contact'] as String,

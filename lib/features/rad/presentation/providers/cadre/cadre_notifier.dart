@@ -18,6 +18,18 @@ class CadreNotifier extends AsyncNotifier<void> {
       (r) => state = AsyncData(null),
     );
   }
+
+  Future<void> cadreUpdate({required int id, required CadreModel model}) async {
+    state = AsyncLoading();
+
+    final usecase = ref.read(usecaseCadreProvider);
+    final result = await usecase.callCadreUpdate(id: id, model: model);
+
+    result.fold(
+      (l) => state = AsyncError(l.message, StackTrace.current),
+      (r) => state = AsyncData(null),
+    );
+  }
 }
 
 final cadreProvider = AsyncNotifierProvider<CadreNotifier, void>(

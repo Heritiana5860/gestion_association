@@ -28,4 +28,17 @@ class CadreDatasource {
 
     return data.map((e) => CadreModel.fromJson(e)).toList();
   }
+
+  Future<void> updateCadreData({
+    required int id,
+    required CadreModel model,
+  }) async {
+    final url = dotenv.env[UrlKey.urlKey] ?? '';
+
+    await dio.put(
+      "${url}cadre/$id/",
+      data: model.toJson(),
+      options: Options(headers: await AutorisationToken.headers()),
+    );
+  }
 }

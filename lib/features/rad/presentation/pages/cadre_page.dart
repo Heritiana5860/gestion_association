@@ -30,6 +30,16 @@ class _CadrePageState extends ConsumerState<CadrePage> {
   }
 
   @override
+  void initState() {
+    super.initState();
+    searchController.addListener(() {
+      setState(() {
+        searchText = searchController.text.trim().toLowerCase();
+      });
+    });
+  }
+
+  @override
   void dispose() {
     searchController.dispose();
     super.dispose();

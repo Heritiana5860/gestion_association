@@ -8,11 +8,14 @@ import 'package:login_with_unite_test_and_clean_architecture/core/widgets/app_in
 import 'package:login_with_unite_test_and_clean_architecture/core/widgets/app_text.dart';
 import 'package:login_with_unite_test_and_clean_architecture/features/member/presentation/widgets/member/dialog_header.dart';
 import 'package:login_with_unite_test_and_clean_architecture/features/rad/data/models/cadre_model.dart';
+import 'package:login_with_unite_test_and_clean_architecture/features/rad/domain/entities/cadre_entity.dart';
 import 'package:login_with_unite_test_and_clean_architecture/features/rad/presentation/providers/cadre/cadre_notifier.dart';
 import 'package:login_with_unite_test_and_clean_architecture/features/rad/presentation/providers/cadre/fetch_cadre_notifier.dart';
 
 class CadreDialog extends ConsumerStatefulWidget {
-  const CadreDialog({super.key});
+  const CadreDialog({super.key, this.item});
+
+  final CadreEntity? item;
 
   @override
   ConsumerState<CadreDialog> createState() => _CadreDialogState();
@@ -25,6 +28,20 @@ class _CadreDialogState extends ConsumerState<CadreDialog> {
   final fonction = TextEditingController();
   final contact = TextEditingController();
   final address = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+    final i = widget.item;
+    if (i != null) {
+      nom.text = i.nom;
+      fonction.text = i.fonction;
+      contact.text = i.contact;
+      address.text = i.address;
+    }
+  }
+
+  bool get _isEditing => widget.item != null;
 
   void _createCadre() {
     try {
@@ -46,6 +63,21 @@ class _CadreDialogState extends ConsumerState<CadreDialog> {
         ),
       );
     }
+  }
+
+  void _updateCadre() {
+    if (!formKey.currentState!.validate()) return;
+
+    final model = CadreModel(
+      nom: nom.text,
+      fonction: fonction.text,
+      contact: contact.text,
+      address: address.text,
+    );
+
+    ref
+        .read(cadreProvider.notifier)
+        .cadreUpdate(id: widget.item!.id ?? 0, model: model);
   }
 
   @override
@@ -123,8 +155,14 @@ class _CadreDialogState extends ConsumerState<CadreDialog> {
                 SizedBox(
                   width: double.maxFinite,
                   child: AppButton(
-                    label: isLoading ? "Ajouter en cours..." : "Enregistrer",
-                    onPressed: _createCadre,
+                    label: isLoading
+                        ? (_isEditing
+                              ? "Modification en cours..."
+                              : "Ajouter en cours...")
+                        : (_isEditing ? "Modifier" : "Enregistrer"),
+                    onPressed: isLoading
+                        ? null
+                        : (_isEditing ? _updateCadre : _createCadre),
                   ),
                 ),
               ],

@@ -17,7 +17,7 @@ class HonneurCard extends StatelessWidget {
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // 1. L'avatar à gauche
+          // L'avatar à gauche
           CircleAvatar(
             radius: 26.r,
             backgroundColor: AppColor.blue.withValues(alpha: 0.1),
@@ -30,7 +30,7 @@ class HonneurCard extends StatelessWidget {
           ),
           SizedBox(width: 14.w),
 
-          // 2. Les informations alignées à droite de l'avatar
+          // Les informations alignées à droite de l'avatar
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,

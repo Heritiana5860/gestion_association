@@ -22,8 +22,10 @@ class CadreRepositoryImpl implements CadreRepository {
       return Right(res);
     } on SocketException {
       return Left(NetworkError());
-    } on Exception catch (e) {
-      return Left(ValidationError(e.toString()));
+    } on DioException catch (e) {
+      return Left(ValidationError(e.response!.data));
+    } on Exception {
+      return Left(ServerError());
     }
   }
 
@@ -35,7 +37,24 @@ class CadreRepositoryImpl implements CadreRepository {
     } on SocketException {
       return Left(NetworkError());
     } on DioException catch (e) {
-      return Left(ValidationError(e.toString()));
+      return Left(ValidationError(e.response!.data));
+    } on Exception {
+      return Left(ServerError());
+    }
+  }
+
+  @override
+  Future<Either<Failure, void>> updateCadre({
+    required int id,
+    required CadreModel model,
+  }) async {
+    try {
+      final res = await datasource.updateCadreData(id: id, model: model);
+      return Right(res);
+    } on SocketException {
+      return Left(NetworkError());
+    } on DioException catch (e) {
+      return Left(ValidationError(e.response!.data));
     } on Exception {
       return Left(ServerError());
     }

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:login_with_unite_test_and_clean_architecture/core/contants/colors/app_color.dart';
 import 'package:login_with_unite_test_and_clean_architecture/core/widgets/app_text.dart';
+import 'package:login_with_unite_test_and_clean_architecture/core/widgets/card/card_style.dart';
 import 'package:login_with_unite_test_and_clean_architecture/features/rad/domain/entities/president_entity.dart';
 import 'package:login_with_unite_test_and_clean_architecture/features/rad/presentation/widgets/build_info.dart';
 
@@ -12,23 +13,11 @@ class PresidentCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: EdgeInsets.all(12.r),
-      decoration: BoxDecoration(
-        color: AppColor.white,
-        borderRadius: BorderRadius.circular(12.r),
-        boxShadow: [
-          BoxShadow(
-            color: AppColor.black.withValues(alpha: 0.05),
-            blurRadius: 6,
-            offset: const Offset(0, 3),
-          ),
-        ],
-      ),
+    return CardStyle(
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // 1. L'avatar à gauche
+          // L'avatar à gauche
           CircleAvatar(
             radius: 26.r,
             backgroundColor: AppColor.blue.withValues(alpha: 0.1),
@@ -41,7 +30,7 @@ class PresidentCard extends StatelessWidget {
           ),
           SizedBox(width: 14.w),
 
-          // 2. Les informations alignées à droite de l'avatar
+          // Les informations alignées à droite de l'avatar
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,

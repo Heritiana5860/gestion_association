@@ -8,15 +8,15 @@ class AddCotisationNotifier extends AsyncNotifier<void> {
   FutureOr<void> build() {}
 
   Future<void> newCotisation({required AddCotisationModel model}) async {
+    state = AsyncLoading();
+
     final usecase = ref.read(usecaseCotisationProvider);
 
     final result = await usecase.addCotisationCall(model: model);
 
-    state = AsyncLoading();
-
     result.fold(
       (l) => state = AsyncError(l.message, StackTrace.current),
-      (r) => state = AsyncValue.data(null),
+      (r) => state = AsyncData(null),
     );
   }
 }

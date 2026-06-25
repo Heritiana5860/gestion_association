@@ -11,6 +11,7 @@ import 'package:login_with_unite_test_and_clean_architecture/features/cotisation
 import 'package:login_with_unite_test_and_clean_architecture/features/cotisation/presentation/providers/cotisation/add_cotisation_notifier.dart';
 import 'package:login_with_unite_test_and_clean_architecture/features/cotisation/presentation/providers/cotisation/cotisation_notifier.dart';
 import 'package:login_with_unite_test_and_clean_architecture/features/cotisation/presentation/providers/stats/cotisation_stats_notifier.dart';
+import 'package:login_with_unite_test_and_clean_architecture/features/member/presentation/providers/member_detail_provider.dart';
 import 'package:login_with_unite_test_and_clean_architecture/features/member/presentation/widgets/member/dialog_header.dart';
 
 class PayCotisationDialog extends ConsumerStatefulWidget {
@@ -45,10 +46,14 @@ class _PayCotisationDialogState extends ConsumerState<PayCotisationDialog> {
     ref.listen<AsyncValue<void>>(payCotisation, (previous, next) {
       next.whenOrNull(
         data: (data) {
+          context.pop();
+
+          if (widget.id != null) {
+            ref.invalidate(detailProvider(widget.id!));
+          }
+
           ref.read(cotisationDataProvider.notifier).refresh();
           ref.read(cotisationStats.notifier).refresh();
-
-          context.pop();
         },
         error: (error, stackTrace) {
           ScaffoldMessenger.of(context).showSnackBar(

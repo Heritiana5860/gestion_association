@@ -16,4 +16,11 @@ class CadreUsecase {
   Future<Either<Failure, List<CadreEntity>>> callCadre() {
     return repository.fetchCadre();
   }
+
+  Future<Either<Failure, void>> callCadreUpdate({
+    required int id,
+    required CadreModel model,
+  }) {
+    return repository.updateCadre(id: id, model: model);
+  }
 }

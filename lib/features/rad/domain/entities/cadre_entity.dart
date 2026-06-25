@@ -1,4 +1,5 @@
 class CadreEntity {
+  final int? id;
   final String nom;
   final String fonction;
   final String contact;
@@ -9,5 +10,6 @@ class CadreEntity {
     required this.fonction,
     required this.contact,
     required this.address,
+    this.id,
   });
 }

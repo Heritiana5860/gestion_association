@@ -6,4 +6,8 @@ import 'package:login_with_unite_test_and_clean_architecture/features/rad/domain
 abstract class CadreRepository {
   Future<Either<Failure, void>> newCadre({required CadreModel model});
   Future<Either<Failure, List<CadreEntity>>> fetchCadre();
+  Future<Either<Failure, void>> updateCadre({
+    required int id,
+    required CadreModel model,
+  });
 }
