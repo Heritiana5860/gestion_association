@@ -6,10 +6,12 @@ class PresidentModel extends PresidentEntity {
     required super.contact,
     required super.year,
     required super.bio,
+    super.id,
   });
 
   factory PresidentModel.fromJson(Map<String, dynamic> json) {
     return PresidentModel(
+      id: json['id'] as int?,
       nom: json['nom'] as String,
       contact: json['contact'] as String,
       year: json['year'] as String,

@@ -16,4 +16,11 @@ class PresidentUsecase {
   Future<Either<Failure, List<PresidentEntity>>> fetchPresidentList() {
     return repository.getPresidents();
   }
+
+  Future<Either<Failure, void>> callPresidentUpdate({
+    required int id,
+    required PresidentModel model,
+  }) {
+    return repository.updatePresident(id: id, model: model);
+  }
 }

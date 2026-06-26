@@ -29,4 +29,17 @@ class PresidentDatasource {
 
     return data.map((e) => PresidentModel.fromJson(e)).toList();
   }
+
+  Future<void> presidentUpdate({
+    required int id,
+    required PresidentModel model,
+  }) async {
+    final url = dotenv.env[UrlKey.urlKey] ?? "";
+
+    await dio.put(
+      "${url}president/$id/",
+      data: model.toJson(),
+      options: Options(headers: await AutorisationToken.headers()),
+    );
+  }
 }

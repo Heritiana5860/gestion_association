@@ -18,6 +18,21 @@ class PresidentNotifier extends AsyncNotifier<void> {
       (r) => state = AsyncData(null),
     );
   }
+
+  Future<void> updatePresident({
+    required int id,
+    required PresidentModel model,
+  }) async {
+    state = AsyncLoading();
+
+    final usecase = ref.read(usecasePresidentProvider);
+    final result = await usecase.callPresidentUpdate(id: id, model: model);
+
+    result.fold(
+      (l) => state = AsyncError(l.message, StackTrace.current),
+      (r) => state = AsyncData(null),
+    );
+  }
 }
 
 final presidenProvider = AsyncNotifierProvider<PresidentNotifier, void>(

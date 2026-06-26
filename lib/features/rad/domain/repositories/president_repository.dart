@@ -5,7 +5,10 @@ import 'package:login_with_unite_test_and_clean_architecture/features/rad/domain
 
 abstract class PresidentRepository {
   Future<Either<Failure, void>> addPresident({required PresidentModel model});
-  // Future<Either<Failure, void>> updatePresident(String id, String name, String description);
+  Future<Either<Failure, void>> updatePresident({
+    required int id,
+    required PresidentModel model,
+  });
   // Future<Either<Failure, void>> deletePresident(String id);
   Future<Either<Failure, List<PresidentEntity>>> getPresidents();
 }
