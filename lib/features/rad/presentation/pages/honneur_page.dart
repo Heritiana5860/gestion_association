@@ -51,7 +51,7 @@ class _HonneurPageState extends ConsumerState<HonneurPage> {
 
     return Scaffold(
       backgroundColor: AppColor.scaffoldBackground,
-      appBar: AppBar(title: AppText(label: "Honneur"), centerTitle: true),
+      appBar: AppBar(title: AppText(label: "President d'Honneur"), centerTitle: true),
       floatingActionButton: ButtonFoatingCard(
         heroTag: "honneur-btn",
         icon: Icons.person_pin_rounded,

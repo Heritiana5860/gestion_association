@@ -3,6 +3,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:login_with_unite_test_and_clean_architecture/core/contants/colors/app_color.dart';
+import 'package:login_with_unite_test_and_clean_architecture/core/contants/constant_text/rad_text.dart';
+import 'package:login_with_unite_test_and_clean_architecture/core/contants/constant_text/validator_text.dart';
 import 'package:login_with_unite_test_and_clean_architecture/core/widgets/app_button.dart';
 import 'package:login_with_unite_test_and_clean_architecture/core/widgets/app_input.dart';
 import 'package:login_with_unite_test_and_clean_architecture/core/widgets/app_text.dart';
@@ -105,7 +107,7 @@ class _CadreDialogState extends ConsumerState<CadreDialog> {
             SnackBar(
               backgroundColor: AppColor.green,
               content: AppText(
-                label: "Jeune cadre ajouté avec succès.",
+                label: _isEditing ? RadText.modifSucces : "Jeune cadre ajouté avec succès.",
                 color: AppColor.white,
               ),
             ),
@@ -133,6 +135,13 @@ class _CadreDialogState extends ConsumerState<CadreDialog> {
                   controller: nom,
                   keyboardType: TextInputType.text,
                   labelText: "Nom complet",
+                  validator: (p0) {
+                    if (p0 == null) {
+                      return ValidatorText.obligatorField;
+                    }
+
+                    return null;
+                  },
                 ),
                 AppInput(
                   controller: fonction,
@@ -144,6 +153,13 @@ class _CadreDialogState extends ConsumerState<CadreDialog> {
                   keyboardType: TextInputType.phone,
                   labelText: "Contact",
                   maxLength: 10,
+                  validator: (p0) {
+                    if (p0 == null) {
+                      return ValidatorText.obligatorField;
+                    }
+
+                    return null;
+                  },
                 ),
                 AppInput(
                   controller: address,

@@ -11,6 +11,7 @@ class RouteKeys {
   static const String presidentUrl = "/president";
   static const String cadreUrl = "/cadre";
   static const String honneurUrl = "/honneur";
+  static const String collegeUrl = "/college";
 
   static const String loginName = "login";
   static const String inscriptionName = "inscription";
@@ -22,4 +23,5 @@ class RouteKeys {
   static const String presidentName = "president";
   static const String cadreName = "cadre";
   static const String honneurName = "honneur";
+  static const String collegeName = "college";
 }

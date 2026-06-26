@@ -3,15 +3,21 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:login_with_unite_test_and_clean_architecture/core/contants/colors/app_color.dart';
+import 'package:login_with_unite_test_and_clean_architecture/core/contants/constant_text/rad_text.dart';
+import 'package:login_with_unite_test_and_clean_architecture/core/contants/constant_text/validator_text.dart';
 import 'package:login_with_unite_test_and_clean_architecture/core/widgets/app_button.dart';
 import 'package:login_with_unite_test_and_clean_architecture/core/widgets/app_input.dart';
 import 'package:login_with_unite_test_and_clean_architecture/core/widgets/app_text.dart';
 import 'package:login_with_unite_test_and_clean_architecture/features/member/presentation/widgets/member/dialog_header.dart';
 import 'package:login_with_unite_test_and_clean_architecture/features/rad/data/models/honneur_model.dart';
+import 'package:login_with_unite_test_and_clean_architecture/features/rad/domain/entities/honneur_entity.dart';
+import 'package:login_with_unite_test_and_clean_architecture/features/rad/presentation/providers/honneur/get_honneur_provider.dart';
 import 'package:login_with_unite_test_and_clean_architecture/features/rad/presentation/providers/honneur/honneur_notifier.dart';
 
 class HonneurDialog extends ConsumerStatefulWidget {
-  const HonneurDialog({super.key});
+  const HonneurDialog({super.key, this.item});
+
+  final HonneurEntity? item;
 
   @override
   ConsumerState<HonneurDialog> createState() => _HonneurDialogState();
@@ -25,6 +31,18 @@ class _HonneurDialogState extends ConsumerState<HonneurDialog> {
   final fonction = TextEditingController();
   final mandat = TextEditingController();
   final address = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+    if (widget.item != null) {
+      nom.text = widget.item!.nom;
+      contact.text = widget.item!.contact;
+      fonction.text = widget.item!.fonction;
+      mandat.text = widget.item!.year;
+      address.text = widget.item!.address;
+    }
+  }
 
   @override
   void dispose() {
@@ -59,6 +77,24 @@ class _HonneurDialogState extends ConsumerState<HonneurDialog> {
     }
   }
 
+  void _updateHonneur() {
+    if (!formKey.currentState!.validate()) return;
+
+    final model = HonneurModel(
+      nom: nom.text,
+      fonction: fonction.text,
+      contact: contact.text,
+      year: mandat.text,
+      address: address.text,
+    );
+
+    ref
+        .read(honneurProvider.notifier)
+        .honneurUpdateProvider(id: widget.item!.id!, model: model);
+  }
+
+  bool get _isEditing => widget.item != null;
+
   @override
   Widget build(BuildContext context) {
     final honneurs = ref.watch(honneurProvider);
@@ -69,11 +105,15 @@ class _HonneurDialogState extends ConsumerState<HonneurDialog> {
         data: (_) {
           context.pop();
 
+          ref.read(getHonneurs.notifier).refresh();
+
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
               backgroundColor: AppColor.green,
               content: AppText(
-                label: "Président d'honneur ajouté avec succès!",
+                label: _isEditing
+                    ? RadText.modifSucces
+                    : "Président d'honneur ajouté avec succès!",
                 color: AppColor.white,
               ),
             ),
@@ -100,6 +140,13 @@ class _HonneurDialogState extends ConsumerState<HonneurDialog> {
                   controller: nom,
                   keyboardType: TextInputType.text,
                   labelText: "Nom complet",
+                  validator: (p0) {
+                    if (p0 == null) {
+                      return ValidatorText.obligatorField;
+                    }
+
+                    return null;
+                  },
                 ),
                 AppInput(
                   controller: fonction,
@@ -111,6 +158,13 @@ class _HonneurDialogState extends ConsumerState<HonneurDialog> {
                   keyboardType: TextInputType.phone,
                   labelText: "Contact",
                   maxLength: 10,
+                  validator: (p0) {
+                    if (p0 == null) {
+                      return ValidatorText.obligatorField;
+                    }
+
+                    return null;
+                  },
                 ),
                 AppInput(
                   controller: mandat,
@@ -127,8 +181,14 @@ class _HonneurDialogState extends ConsumerState<HonneurDialog> {
                 SizedBox(
                   width: double.maxFinite,
                   child: AppButton(
-                    label: isLoading ? "Ajouter en cours..." : "Enregistrer",
-                    onPressed: _createHonneur,
+                    label: isLoading
+                        ? (_isEditing
+                              ? RadText.modifEncours
+                              : RadText.saveEnCours)
+                        : (_isEditing ? RadText.modif : RadText.save),
+                    onPressed: isLoading
+                        ? null
+                        : (_isEditing ? _updateHonneur : _createHonneur),
                   ),
                 ),
               ],

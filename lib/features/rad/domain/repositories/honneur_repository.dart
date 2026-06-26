@@ -6,4 +6,8 @@ import 'package:login_with_unite_test_and_clean_architecture/features/rad/domain
 abstract class HonneurRepository {
   Future<Either<Failure, void>> newHonneur({required HonneurModel model});
   Future<Either<Failure, List<HonneurEntity>>> fetchHonneur();
+  Future<Either<Failure, void>> updateHonneur({
+    required int id,
+    required HonneurModel model,
+  });
 }

@@ -7,10 +7,12 @@ class HonneurModel extends HonneurEntity {
     required super.contact,
     required super.year,
     required super.address,
+    super.id,
   });
 
   factory HonneurModel.fromJson(Map<String, dynamic> json) {
     return HonneurModel(
+      id: json['id'] as int?,
       nom: json['nom'] as String,
       fonction: json['fonction'] as String,
       contact: json['contact'] as String,

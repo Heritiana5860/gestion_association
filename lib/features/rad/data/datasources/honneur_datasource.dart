@@ -29,4 +29,17 @@ class HonneurDatasource {
 
     return data.map((e) => HonneurModel.fromJson(e)).toList();
   }
+
+  Future<void> updateHonneur({
+    required int id,
+    required HonneurModel model,
+  }) async {
+    final url = dotenv.env[UrlKey.urlKey] ?? '';
+
+    await dio.put(
+      "${url}honneur/$id/",
+      data: model.toJson(),
+      options: Options(headers: await AutorisationToken.headers()),
+    );
+  }
 }

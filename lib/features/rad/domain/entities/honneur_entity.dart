@@ -1,4 +1,5 @@
 class HonneurEntity {
+  final int? id;
   final String nom;
   final String fonction;
   final String contact;
@@ -11,5 +12,6 @@ class HonneurEntity {
     required this.contact,
     required this.year,
     required this.address,
+    this.id,
   });
 }

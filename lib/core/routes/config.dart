@@ -18,6 +18,7 @@ import 'package:login_with_unite_test_and_clean_architecture/features/member/pre
 import 'package:login_with_unite_test_and_clean_architecture/features/member/presentation/pages/member_page.dart';
 import 'package:login_with_unite_test_and_clean_architecture/features/obligation/presentation/pages/obligation_page.dart';
 import 'package:login_with_unite_test_and_clean_architecture/features/rad/presentation/pages/cadre_page.dart';
+import 'package:login_with_unite_test_and_clean_architecture/features/rad/presentation/pages/college_page.dart';
 import 'package:login_with_unite_test_and_clean_architecture/features/rad/presentation/pages/honneur_page.dart';
 import 'package:login_with_unite_test_and_clean_architecture/features/rad/presentation/pages/president_page.dart';
 
@@ -71,6 +72,12 @@ final routerProvider = Provider<GoRouter>((ref) {
         path: RouteKeys.honneurUrl,
         name: RouteKeys.honneurName,
         builder: (context, state) => const HonneurPage(),
+      ),
+
+      GoRoute(
+        path: RouteKeys.collegeUrl,
+        name: RouteKeys.collegeName,
+        builder: (context, state) => const CollegePage(),
       ),
 
       StatefulShellRoute.indexedStack(
@@ -191,6 +198,13 @@ final routerProvider = Provider<GoRouter>((ref) {
                                 label: "Président d'honneur",
                                 onTap: () =>
                                     context.pushNamed(RouteKeys.honneurName),
+                              ),
+
+                              _buildDrawerItem(
+                                icon: Icons.grading,
+                                label: "Collège des doyens",
+                                onTap: () =>
+                                    context.pushNamed(RouteKeys.collegeName),
                               ),
 
                               _buildDrawerItem(

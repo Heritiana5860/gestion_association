@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:login_with_unite_test_and_clean_architecture/core/contants/colors/app_color.dart';
+import 'package:login_with_unite_test_and_clean_architecture/core/contants/constant_text/rad_text.dart';
 import 'package:login_with_unite_test_and_clean_architecture/core/contants/constant_text/validator_text.dart';
 import 'package:login_with_unite_test_and_clean_architecture/core/widgets/app_button.dart';
 import 'package:login_with_unite_test_and_clean_architecture/core/widgets/app_input.dart';
@@ -107,7 +108,7 @@ class _PresidentDialogState extends ConsumerState<PresidentDialog> {
               backgroundColor: AppColor.green,
               content: AppText(
                 label: _isEditing
-                    ? "Modification avec succès !"
+                    ? RadText.modifSucces
                     : "Président ajouté avec succès !",
                 color: AppColor.white,
               ),
@@ -181,9 +182,9 @@ class _PresidentDialogState extends ConsumerState<PresidentDialog> {
                   child: AppButton(
                     label: isLoading
                         ? (_isEditing
-                              ? "Modification en cours..."
-                              : "Ajouter en cours...")
-                        : (_isEditing ? "Modifier" : "Enregistrer"),
+                              ? RadText.modifEncours
+                              : RadText.saveEnCours)
+                        : (_isEditing ? RadText.modif : RadText.save),
                     onPressed: isLoading
                         ? null
                         : (_isEditing ? _updatePresident : _createPresident),

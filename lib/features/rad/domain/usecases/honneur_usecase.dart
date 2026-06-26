@@ -16,4 +16,11 @@ class HonneurUsecase {
   Future<Either<Failure, List<HonneurEntity>>> callFetchHonneur() {
     return repository.fetchHonneur();
   }
+
+  Future<Either<Failure, void>> callUpdateHonneur({
+    required int id,
+    required HonneurModel model,
+  }) {
+    return repository.updateHonneur(id: id, model: model);
+  }
 }
