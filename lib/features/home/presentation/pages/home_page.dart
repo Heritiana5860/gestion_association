@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:login_with_unite_test_and_clean_architecture/core/contants/colors/app_color.dart';
+import 'package:login_with_unite_test_and_clean_architecture/core/widgets/app_dropdown.dart';
 import 'package:login_with_unite_test_and_clean_architecture/core/widgets/app_text.dart';
 import 'package:login_with_unite_test_and_clean_architecture/core/widgets/global_padding.dart';
 import 'package:login_with_unite_test_and_clean_architecture/core/widgets/list_animated.dart';
@@ -12,6 +13,7 @@ import 'package:login_with_unite_test_and_clean_architecture/features/home/prese
 import 'package:login_with_unite_test_and_clean_architecture/features/home/presentation/widgets/bar_row.dart';
 import 'package:login_with_unite_test_and_clean_architecture/features/home/presentation/widgets/stat_card.dart';
 import 'package:login_with_unite_test_and_clean_architecture/features/member/presentation/providers/member_stats_notifier.dart';
+import 'package:login_with_unite_test_and_clean_architecture/features/obligation/presentation/providers/obligation_notifier.dart';
 
 class HomePage extends ConsumerStatefulWidget {
   const HomePage({super.key});
@@ -21,10 +23,23 @@ class HomePage extends ConsumerStatefulWidget {
 }
 
 class _HomePageState extends ConsumerState<HomePage> {
+  String? selectedYear;
+
   @override
   Widget build(BuildContext context) {
+    final getYearProvider = ref.watch(obligationsProvider);
     final memberStats = ref.watch(memberDataStats);
     final cotisationStat = ref.watch(cotisationStats);
+
+    final List<String> years = getYearProvider.maybeWhen(
+      data: (obligations) =>
+          obligations.map((o) => o.year.toString()).toSet().toList(),
+      orElse: () => [],
+    );
+
+    if (selectedYear == null && years.isNotEmpty) {
+      selectedYear = years.first;
+    }
 
     return Scaffold(
       backgroundColor: AppColor.scaffoldBackground,
@@ -33,7 +48,29 @@ class _HomePageState extends ConsumerState<HomePage> {
         child: SingleChildScrollView(
           child: ListAnimated(
             children: [
+              SizedBox(height: 16.h),
+
               BannerCard(),
+
+              SizedBox(height: 16.h),
+
+              AppDropdown(
+                labelText: "Année",
+                value: selectedYear ?? "2026",
+                items: years
+                    .map(
+                      (year) => DropdownMenuItem<String>(
+                        value: year,
+                        child: AppText(label: year),
+                      ),
+                    )
+                    .toList(),
+                onChanged: (value) {
+                  setState(() {
+                    selectedYear = value;
+                  });
+                },
+              ),
 
               SizedBox(height: 16.h),
 

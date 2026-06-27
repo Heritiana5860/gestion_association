@@ -18,6 +18,7 @@ import 'package:login_with_unite_test_and_clean_architecture/features/auth/data/
 import 'package:login_with_unite_test_and_clean_architecture/features/auth/presentation/providers/login/auth_login_notifier.dart';
 import 'package:login_with_unite_test_and_clean_architecture/features/auth/presentation/widgets/logo.dart';
 import 'package:login_with_unite_test_and_clean_architecture/features/auth/presentation/widgets/sociaux_card.dart';
+import 'package:login_with_unite_test_and_clean_architecture/features/obligation/presentation/providers/obligation_notifier.dart';
 
 class AuthLoginPage extends ConsumerStatefulWidget {
   const AuthLoginPage({super.key});
@@ -68,6 +69,7 @@ class _AuthLoginPageState extends ConsumerState<AuthLoginPage> {
       next.whenOrNull(
         data: (d) {
           clear();
+          ref.read(obligationsProvider.notifier).refresh();
           context.goNamed(RouteKeys.homeName);
         },
         error: (error, _) {

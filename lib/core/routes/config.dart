@@ -88,7 +88,6 @@ final routerProvider = Provider<GoRouter>((ref) {
               title: AppText(
                 label: "Lonoky ho NGETROKY!",
                 fontWeight: FontWeight.w600,
-                color: AppColor.blue,
               ),
               centerTitle: true,
             ),
