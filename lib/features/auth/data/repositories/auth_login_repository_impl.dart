@@ -1,5 +1,4 @@
 import 'dart:io';
-
 import 'package:dartz/dartz.dart';
 import 'package:dio/dio.dart';
 import 'package:login_with_unite_test_and_clean_architecture/core/errors/auth/login_error.dart';

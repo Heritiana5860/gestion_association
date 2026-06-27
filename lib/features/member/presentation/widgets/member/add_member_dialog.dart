@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:login_with_unite_test_and_clean_architecture/core/contants/colors/app_color.dart';
+import 'package:login_with_unite_test_and_clean_architecture/core/contants/constant_text/rad_text.dart';
 import 'package:login_with_unite_test_and_clean_architecture/core/contants/constant_text/validator_text.dart';
 import 'package:login_with_unite_test_and_clean_architecture/core/contants/data/member_data_list.dart';
 import 'package:login_with_unite_test_and_clean_architecture/core/widgets/app_button.dart';
@@ -279,8 +280,10 @@ class _AddMemberDialogState extends ConsumerState<AddMemberDialog> {
                   width: double.maxFinite,
                   child: AppButton(
                     label: isLoading
-                        ? (_isEditing ? "Modification..." : "Ajout en cours...")
-                        : (_isEditing ? "Modifier" : "Ajouter"),
+                        ? (_isEditing
+                              ? RadText.modifEncours
+                              : RadText.saveEnCours)
+                        : (_isEditing ? RadText.modif : RadText.save),
                     onPressed: isLoading
                         ? null
                         : (_isEditing ? _updateMember : _newMember),

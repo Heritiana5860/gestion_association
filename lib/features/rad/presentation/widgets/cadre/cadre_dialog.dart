@@ -107,7 +107,9 @@ class _CadreDialogState extends ConsumerState<CadreDialog> {
             SnackBar(
               backgroundColor: AppColor.green,
               content: AppText(
-                label: _isEditing ? RadText.modifSucces : "Jeune cadre ajouté avec succès.",
+                label: _isEditing
+                    ? RadText.modifSucces
+                    : "Jeune cadre ajouté avec succès.",
                 color: AppColor.white,
               ),
             ),
@@ -134,6 +136,7 @@ class _CadreDialogState extends ConsumerState<CadreDialog> {
                 AppInput(
                   controller: nom,
                   keyboardType: TextInputType.text,
+                  enabled: !isLoading,
                   labelText: "Nom complet",
                   validator: (p0) {
                     if (p0 == null) {
@@ -146,11 +149,13 @@ class _CadreDialogState extends ConsumerState<CadreDialog> {
                 AppInput(
                   controller: fonction,
                   keyboardType: TextInputType.text,
+                  enabled: !isLoading,
                   labelText: "Fonction",
                 ),
                 AppInput(
                   controller: contact,
                   keyboardType: TextInputType.phone,
+                  enabled: !isLoading,
                   labelText: "Contact",
                   maxLength: 10,
                   validator: (p0) {
@@ -164,6 +169,7 @@ class _CadreDialogState extends ConsumerState<CadreDialog> {
                 AppInput(
                   controller: address,
                   keyboardType: TextInputType.text,
+                  enabled: !isLoading,
                   labelText: "Adresse",
                 ),
                 Divider(color: AppColor.white),
@@ -173,9 +179,9 @@ class _CadreDialogState extends ConsumerState<CadreDialog> {
                   child: AppButton(
                     label: isLoading
                         ? (_isEditing
-                              ? "Modification en cours..."
-                              : "Ajouter en cours...")
-                        : (_isEditing ? "Modifier" : "Enregistrer"),
+                              ? RadText.modifEncours
+                              : RadText.saveEnCours)
+                        : (_isEditing ? RadText.modif : RadText.save),
                     onPressed: isLoading
                         ? null
                         : (_isEditing ? _updateCadre : _createCadre),

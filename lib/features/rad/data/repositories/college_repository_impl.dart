@@ -7,6 +7,7 @@ import 'package:login_with_unite_test_and_clean_architecture/core/errors/server_
 import 'package:login_with_unite_test_and_clean_architecture/core/errors/validation_error.dart';
 import 'package:login_with_unite_test_and_clean_architecture/features/rad/data/datasources/college_datasource.dart';
 import 'package:login_with_unite_test_and_clean_architecture/features/rad/data/models/college_model.dart';
+import 'package:login_with_unite_test_and_clean_architecture/features/rad/domain/entities/college_entity.dart';
 import 'package:login_with_unite_test_and_clean_architecture/features/rad/domain/repositories/college_repository.dart';
 
 class CollegeRepositoryImpl implements CollegeRepository {
@@ -25,6 +26,37 @@ class CollegeRepositoryImpl implements CollegeRepository {
       return Left(NetworkError());
     } on DioException catch (e) {
       return Left(ValidationError(e.response!.data));
+    } on Exception {
+      return Left(ServerError());
+    }
+  }
+
+  @override
+  Future<Either<Failure, List<CollegeEntity>>> fetchCollege() async {
+    try {
+      final res = await datasource.getCollegeData();
+      return Right(res);
+    } on SocketException {
+      return Left(NetworkError());
+    } on DioException catch (e) {
+      return Left(e.response!.data);
+    } on Exception {
+      return Left(ServerError());
+    }
+  }
+
+  @override
+  Future<Either<Failure, void>> updateCollege({
+    required int id,
+    required CollegeModel model,
+  }) async {
+    try {
+      final res = await datasource.updateCollege(id: id, model: model);
+      return Right(res);
+    } on SocketException {
+      return Left(NetworkError());
+    } on DioException catch (e) {
+      return Left(e.response!.data);
     } on Exception {
       return Left(ServerError());
     }

@@ -139,6 +139,7 @@ class _HonneurDialogState extends ConsumerState<HonneurDialog> {
                 AppInput(
                   controller: nom,
                   keyboardType: TextInputType.text,
+                  enabled: !isLoading,
                   labelText: "Nom complet",
                   validator: (p0) {
                     if (p0 == null) {
@@ -151,11 +152,13 @@ class _HonneurDialogState extends ConsumerState<HonneurDialog> {
                 AppInput(
                   controller: fonction,
                   keyboardType: TextInputType.text,
+                  enabled: !isLoading,
                   labelText: "Fonction",
                 ),
                 AppInput(
                   controller: contact,
                   keyboardType: TextInputType.phone,
+                  enabled: !isLoading,
                   labelText: "Contact",
                   maxLength: 10,
                   validator: (p0) {
@@ -169,11 +172,13 @@ class _HonneurDialogState extends ConsumerState<HonneurDialog> {
                 AppInput(
                   controller: mandat,
                   keyboardType: TextInputType.number,
+                  enabled: !isLoading,
                   labelText: "Année de mandat",
                 ),
                 AppInput(
                   controller: address,
                   keyboardType: TextInputType.text,
+                  enabled: !isLoading,
                   labelText: "Adresse",
                 ),
                 Divider(color: AppColor.white),

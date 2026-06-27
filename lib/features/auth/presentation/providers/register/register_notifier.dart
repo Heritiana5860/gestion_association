@@ -12,17 +12,22 @@ class RegisterNotifier extends AsyncNotifier<void> {
     final usecase = ref.read(usecaseRegisterProvider);
 
     state = AsyncLoading();
-    final result = await usecase.newUser(model: model);
 
-    result.fold(
-      (failure) {
-        state = AsyncError(failure.message, StackTrace.current);
-      },
-      (info) {
-        ref.read(infoProvider.notifier).state = info;
-        state = const AsyncValue.data(null);
-      },
-    );
+    try {
+      final result = await usecase.newUser(model: model);
+
+      result.fold(
+        (failure) {
+          state = AsyncError(failure.message, StackTrace.current);
+        },
+        (info) {
+          ref.read(infoProvider.notifier).state = info;
+          state = const AsyncValue.data(null);
+        },
+      );
+    } catch (e, stack) {
+      state = AsyncError(e.toString(), stack);
+    }
   }
 }
 

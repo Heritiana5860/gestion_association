@@ -11,12 +11,33 @@ class CollegeNotifier extends AsyncNotifier {
     state = AsyncLoading();
 
     final usecase = ref.read(usecaseCollegeProvider);
-    final result = await usecase.callAddCollege(model: model);
 
-    result.fold(
-      (l) => state = AsyncError(l.message, StackTrace.current),
-      (r) => state = AsyncData(null),
-    );
+    try {
+      final result = await usecase.callAddCollege(model: model);
+
+      result.fold(
+        (l) => state = AsyncError(l.message, StackTrace.current),
+        (r) => state = AsyncData(null),
+      );
+    } catch (e, stack) {
+      state = AsyncError(e.toString(), stack);
+    }
+  }
+
+  Future<void> updateCollegeProvider({required int id, required CollegeModel model}) async {
+    state = AsyncLoading();
+
+    final usecase = ref.read(usecaseCollegeProvider);
+
+    try {
+      final result = await usecase.callCollegeUpdate(id: id, model: model);
+      result.fold(
+        (l) => state = AsyncError(l.message, StackTrace.current),
+        (r) => state = AsyncData(null),
+      );
+    } catch (e, stack) {
+      state = AsyncError(e.toString(), stack);
+    }
   }
 }
 

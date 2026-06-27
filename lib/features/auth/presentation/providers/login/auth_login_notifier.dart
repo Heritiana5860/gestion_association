@@ -13,17 +13,21 @@ class AuthLoginNotifier extends AsyncNotifier<void> {
 
     state = AsyncLoading();
 
-    final result = await usecase.call(model: model);
+    try {
+      final result = await usecase.call(model: model);
 
-    result.fold(
-      (failure) {
-        state = AsyncError(failure.message, StackTrace.current);
-      },
-      (info) {
-        ref.read(infoProvider.notifier).state = info;
-        state = AsyncValue.data(null);
-      },
-    );
+      result.fold(
+        (failure) {
+          state = AsyncError(failure.message, StackTrace.current);
+        },
+        (info) {
+          ref.read(infoProvider.notifier).state = info;
+          state = const AsyncValue.data(null);
+        },
+      );
+    } catch (e, stack) {
+      state = AsyncError(e.toString(), stack);
+    }
   }
 }
 

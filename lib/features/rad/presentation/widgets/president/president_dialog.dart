@@ -135,6 +135,7 @@ class _PresidentDialogState extends ConsumerState<PresidentDialog> {
                 AppInput(
                   controller: nom,
                   keyboardType: TextInputType.text,
+                  enabled: !isLoading,
                   labelText: "Nom complet",
                   validator: (p0) {
                     if (p0 == null) {
@@ -147,6 +148,7 @@ class _PresidentDialogState extends ConsumerState<PresidentDialog> {
                 AppInput(
                   controller: contact,
                   keyboardType: TextInputType.phone,
+                  enabled: !isLoading,
                   labelText: "Contact",
                   maxLength: 10,
                   validator: (p0) {
@@ -160,6 +162,7 @@ class _PresidentDialogState extends ConsumerState<PresidentDialog> {
                 AppInput(
                   controller: mandat,
                   keyboardType: TextInputType.number,
+                  enabled: !isLoading,
                   labelText: "Année de mandat",
                   validator: (p0) {
                     if (p0 == null) {
@@ -172,6 +175,7 @@ class _PresidentDialogState extends ConsumerState<PresidentDialog> {
                 AppInput(
                   controller: bio,
                   keyboardType: TextInputType.text,
+                  enabled: !isLoading,
                   labelText: "Bio ou slogan",
                 ),
                 Divider(color: AppColor.white),
