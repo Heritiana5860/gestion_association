@@ -40,11 +40,22 @@ class _HomePageState extends ConsumerState<HomePage> {
       orElse: () => [],
     );
 
-    if (selectedYear == null && years.isNotEmpty) {
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        ref.read(selectedYearProvider.notifier).changeYear(years.first);
+    final String? dropdownValue =
+        (selectedYear != null && years.contains(selectedYear))
+        ? selectedYear
+        : (years.isNotEmpty ? years.first : null);
+
+    ref.listen<AsyncValue>(obligationsProvider, (_, next) {
+      next.whenData((obligations) {
+        final years = obligations
+            .map((o) => o.year.toString())
+            .toSet()
+            .toList();
+        if (years.isNotEmpty && ref.read(selectedYearProvider) == null) {
+          ref.read(selectedYearProvider.notifier).changeYear(years.first);
+        }
       });
-    }
+    });
 
     return Scaffold(
       backgroundColor: AppColor.scaffoldBackground,
@@ -59,23 +70,26 @@ class _HomePageState extends ConsumerState<HomePage> {
 
               SizedBox(height: 16.h),
 
-              AppDropdown(
-                labelText: "Année",
-                value: selectedYear ?? "2026",
-                items: years
-                    .map(
-                      (year) => DropdownMenuItem<String>(
-                        value: year,
-                        child: AppText(label: year),
-                      ),
-                    )
-                    .toList(),
-                onChanged: (value) {
-                  ref
-                      .read(selectedYearProvider.notifier)
-                      .changeYear(value ?? "");
-                },
-              ),
+              if (dropdownValue == null || years.isEmpty)
+                const SizedBox.shrink()
+              else
+                AppDropdown(
+                  labelText: "Année",
+                  value: dropdownValue,
+                  items: years
+                      .map(
+                        (year) => DropdownMenuItem<String>(
+                          value: year,
+                          child: AppText(label: year),
+                        ),
+                      )
+                      .toList(),
+                  onChanged: (value) {
+                    ref
+                        .read(selectedYearProvider.notifier)
+                        .changeYear(value ?? "");
+                  },
+                ),
 
               SizedBox(height: 16.h),
 
@@ -240,12 +254,15 @@ class _HomePageState extends ConsumerState<HomePage> {
                           ],
                         );
                       },
-                      error: (e, _) => Center(
-                        child: AppText(
-                          label: "Erreur serveur.",
-                          color: AppColor.red,
-                        ),
-                      ),
+                      error: (e, _) {
+                        debugPrint("Err: $e");
+                        return Center(
+                          child: AppText(
+                            label: "Erreur serveur.",
+                            color: AppColor.red,
+                          ),
+                        );
+                      },
                       loading: () =>
                           const Center(child: CircularProgressIndicator()),
                     ),

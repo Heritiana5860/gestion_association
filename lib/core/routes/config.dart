@@ -21,6 +21,8 @@ import 'package:login_with_unite_test_and_clean_architecture/features/rad/presen
 import 'package:login_with_unite_test_and_clean_architecture/features/rad/presentation/pages/college_page.dart';
 import 'package:login_with_unite_test_and_clean_architecture/features/rad/presentation/pages/honneur_page.dart';
 import 'package:login_with_unite_test_and_clean_architecture/features/rad/presentation/pages/president_page.dart';
+import 'package:login_with_unite_test_and_clean_architecture/features/statut/presentation/pages/page_statut.dart';
+import 'package:login_with_unite_test_and_clean_architecture/features/statut/presentation/pages/reglement_page.dart';
 
 final routerProvider = Provider<GoRouter>((ref) {
   return GoRouter(
@@ -78,6 +80,18 @@ final routerProvider = Provider<GoRouter>((ref) {
         path: RouteKeys.collegeUrl,
         name: RouteKeys.collegeName,
         builder: (context, state) => const CollegePage(),
+      ),
+
+      GoRoute(
+        path: RouteKeys.statutUrl,
+        name: RouteKeys.statutName,
+        builder: (context, state) => const PageStatut(),
+      ),
+
+      GoRoute(
+        path: RouteKeys.regleUrl,
+        name: RouteKeys.regleName,
+        builder: (context, state) => const ReglementPage(),
       ),
 
       StatefulShellRoute.indexedStack(
@@ -218,6 +232,20 @@ final routerProvider = Provider<GoRouter>((ref) {
                                 label: "Jeune cadre",
                                 onTap: () =>
                                     context.pushNamed(RouteKeys.cadreName),
+                              ),
+
+                              _buildDrawerItem(
+                                icon: Icons.assignment,
+                                label: "Statut",
+                                onTap: () =>
+                                    context.pushNamed(RouteKeys.statutName),
+                              ),
+
+                              _buildDrawerItem(
+                                icon: Icons.rule,
+                                label: "Règlement intérieur",
+                                onTap: () =>
+                                    context.pushNamed(RouteKeys.regleName),
                               ),
 
                               _buildDrawerItem(
