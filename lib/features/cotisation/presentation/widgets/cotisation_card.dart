@@ -46,7 +46,7 @@ class CotisationCard extends StatelessWidget {
               value: "${item.amount} Ar",
               color: item.isPaid! ? AppColor.green : AppColor.red,
             ),
-            BuildItem(label: "Année: ", value: "${item.year}"),
+            BuildItem(label: "Année: ", value: item.year),
             BuildItem(
               label: "Dernier mise à jour: ",
               value: item.isUpdate.isNotEmpty

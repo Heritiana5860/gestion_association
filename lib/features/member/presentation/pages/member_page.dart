@@ -159,12 +159,15 @@ class _MemberPageState extends ConsumerState<MemberPage> {
                     ),
                   );
                 },
-                error: (_, _) => Center(
-                  child: AppText(
-                    label: "Erreur de connexion au serveur",
-                    color: AppColor.red,
-                  ),
-                ),
+                error: (e, _) {
+                  debugPrint("error: $e");
+                  return Center(
+                    child: AppText(
+                      label: "Erreur de connexion au serveur",
+                      color: AppColor.red,
+                    ),
+                  );
+                },
                 loading: () => const Center(child: CircularProgressIndicator()),
               ),
             ),

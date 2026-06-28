@@ -4,7 +4,7 @@ class CotisationEntity {
   final int? id;
   final double amount;
   final String isUpdate;
-  final int year;
+  final String year;
   final bool? isPaid;
   final MemberEntity member;
 

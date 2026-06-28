@@ -42,7 +42,7 @@ class _BuildMembersSectionState extends State<BuildMembersSection> {
       return member.fullName.toLowerCase().contains(searchText) ||
           member.numberPhone.contains(searchText) ||
           member.cde.toLowerCase().contains(searchText) ||
-          member.address.toLowerCase().contains(searchText);
+          member.address!.toLowerCase().contains(searchText);
     }).toList();
 
     return Column(

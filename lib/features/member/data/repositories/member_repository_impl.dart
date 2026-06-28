@@ -19,9 +19,13 @@ class MemberRepositoryImpl implements MemberRepository {
   @override
   Future<Either<Failure, List<MemberEntity>>> members({
     Map<String, dynamic>? params,
+    required String year,
   }) async {
     try {
-      final response = await datasource.fetchMembers(params: params);
+      final response = await datasource.fetchMembers(
+        params: params,
+        year: year,
+      );
       return Right(response);
     } on SocketException {
       return Left(NetworkError());
@@ -73,9 +77,12 @@ class MemberRepositoryImpl implements MemberRepository {
   }
 
   @override
-  Future<Either<Failure, MemberEntity>> detailMember({required int id}) async {
+  Future<Either<Failure, MemberEntity>> detailMember({
+    required int id,
+    required String year,
+  }) async {
     try {
-      final response = await datasource.detail(id: id);
+      final response = await datasource.detail(id: id, year: year);
       return Right(response);
     } on SocketException {
       return Left(NetworkError());

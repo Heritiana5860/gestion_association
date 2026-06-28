@@ -6,9 +6,9 @@ class MemberEntity {
   final String numberPhone;
   final bool isInside;
   final String cde;
-  final String address;
-  final String school;
-  final String level;
+  final String? address;
+  final String? school;
+  final String? level;
   final String statut;
   final String? createdAt;
   final List<CotisationInlineModel>? cotisations;
@@ -19,9 +19,9 @@ class MemberEntity {
     required this.numberPhone,
     required this.isInside,
     required this.cde,
-    required this.address,
-    required this.school,
-    required this.level,
+    this.address,
+    this.school,
+    this.level,
     required this.statut,
     this.createdAt,
     this.cotisations,

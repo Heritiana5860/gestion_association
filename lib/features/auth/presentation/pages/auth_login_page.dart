@@ -18,6 +18,8 @@ import 'package:login_with_unite_test_and_clean_architecture/features/auth/data/
 import 'package:login_with_unite_test_and_clean_architecture/features/auth/presentation/providers/login/auth_login_notifier.dart';
 import 'package:login_with_unite_test_and_clean_architecture/features/auth/presentation/widgets/logo.dart';
 import 'package:login_with_unite_test_and_clean_architecture/features/auth/presentation/widgets/sociaux_card.dart';
+import 'package:login_with_unite_test_and_clean_architecture/features/cotisation/presentation/providers/stats/cotisation_stats_notifier.dart';
+import 'package:login_with_unite_test_and_clean_architecture/features/member/presentation/providers/member_stats_notifier.dart';
 import 'package:login_with_unite_test_and_clean_architecture/features/obligation/presentation/providers/obligation_notifier.dart';
 
 class AuthLoginPage extends ConsumerStatefulWidget {
@@ -67,10 +69,20 @@ class _AuthLoginPageState extends ConsumerState<AuthLoginPage> {
 
     ref.listen<AsyncValue<void>>(login, (previous, next) {
       next.whenOrNull(
-        data: (d) {
+        data: (d) async {
           clear();
-          ref.read(obligationsProvider.notifier).refresh();
-          context.goNamed(RouteKeys.homeName);
+
+          if (context.mounted) {
+            context.goNamed(RouteKeys.homeName);
+          }
+
+          final obligationsNotifier = ref.read(obligationsProvider.notifier);
+          final memberStatsNotifier = ref.read(memberDataStats.notifier);
+          final cotisationStatsNotifier = ref.read(cotisationStats.notifier);
+
+          await obligationsNotifier.refresh();
+          await memberStatsNotifier.refresh();
+          await cotisationStatsNotifier.refresh();
         },
         error: (error, _) {
           ScaffoldMessenger.of(context).showSnackBar(

@@ -10,8 +10,9 @@ class MemberUsecase {
 
   Future<Either<Failure, List<MemberEntity>>> call({
     Map<String, dynamic>? params,
+    required String year,
   }) {
-    return repository.members(params: params);
+    return repository.members(params: params, year: year);
   }
 
   Future<Either<Failure, void>> callAddMember({required MemberModel model}) {
@@ -25,8 +26,11 @@ class MemberUsecase {
     return repository.updateMember(id: id, model: model);
   }
 
-  Future<Either<Failure, MemberEntity>> callDetailMember({required int id}) {
-    return repository.detailMember(id: id);
+  Future<Either<Failure, MemberEntity>> callDetailMember({
+    required int id,
+    required String year,
+  }) {
+    return repository.detailMember(id: id, year: year);
   }
 
   Future<Either<Failure, void>> callDeleteMember({required int id}) {

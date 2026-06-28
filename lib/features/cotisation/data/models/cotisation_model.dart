@@ -13,10 +13,10 @@ class CotisationModel extends CotisationEntity {
 
   factory CotisationModel.fromJson(Map<String, dynamic> json) {
     return CotisationModel(
-      amount:  double.parse(json['amount']),
+      amount: double.parse(json['amount']),
       isUpdate: json['is_updated'] as String,
       member: MemberModel.fromJson(json['member'] as Map<String, dynamic>),
-      year: json['year'] as int,
+      year: json['year'] as String,
       id: json['id'] as int?,
       isPaid: json['is_paid'] as bool,
     );

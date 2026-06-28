@@ -18,6 +18,8 @@ import 'package:login_with_unite_test_and_clean_architecture/features/auth/data/
 import 'package:login_with_unite_test_and_clean_architecture/features/auth/presentation/providers/register/register_notifier.dart';
 import 'package:login_with_unite_test_and_clean_architecture/features/auth/presentation/widgets/logo.dart';
 import 'package:login_with_unite_test_and_clean_architecture/features/auth/presentation/widgets/sociaux_card.dart';
+import 'package:login_with_unite_test_and_clean_architecture/features/cotisation/presentation/providers/stats/cotisation_stats_notifier.dart';
+import 'package:login_with_unite_test_and_clean_architecture/features/member/presentation/providers/member_stats_notifier.dart';
 import 'package:login_with_unite_test_and_clean_architecture/features/obligation/presentation/providers/obligation_notifier.dart';
 
 class AuthRegisterPage extends ConsumerStatefulWidget {
@@ -76,7 +78,11 @@ class _AuthRegisterPageState extends ConsumerState<AuthRegisterPage> {
       next.whenOrNull(
         data: (_) {
           clear();
+
           ref.read(obligationsProvider.notifier).refresh();
+          ref.read(memberDataStats.notifier).refresh();
+          ref.watch(cotisationStats.notifier).refresh();
+
           context.goNamed(RouteKeys.homeName);
         },
         error: (error, _) {

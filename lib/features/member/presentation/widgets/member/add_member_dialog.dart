@@ -100,9 +100,9 @@ class _AddMemberDialogState extends ConsumerState<AddMemberDialog> {
       fullNameController.text = m.fullName;
       numberPhoneController.text = m.numberPhone;
       cdeController.text = m.cde;
-      adresseController.text = m.address;
-      etablissementController.text = m.school;
-      selectedLevel = m.level;
+      adresseController.text = m.address ?? "";
+      etablissementController.text = m.school ?? "";
+      selectedLevel = m.level ?? "";
       selectedStatut = _capitalize(m.statut.toLowerCase());
       isInside = m.isInside;
     }
@@ -159,16 +159,16 @@ class _AddMemberDialogState extends ConsumerState<AddMemberDialog> {
           child: SingleChildScrollView(
             child: Column(
               mainAxisSize: MainAxisSize.min,
+              spacing: 12.h,
               children: [
                 // Header
                 DialogHeader(headerTitle: "Nouveau membre"),
-
-                SizedBox(height: 12.h),
 
                 // Body
                 AppInput(
                   labelText: "Nom complet",
                   controller: fullNameController,
+                  enabled: !isLoading,
                   validator: (value) {
                     if (value == null) {
                       return ValidatorText.obligatorField;
@@ -176,11 +176,12 @@ class _AddMemberDialogState extends ConsumerState<AddMemberDialog> {
                     return null;
                   },
                 ),
-                SizedBox(height: 6.h),
+
                 AppInput(
                   labelText: "Numero téléphone",
                   controller: numberPhoneController,
                   keyboardType: TextInputType.phone,
+                  enabled: !isLoading,
                   maxLength: 10,
                   validator: (value) {
                     if (value == null) {
@@ -189,10 +190,12 @@ class _AddMemberDialogState extends ConsumerState<AddMemberDialog> {
                     return null;
                   },
                 ),
-                SizedBox(height: 6.h),
+
                 AppInput(
                   labelText: "N° carte d'étudiant",
                   controller: cdeController,
+                  keyboardType: TextInputType.visiblePassword,
+                  enabled: !isLoading,
                   validator: (value) {
                     if (value == null) {
                       return ValidatorText.obligatorField;
@@ -200,10 +203,12 @@ class _AddMemberDialogState extends ConsumerState<AddMemberDialog> {
                     return null;
                   },
                 ),
-                SizedBox(height: 6.h),
+
                 AppInput(
                   labelText: "Adresse",
                   controller: adresseController,
+                  keyboardType: TextInputType.visiblePassword,
+                  enabled: !isLoading,
                   validator: (value) {
                     if (value == null) {
                       return ValidatorText.obligatorField;
@@ -211,10 +216,11 @@ class _AddMemberDialogState extends ConsumerState<AddMemberDialog> {
                     return null;
                   },
                 ),
-                SizedBox(height: 6.h),
+
                 AppInput(
                   labelText: "Etablissement",
                   controller: etablissementController,
+                  enabled: !isLoading,
                   validator: (value) {
                     if (value == null) {
                       return ValidatorText.obligatorField;
@@ -222,7 +228,7 @@ class _AddMemberDialogState extends ConsumerState<AddMemberDialog> {
                     return null;
                   },
                 ),
-                SizedBox(height: 6.h),
+
                 AppDropdown(
                   labelText: "Niveau",
                   value: selectedLevel,
@@ -240,7 +246,7 @@ class _AddMemberDialogState extends ConsumerState<AddMemberDialog> {
                     });
                   },
                 ),
-                SizedBox(height: 6.h),
+
                 AppDropdown(
                   labelText: "Statut",
                   value: selectedStatut,
@@ -258,7 +264,7 @@ class _AddMemberDialogState extends ConsumerState<AddMemberDialog> {
                     });
                   },
                 ),
-                SizedBox(height: 6.h),
+
                 AppCheckbox(
                   title: "Résidez-vous sur le campus universitaire ?",
                   value: isInside,
@@ -269,11 +275,7 @@ class _AddMemberDialogState extends ConsumerState<AddMemberDialog> {
                   },
                 ),
 
-                SizedBox(height: 6.h),
-
                 Divider(color: AppColor.white),
-
-                SizedBox(height: 6.h),
 
                 // Footer
                 SizedBox(

@@ -29,8 +29,9 @@ class BannerCard extends StatelessWidget {
           AppText(
             label: "AE7V",
             fontSize: 22.sp,
-            fontWeight: FontWeight.bold,
-            color: AppColor.blue,
+            fontWeight: FontWeight.w900,
+            color: AppColor.green,
+            letterSpacing: 5.5.sp,
           ),
           AppText(
             label: "Association des Etudiants \n7 Vinagny",

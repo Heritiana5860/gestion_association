@@ -12,11 +12,19 @@ class MemberDatasource {
 
   Future<List<MemberEntity>> fetchMembers({
     Map<String, dynamic>? params,
+    required String year,
   }) async {
     final baseUrl = dotenv.env['url'] ?? "";
+
+    final Map<String, dynamic> queryQueryParams = {
+      if (params != null) ...params,
+      'year': year,
+    };
+
     final response = await dio.get(
       "${baseUrl}member/",
-      queryParameters: params,
+      queryParameters: queryQueryParams,
+      options: Options(headers: await AutorisationToken.headers()),
     );
 
     final List<dynamic> data = response.data;
@@ -58,15 +66,14 @@ class MemberDatasource {
     }
   }
 
-  Future<MemberEntity> detail({required int id}) async {
+  Future<MemberEntity> detail({required int id, required String year}) async {
     final baseUrl = dotenv.env['url'] ?? "";
 
     final response = await dio.get(
       "${baseUrl}member/$id/",
+      queryParameters: {'year': year},
       options: Options(headers: await AutorisationToken.headers()),
     );
-
-    debugPrint("response: $response");
 
     final dynamic data = response.data;
 
