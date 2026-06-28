@@ -12,6 +12,7 @@ import 'package:login_with_unite_test_and_clean_architecture/features/cotisation
 import 'package:login_with_unite_test_and_clean_architecture/features/cotisation/presentation/widgets/cotisation_stats_card.dart';
 import 'package:login_with_unite_test_and_clean_architecture/features/home/presentation/widgets/banner.dart';
 import 'package:login_with_unite_test_and_clean_architecture/features/home/presentation/widgets/bar_row.dart';
+import 'package:login_with_unite_test_and_clean_architecture/features/home/presentation/widgets/entite/list_sous_entite.dart';
 import 'package:login_with_unite_test_and_clean_architecture/features/home/presentation/widgets/stat_card.dart';
 import 'package:login_with_unite_test_and_clean_architecture/features/member/presentation/providers/member_stats_notifier.dart';
 import 'package:login_with_unite_test_and_clean_architecture/features/obligation/presentation/providers/obligation_notifier.dart';
@@ -265,6 +266,10 @@ class _HomePageState extends ConsumerState<HomePage> {
                   ],
                 ),
               ),
+
+              SizedBox(height: 12.h),
+
+              ListSousEntite(),
             ],
           ),
         ),
