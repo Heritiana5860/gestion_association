@@ -270,8 +270,8 @@ final routerProvider = Provider<GoRouter>((ref) {
                     selectedIndex: navigationShell.currentIndex,
                     onTabChange: (index) => navigationShell.goBranch(index),
                     tabs: const [
-                      GButton(icon: Icons.home_outlined, text: 'Home'),
-                      GButton(icon: Icons.people_outline, text: 'Member'),
+                      GButton(icon: Icons.home_outlined, text: 'Accueil'),
+                      GButton(icon: Icons.people_outline, text: 'Membres'),
                       GButton(
                         icon: Icons.account_balance_wallet_outlined,
                         text: 'Cotisation',

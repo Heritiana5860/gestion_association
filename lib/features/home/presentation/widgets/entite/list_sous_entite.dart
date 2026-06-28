@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:login_with_unite_test_and_clean_architecture/core/contants/colors/app_color.dart';
 import 'package:login_with_unite_test_and_clean_architecture/core/contants/data/list_entite.dart';
-import 'package:login_with_unite_test_and_clean_architecture/core/widgets/app_text.dart';
 import 'package:login_with_unite_test_and_clean_architecture/features/home/presentation/widgets/entite/entite_card.dart';
+import 'package:login_with_unite_test_and_clean_architecture/features/home/presentation/widgets/header_card.dart';
 
 class ListSousEntite extends StatelessWidget {
   const ListSousEntite({super.key});
@@ -21,29 +21,11 @@ class ListSousEntite extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              AppText(
-                label: "Sous-entités de l'association",
-                fontSize: 13.sp,
-                fontWeight: FontWeight.w600,
-              ),
-              Container(
-                padding: EdgeInsets.all(6.r),
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  color: AppColor.green.withValues(alpha: 0.3),
-                  border: Border.all(color: AppColor.green, width: 2.w),
-                ),
-                child: AppText(
-                  label: "${listEntite.length}",
-                  fontWeight: FontWeight.bold,
-                  color: AppColor.green,
-                  fontSize: 14.sp,
-                ),
-              ),
-            ],
+          HeaderCard(
+            total: listEntite.length,
+            totalLabel: "entités",
+            label: "Sous-entités de l'association",
+            icon: Icons.groups,
           ),
           SizedBox(height: 12.h),
           ...List.generate(listEntite.length, (i) {
@@ -58,6 +40,7 @@ class ListSousEntite extends StatelessWidget {
                 initials: initials,
                 color: e['color'] as Color,
                 bg: e['bg'] as Color,
+                name: e['name'],
               ),
             );
           }),

@@ -303,9 +303,9 @@ class _AuthRegisterPageState extends ConsumerState<AuthRegisterPage> {
                           fontSize: SizeFont.medium,
                         ),
                         children: [
-                          const TextSpan(text: "Already have an account? "),
+                          const TextSpan(text: "Vous avez déjà un compte ? "),
                           TextSpan(
-                            text: "Sign in.",
+                            text: "Se connecter",
                             recognizer: _tapRecognizer,
                             style: TextStyle(
                               color: AppColor.blue,

@@ -234,9 +234,11 @@ class _AuthLoginPageState extends ConsumerState<AuthLoginPage> {
                           fontSize: SizeFont.medium,
                         ),
                         children: [
-                          const TextSpan(text: "Don't have an account yet? "),
+                          const TextSpan(
+                            text: "Vous n'avez pas encore de compte ? ",
+                          ),
                           TextSpan(
-                            text: "Sign up",
+                            text: "Créer un compte",
                             recognizer: _tapRecognizer,
                             style: TextStyle(
                               color: AppColor.blue,

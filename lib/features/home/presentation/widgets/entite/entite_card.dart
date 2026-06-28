@@ -5,6 +5,7 @@ import 'package:login_with_unite_test_and_clean_architecture/core/widgets/app_te
 
 class EntiteCard extends StatelessWidget {
   final String abbr;
+  final String name;
   final String initials;
   final Color color;
   final Color bg;
@@ -15,6 +16,7 @@ class EntiteCard extends StatelessWidget {
     required this.initials,
     required this.color,
     required this.bg,
+    required this.name,
   });
 
   @override
@@ -44,20 +46,24 @@ class EntiteCard extends StatelessWidget {
             ),
           ),
           SizedBox(width: 12.w),
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              AppText(
-                label: abbr,
-                fontSize: 13.sp,
-                fontWeight: FontWeight.w500,
-              ),
-              AppText(
-                label: "Sous-entité",
-                fontSize: 11.sp,
-                color: AppColor.textDescription,
-              ),
-            ],
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                AppText(
+                  label: abbr,
+                  fontSize: 13.sp,
+                  fontWeight: FontWeight.w500,
+                  letterSpacing: 1.3.sp,
+                ),
+                AppText(
+                  label: name,
+                  fontSize: 11.sp,
+                  color: AppColor.textDescription,
+                  maxLines: 2,
+                ),
+              ],
+            ),
           ),
         ],
       ),
