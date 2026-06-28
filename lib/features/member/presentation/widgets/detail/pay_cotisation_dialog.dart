@@ -4,6 +4,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:login_with_unite_test_and_clean_architecture/core/contants/colors/app_color.dart';
 import 'package:login_with_unite_test_and_clean_architecture/core/contants/constant_text/validator_text.dart';
+import 'package:login_with_unite_test_and_clean_architecture/core/providers/selected_year_notifier.dart';
 import 'package:login_with_unite_test_and_clean_architecture/core/widgets/app_button.dart';
 import 'package:login_with_unite_test_and_clean_architecture/core/widgets/app_input.dart';
 import 'package:login_with_unite_test_and_clean_architecture/core/widgets/app_text.dart';
@@ -46,14 +47,14 @@ class _PayCotisationDialogState extends ConsumerState<PayCotisationDialog> {
     ref.listen<AsyncValue<void>>(payCotisation, (previous, next) {
       next.whenOrNull(
         data: (data) {
-          context.pop();
-
           if (widget.id != null) {
             ref.invalidate(detailProvider(widget.id!));
           }
 
           ref.read(cotisationDataProvider.notifier).refresh();
           ref.read(cotisationStats.notifier).refresh();
+
+          context.pop();
         },
         error: (error, stackTrace) {
           ScaffoldMessenger.of(context).showSnackBar(
@@ -110,10 +111,12 @@ class _PayCotisationDialogState extends ConsumerState<PayCotisationDialog> {
   }
 
   void _saveBill() {
+    final selectedYear = ref.read(selectedYearProvider) ?? "2026";
     if (formKey.currentState!.validate()) {
       final model = AddCotisationModel(
         id: widget.id!,
         amount: double.parse(amount.text),
+        year: selectedYear,
       );
 
       ref.read(payCotisation.notifier).newCotisation(model: model);

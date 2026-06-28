@@ -13,8 +13,8 @@ class CollegeUsecase {
     return repository.addCollege(model: model);
   }
 
-  Future<Either<Failure, List<CollegeEntity>>> call() {
-    return repository.fetchCollege();
+  Future<Either<Failure, List<CollegeEntity>>> call({required String year,}) {
+    return repository.fetchCollege(year: year);
   }
 
   Future<Either<Failure, void>> callCollegeUpdate({

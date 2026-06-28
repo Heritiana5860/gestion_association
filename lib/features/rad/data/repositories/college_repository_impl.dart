@@ -32,9 +32,11 @@ class CollegeRepositoryImpl implements CollegeRepository {
   }
 
   @override
-  Future<Either<Failure, List<CollegeEntity>>> fetchCollege() async {
+  Future<Either<Failure, List<CollegeEntity>>> fetchCollege({
+    required String year,
+  }) async {
     try {
-      final res = await datasource.getCollegeData();
+      final res = await datasource.getCollegeData(year: year);
       return Right(res);
     } on SocketException {
       return Left(NetworkError());

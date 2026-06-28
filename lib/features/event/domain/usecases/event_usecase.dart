@@ -9,8 +9,8 @@ class EventUsecase {
 
   const EventUsecase({required this.repository});
 
-  Future<Either<Failure, List<EventEntity>>> call() {
-    return repository.fetchEvent();
+  Future<Either<Failure, List<EventEntity>>> call({required String year}) {
+    return repository.fetchEvent(year: year);
   }
 
   Future<Either<Failure, EventEntity>> callDetail({required int id}) {

@@ -41,6 +41,8 @@ class _CotisationPageState extends ConsumerState<CotisationPage> {
         child: Column(
           spacing: 16.h,
           children: [
+            SizedBox(height: 0.h),
+            
             AppInput(
               labelText: "Recherche...",
               controller: search,
@@ -92,7 +94,7 @@ class _CotisationPageState extends ConsumerState<CotisationPage> {
                 child: AppText(label: "Erreur: $error", color: AppColor.red),
               ),
               loading: () => Center(
-                child: CircularProgressIndicator(color: AppColor.blue),
+                child: Center(child: CircularProgressIndicator(color: AppColor.blue)),
               ),
             ),
           ],

@@ -4,7 +4,9 @@ import 'package:login_with_unite_test_and_clean_architecture/features/rad/data/m
 import 'package:login_with_unite_test_and_clean_architecture/features/rad/domain/entities/college_entity.dart';
 
 abstract class CollegeRepository {
-  Future<Either<Failure, List<CollegeEntity>>> fetchCollege();
+  Future<Either<Failure, List<CollegeEntity>>> fetchCollege({
+    required String year,
+  });
   Future<Either<Failure, void>> addCollege({required CollegeModel model});
   Future<Either<Failure, void>> updateCollege({
     required int id,

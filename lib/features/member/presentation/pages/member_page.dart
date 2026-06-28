@@ -71,7 +71,7 @@ class _MemberPageState extends ConsumerState<MemberPage> {
         padding: globalPadding(),
         child: ListAnimated(
           children: [
-            // Recherche + Entonnoir
+            SizedBox(height: 16.h),
             Row(
               children: [
                 Expanded(

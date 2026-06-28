@@ -15,9 +15,11 @@ class CotisationStatsRepositoryImpl implements CotisationStatsRepository {
   const CotisationStatsRepositoryImpl({required this.datasource});
 
   @override
-  Future<Either<Failure, CotisationStatsEntity>> cotisationStats() async {
+  Future<Either<Failure, CotisationStatsEntity>> cotisationStats({
+    required String year,
+  }) async {
     try {
-      final response = await datasource.fetchCotisationStats();
+      final response = await datasource.fetchCotisationStats(year: year);
       return Right(response);
     } on SocketException {
       return Left(NetworkError());

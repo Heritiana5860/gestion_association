@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:login_with_unite_test_and_clean_architecture/core/contants/colors/app_color.dart';
+import 'package:login_with_unite_test_and_clean_architecture/core/providers/selected_year_notifier.dart';
 import 'package:login_with_unite_test_and_clean_architecture/core/widgets/app_dropdown.dart';
 import 'package:login_with_unite_test_and_clean_architecture/core/widgets/app_text.dart';
 import 'package:login_with_unite_test_and_clean_architecture/core/widgets/global_padding.dart';
@@ -23,13 +24,13 @@ class HomePage extends ConsumerStatefulWidget {
 }
 
 class _HomePageState extends ConsumerState<HomePage> {
-  String? selectedYear;
-
   @override
   Widget build(BuildContext context) {
     final getYearProvider = ref.watch(obligationsProvider);
     final memberStats = ref.watch(memberDataStats);
     final cotisationStat = ref.watch(cotisationStats);
+
+    final selectedYear = ref.watch(selectedYearProvider);
 
     final List<String> years = getYearProvider.maybeWhen(
       data: (obligations) =>
@@ -38,7 +39,9 @@ class _HomePageState extends ConsumerState<HomePage> {
     );
 
     if (selectedYear == null && years.isNotEmpty) {
-      selectedYear = years.first;
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        ref.read(selectedYearProvider.notifier).changeYear(years.first);
+      });
     }
 
     return Scaffold(
@@ -66,9 +69,9 @@ class _HomePageState extends ConsumerState<HomePage> {
                     )
                     .toList(),
                 onChanged: (value) {
-                  setState(() {
-                    selectedYear = value;
-                  });
+                  ref
+                      .read(selectedYearProvider.notifier)
+                      .changeYear(value ?? "");
                 },
               ),
 

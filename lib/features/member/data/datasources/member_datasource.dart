@@ -66,6 +66,8 @@ class MemberDatasource {
       options: Options(headers: await AutorisationToken.headers()),
     );
 
+    debugPrint("response: $response");
+
     final dynamic data = response.data;
 
     return MemberModel.fromJson(data);

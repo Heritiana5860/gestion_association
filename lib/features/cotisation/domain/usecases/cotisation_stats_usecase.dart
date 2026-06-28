@@ -8,7 +8,7 @@ class CotisationStatsUsecase {
 
   const CotisationStatsUsecase({required this.repository});
 
-  Future<Either<Failure, CotisationStatsEntity>> call() {
-    return repository.cotisationStats();
+  Future<Either<Failure, CotisationStatsEntity>> call({required String year}) {
+    return repository.cotisationStats(year: year);
   }
 }

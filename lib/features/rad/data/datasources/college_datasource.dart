@@ -20,10 +20,17 @@ class CollegeDatasource {
     );
   }
 
-  Future<List<CollegeEntity>> getCollegeData() async {
+  Future<List<CollegeEntity>> getCollegeData({required String year}) async {
     final url = dotenv.env[UrlKey.urlKey] ?? '';
 
-    final response = await dio.get("${url}college/");
+    final Map<String, dynamic> queryParams = {};
+    queryParams['year'] = year;
+
+    final response = await dio.get(
+      "${url}college/",
+      queryParameters: queryParams,
+      options: Options(headers: await AutorisationToken.headers()),
+    );
 
     final List<dynamic> data = response.data;
 

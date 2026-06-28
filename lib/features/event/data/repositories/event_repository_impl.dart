@@ -1,5 +1,4 @@
 import 'dart:io';
-
 import 'package:dartz/dartz.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
@@ -18,9 +17,11 @@ class EventRepositoryImpl implements EventRepository {
   const EventRepositoryImpl({required this.datasource});
 
   @override
-  Future<Either<Failure, List<EventEntity>>> fetchEvent() async {
+  Future<Either<Failure, List<EventEntity>>> fetchEvent({
+    required String year,
+  }) async {
     try {
-      final response = await datasource.events();
+      final response = await datasource.events(year: year);
       return Right(response);
     } on SocketException {
       return Left(NetworkError());
