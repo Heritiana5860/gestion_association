@@ -126,9 +126,9 @@ final routerProvider = Provider<GoRouter>((ref) {
                                       ref.read(selectedYearProvider) ?? "2026",
                                   filters: ref.read(memberFilterProvider),
                                 );
-                                await Printing.layoutPdf(
-                                  onLayout: (_) => bytes,
-                                  name: "AE7V_Liste_Membres.pdf",
+                                await Printing.sharePdf(
+                                  bytes: bytes,
+                                  filename: "AE7V_Liste_Membres.pdf",
                                 );
                               },
                       );
