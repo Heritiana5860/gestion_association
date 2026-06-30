@@ -6,6 +6,8 @@ import 'package:google_nav_bar/google_nav_bar.dart';
 import 'package:login_with_unite_test_and_clean_architecture/core/contants/colors/app_color.dart';
 import 'package:login_with_unite_test_and_clean_architecture/core/contants/keys/route_keys.dart';
 import 'package:login_with_unite_test_and_clean_architecture/core/providers/flutter_secure_storage_provider.dart';
+import 'package:login_with_unite_test_and_clean_architecture/core/providers/selected_year_notifier.dart';
+import 'package:login_with_unite_test_and_clean_architecture/core/services/member_pdf_service.dart';
 import 'package:login_with_unite_test_and_clean_architecture/core/widgets/app_text.dart';
 import 'package:login_with_unite_test_and_clean_architecture/features/auth/presentation/pages/auth_login_page.dart';
 import 'package:login_with_unite_test_and_clean_architecture/features/auth/presentation/pages/auth_register_page.dart';
@@ -16,6 +18,8 @@ import 'package:login_with_unite_test_and_clean_architecture/features/event/pres
 import 'package:login_with_unite_test_and_clean_architecture/features/home/presentation/pages/home_page.dart';
 import 'package:login_with_unite_test_and_clean_architecture/features/member/presentation/pages/member_detail_page.dart';
 import 'package:login_with_unite_test_and_clean_architecture/features/member/presentation/pages/member_page.dart';
+import 'package:login_with_unite_test_and_clean_architecture/features/member/presentation/providers/member_notifier.dart';
+import 'package:login_with_unite_test_and_clean_architecture/features/member/presentation/providers/member_search_provider.dart';
 import 'package:login_with_unite_test_and_clean_architecture/features/obligation/presentation/pages/obligation_page.dart';
 import 'package:login_with_unite_test_and_clean_architecture/features/rad/presentation/pages/cadre_page.dart';
 import 'package:login_with_unite_test_and_clean_architecture/features/rad/presentation/pages/college_page.dart';
@@ -23,6 +27,7 @@ import 'package:login_with_unite_test_and_clean_architecture/features/rad/presen
 import 'package:login_with_unite_test_and_clean_architecture/features/rad/presentation/pages/president_page.dart';
 import 'package:login_with_unite_test_and_clean_architecture/features/statut/presentation/pages/page_statut.dart';
 import 'package:login_with_unite_test_and_clean_architecture/features/statut/presentation/pages/reglement_page.dart';
+import 'package:printing/printing.dart';
 
 final routerProvider = Provider<GoRouter>((ref) {
   return GoRouter(
@@ -104,6 +109,32 @@ final routerProvider = Provider<GoRouter>((ref) {
                 fontWeight: FontWeight.w600,
               ),
               centerTitle: true,
+              actions: [
+                if (navigationShell.currentIndex == 1)
+                  Consumer(
+                    builder: (context, ref, _) {
+                      final members = ref.watch(memberDataProvider).value ?? [];
+                      return IconButton(
+                        icon: const Icon(Icons.picture_as_pdf_outlined),
+                        tooltip: "Exporter en PDF",
+                        onPressed: members.isEmpty
+                            ? null
+                            : () async {
+                                final bytes = await MemberPdfService.generate(
+                                  members: members,
+                                  year:
+                                      ref.read(selectedYearProvider) ?? "2026",
+                                  filters: ref.read(memberFilterProvider),
+                                );
+                                await Printing.layoutPdf(
+                                  onLayout: (_) => bytes,
+                                  name: "AE7V_Liste_Membres.pdf",
+                                );
+                              },
+                      );
+                    },
+                  ),
+              ],
             ),
             drawer: Drawer(
               backgroundColor: AppColor.scaffoldBackground,
