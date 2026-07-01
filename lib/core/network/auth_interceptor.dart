@@ -1,12 +1,12 @@
 import 'package:dio/dio.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:login_with_unite_test_and_clean_architecture/core/contants/keys/token_key.dart';
-import 'package:login_with_unite_test_and_clean_architecture/core/contants/keys/url_key.dart';
 
 class AuthInterceptor extends Interceptor {
   final Dio dio;
   final FlutterSecureStorage storage;
+
+  late final Dio _refreshDio = Dio(dio.options);
 
   AuthInterceptor({required this.dio, required this.storage});
 
@@ -16,7 +16,7 @@ class AuthInterceptor extends Interceptor {
     RequestOptions options,
     RequestInterceptorHandler handler,
   ) async {
-    final token = await storage.read(key: TokenKey.token);
+    final token = await storage.read(key: TokenKey.tokenAccess);
     if (token != null) {
       options.headers['Authorization'] = 'Bearer $token';
     }
@@ -47,23 +47,17 @@ class AuthInterceptor extends Interceptor {
     final refreshToken = await storage.read(key: TokenKey.refresh);
     if (refreshToken == null) throw Exception('No refresh token');
 
-    final url = dotenv.env[UrlKey.urlKey];
-    // Utiliser un Dio séparé pour éviter une boucle infinie
-    final refreshDio = Dio();
-    final response = await refreshDio.post(
-      '${url}token/refresh/',
+    final response = await _refreshDio.post(
+      'token/refresh/',
       data: {'refresh': refreshToken},
     );
 
-    final newAccessToken = response.data[TokenKey.token];
-    await storage.write(key: TokenKey.token, value: newAccessToken);
+    final newAccessToken = response.data[TokenKey.tokenAccess];
+    await storage.write(key: TokenKey.tokenAccess, value: newAccessToken);
     return newAccessToken;
   }
 
   Future<void> _logout() async {
     await storage.deleteAll();
-    // if (context.mounted) {
-    //   context.goNamed(RouteKeys.loginName);
-    // }
   }
 }

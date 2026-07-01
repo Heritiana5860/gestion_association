@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 
 class AppText extends StatelessWidget {
   const AppText({
@@ -34,7 +33,8 @@ class AppText extends StatelessWidget {
       maxLines: maxLines,
       overflow: overflow,
       textAlign: textAlign,
-      style: GoogleFonts.dmSans(
+      style: TextStyle(
+        fontFamily: 'Inter',
         color: color,
         fontSize: fontSize,
         fontWeight: fontWeight,

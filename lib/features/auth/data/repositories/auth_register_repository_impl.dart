@@ -2,9 +2,6 @@ import 'dart:io';
 import 'package:dartz/dartz.dart';
 import 'package:dio/dio.dart';
 import 'package:login_with_unite_test_and_clean_architecture/core/errors/failure.dart';
-import 'package:login_with_unite_test_and_clean_architecture/core/errors/network_error.dart';
-import 'package:login_with_unite_test_and_clean_architecture/core/errors/server_error.dart';
-import 'package:login_with_unite_test_and_clean_architecture/core/errors/validation_error.dart';
 import 'package:login_with_unite_test_and_clean_architecture/features/auth/data/datasources/auth_register_datasource.dart';
 import 'package:login_with_unite_test_and_clean_architecture/features/auth/data/models/auth_register_model.dart';
 import 'package:login_with_unite_test_and_clean_architecture/features/auth/domain/entities/info_entity.dart';
@@ -23,15 +20,15 @@ class AuthRegisterRepositoryImpl implements AuthRegisterRepository {
       final response = await datasource.register(model: model);
       return Right(response);
     } on SocketException {
-      return Left(NetworkError());
+      return Left(NetworkFailure());
     } on DioException catch (e) {
       if (e.response?.statusCode == 400) {
-        return Left(ValidationError(e.response?.data));
+        return Left(ServerFailure(message: ''));
       }
 
-      return Left(const ServerError());
+      return Left(const ServerFailure(message: ''));
     } on Exception {
-      return Left(const ServerError());
+      return Left(const ServerFailure(message: ''));
     }
   }
 }

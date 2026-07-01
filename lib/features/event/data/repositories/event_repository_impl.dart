@@ -1,11 +1,7 @@
-import 'dart:io';
 import 'package:dartz/dartz.dart';
 import 'package:dio/dio.dart';
-import 'package:flutter/foundation.dart';
+import 'package:login_with_unite_test_and_clean_architecture/core/errors/dio_exception_mapper.dart';
 import 'package:login_with_unite_test_and_clean_architecture/core/errors/failure.dart';
-import 'package:login_with_unite_test_and_clean_architecture/core/errors/network_error.dart';
-import 'package:login_with_unite_test_and_clean_architecture/core/errors/server_error.dart';
-import 'package:login_with_unite_test_and_clean_architecture/core/errors/validation_error.dart';
 import 'package:login_with_unite_test_and_clean_architecture/features/event/data/datasources/event_datasource.dart';
 import 'package:login_with_unite_test_and_clean_architecture/features/event/data/models/event_model.dart';
 import 'package:login_with_unite_test_and_clean_architecture/features/event/domain/entities/event_entity.dart';
@@ -23,15 +19,10 @@ class EventRepositoryImpl implements EventRepository {
     try {
       final response = await datasource.events(year: year);
       return Right(response);
-    } on SocketException {
-      return Left(NetworkError());
     } on DioException catch (e) {
-      if (e.response?.statusCode == 400) {
-        return Left(ValidationError(e.response?.data));
-      }
-      return Left(ServerError());
-    } on Exception {
-      return Left(ServerError());
+      return Left(mapDioExceptionToFailure(e));
+    } catch (e) {
+      return Left(ServerFailure(message: e.toString()));
     }
   }
 
@@ -42,15 +33,10 @@ class EventRepositoryImpl implements EventRepository {
     try {
       final response = await datasource.eventDetail(id: id);
       return Right(response);
-    } on SocketException {
-      return Left(NetworkError());
     } on DioException catch (e) {
-      if (e.response?.statusCode == 400) {
-        return Left(ValidationError(e.response?.data));
-      }
-      return Left(ServerError());
-    } on Exception {
-      return Left(ServerError());
+      return Left(mapDioExceptionToFailure(e));
+    } catch (e) {
+      return Left(ServerFailure(message: ""));
     }
   }
 
@@ -59,16 +45,10 @@ class EventRepositoryImpl implements EventRepository {
     try {
       final response = await datasource.submit(model: model);
       return Right(response);
-    } on SocketException {
-      return Left(NetworkError());
     } on DioException catch (e) {
-      if (e.response?.statusCode == 400) {
-        debugPrint("Erreur: ${e.response?.data}");
-        return Left(ValidationError("Error"));
-      }
-      return Left(ServerError());
-    } on Exception {
-      return Left(ServerError());
+      return Left(mapDioExceptionToFailure(e));
+    } catch (e) {
+      return Left(ServerFailure(message: e.toString()));
     }
   }
 
@@ -87,22 +67,17 @@ class EventRepositoryImpl implements EventRepository {
         return Right(response['status'] as String);
       }
       if (response.containsKey('Closed')) {
-        return Left(ValidationError(response['Closed']));
+        return Left(ServerFailure(message: response['Closed']));
       }
       if (response.containsKey('error')) {
-        return Left(ValidationError(response['error']));
+        return Left(ServerFailure(message: response['error']));
       }
 
       return const Right("Membre ajouté");
-    } on SocketException {
-      return Left(NetworkError());
     } on DioException catch (e) {
-      if (e.response?.statusCode == 400) {
-        return Left(ValidationError(e.response?.data));
-      }
-      return Left(ServerError());
-    } on Exception {
-      return Left(ServerError());
+      return Left(mapDioExceptionToFailure(e));
+    } catch (e) {
+      return Left(ServerFailure(message: e.toString()));
     }
   }
 }

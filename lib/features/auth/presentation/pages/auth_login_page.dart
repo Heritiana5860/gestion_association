@@ -8,13 +8,15 @@ import 'package:login_with_unite_test_and_clean_architecture/core/contants/color
 import 'package:login_with_unite_test_and_clean_architecture/core/contants/keys/route_keys.dart';
 import 'package:login_with_unite_test_and_clean_architecture/core/contants/sizes/size_font.dart';
 import 'package:login_with_unite_test_and_clean_architecture/core/contants/sizes/size_height.dart';
+import 'package:login_with_unite_test_and_clean_architecture/core/errors/failure.dart';
 import 'package:login_with_unite_test_and_clean_architecture/core/widgets/app_button.dart';
 import 'package:login_with_unite_test_and_clean_architecture/core/widgets/app_input.dart';
 import 'package:login_with_unite_test_and_clean_architecture/core/widgets/app_text.dart';
 import 'package:login_with_unite_test_and_clean_architecture/core/widgets/auth/header_text.dart';
 import 'package:login_with_unite_test_and_clean_architecture/core/widgets/global_padding.dart';
 import 'package:login_with_unite_test_and_clean_architecture/core/widgets/list_animated.dart';
-import 'package:login_with_unite_test_and_clean_architecture/features/auth/data/models/auth_model.dart';
+import 'package:login_with_unite_test_and_clean_architecture/features/auth/domain/entities/auth_session_entity.dart';
+import 'package:login_with_unite_test_and_clean_architecture/features/auth/domain/entities/login_params.dart';
 import 'package:login_with_unite_test_and_clean_architecture/features/auth/presentation/providers/login/auth_login_notifier.dart';
 import 'package:login_with_unite_test_and_clean_architecture/features/auth/presentation/widgets/logo.dart';
 import 'package:login_with_unite_test_and_clean_architecture/features/auth/presentation/widgets/sociaux_card.dart';
@@ -34,13 +36,50 @@ class _AuthLoginPageState extends ConsumerState<AuthLoginPage> {
   late TapGestureRecognizer _tapRecognizer;
   bool isVisibled = true;
 
-  final username = TextEditingController();
-  final password = TextEditingController();
+  late final TextEditingController username;
+  late final TextEditingController password;
+
+  late final ProviderSubscription<AsyncValue<AuthSessionEntity?>>
+  _loginSubscription;
 
   @override
   void initState() {
     super.initState();
+
+    username = TextEditingController();
+    password = TextEditingController();
+
     _tapRecognizer = TapGestureRecognizer()..onTap = _handleTap;
+
+    _loginSubscription = ref.listenManual(loginProvider, (previous, next) {
+      next.whenOrNull(
+        data: (data) async {
+          if (!context.mounted) return;
+          context.goNamed(RouteKeys.homeName);
+
+          final obligationsNotifier = ref.read(obligationsProvider.notifier);
+          final memberStatsNotifier = ref.read(memberDataStats.notifier);
+          final cotisationStatsNotifier = ref.read(cotisationStats.notifier);
+
+          await Future.wait([
+            obligationsNotifier.refresh(),
+            memberStatsNotifier.refresh(),
+            cotisationStatsNotifier.refresh(),
+          ]);
+        },
+        error: (error, _) {
+          final message = error is Failure
+              ? error.message
+              : "Une erreur est survenue.";
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              backgroundColor: AppColor.red,
+              content: AppText(label: message, color: AppColor.white),
+            ),
+          );
+        },
+      );
+    });
   }
 
   void _handleTap() {
@@ -48,13 +87,13 @@ class _AuthLoginPageState extends ConsumerState<AuthLoginPage> {
   }
 
   void _submit() {
-    final model = AuthModel(
+    if (!formKey.currentState!.validate()) return;
+
+    final params = LoginParams(
       username: username.text.trim(),
       password: password.text,
     );
-    if (formKey.currentState!.validate()) {
-      ref.read(login.notifier).signIn(model: model);
-    }
+    ref.read(loginProvider.notifier).signIn(entity: params);
   }
 
   void clear() {
@@ -64,36 +103,8 @@ class _AuthLoginPageState extends ConsumerState<AuthLoginPage> {
 
   @override
   Widget build(BuildContext context) {
-    final auth = ref.watch(login);
+    final auth = ref.watch(loginProvider);
     final isLoading = auth is AsyncLoading;
-
-    ref.listen<AsyncValue<void>>(login, (previous, next) {
-      next.whenOrNull(
-        data: (d) async {
-          clear();
-
-          if (context.mounted) {
-            context.goNamed(RouteKeys.homeName);
-          }
-
-          final obligationsNotifier = ref.read(obligationsProvider.notifier);
-          final memberStatsNotifier = ref.read(memberDataStats.notifier);
-          final cotisationStatsNotifier = ref.read(cotisationStats.notifier);
-
-          await obligationsNotifier.refresh();
-          await memberStatsNotifier.refresh();
-          await cotisationStatsNotifier.refresh();
-        },
-        error: (error, _) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              backgroundColor: AppColor.red,
-              content: AppText(label: "$error", color: AppColor.white),
-            ),
-          );
-        },
-      );
-    });
 
     return Scaffold(
       backgroundColor: AppColor.scaffoldBackground,
@@ -118,12 +129,12 @@ class _AuthLoginPageState extends ConsumerState<AuthLoginPage> {
                       labelText: "Nom d'utilisateur",
                       prefixIcon: Icons.person,
                       keyboardType: TextInputType.text,
-                      validator: (valeur) {
-                        if (valeur == null) {
+                      validator: (value) {
+                        if (value == null || value.trim().isEmpty) {
                           return "Ce champ est obligatoir.";
                         }
 
-                        if (valeur.length < 2) {
+                        if (value.length < 2) {
                           return "Nom d'utilisateur doit être plus de 2 caractères.";
                         }
 
@@ -132,7 +143,7 @@ class _AuthLoginPageState extends ConsumerState<AuthLoginPage> {
                           caseSensitive: true,
                         );
 
-                        if (specialPattern.hasMatch(valeur)) {
+                        if (specialPattern.hasMatch(value)) {
                           return "Le nom d'utilisateur ne peut pas contenir de caractère speciaux.";
                         }
 
@@ -158,7 +169,7 @@ class _AuthLoginPageState extends ConsumerState<AuthLoginPage> {
                         ),
                       ),
                       validator: (value) {
-                        if (value == null) {
+                        if (value == null || value.trim().isEmpty) {
                           return "Ce champ est obligatoir.";
                         }
 
@@ -204,21 +215,21 @@ class _AuthLoginPageState extends ConsumerState<AuthLoginPage> {
                           Expanded(
                             child: SociauxCard(
                               imagePath: "assets/sociaux/facebook.svg",
-                              onTap: () {},
+                              onTap: _aVenir,
                             ),
                           ),
                           SizedBox(width: 10.w),
                           Expanded(
                             child: SociauxCard(
                               imagePath: "assets/sociaux/gmail.svg",
-                              onTap: () {},
+                              onTap: _aVenir,
                             ),
                           ),
                           SizedBox(width: 10.w),
                           Expanded(
                             child: SociauxCard(
                               imagePath: "assets/sociaux/twitter.svg",
-                              onTap: () {},
+                              onTap: _aVenir,
                             ),
                           ),
                         ],
@@ -229,7 +240,7 @@ class _AuthLoginPageState extends ConsumerState<AuthLoginPage> {
 
                     Text.rich(
                       TextSpan(
-                        style: GoogleFonts.dmSans(
+                        style: GoogleFonts.inter(
                           color: AppColor.textDescription,
                           fontSize: SizeFont.medium,
                         ),
@@ -260,9 +271,22 @@ class _AuthLoginPageState extends ConsumerState<AuthLoginPage> {
 
   @override
   void dispose() {
+    _loginSubscription.close();
     _tapRecognizer.dispose();
     username.dispose();
     password.dispose();
     super.dispose();
+  }
+
+  void _aVenir() {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        backgroundColor: AppColor.blue,
+        content: AppText(
+          label: "Fonctionnalité reste à venir!",
+          color: AppColor.white,
+        ),
+      ),
+    );
   }
 }

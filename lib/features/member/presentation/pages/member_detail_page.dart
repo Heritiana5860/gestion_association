@@ -70,6 +70,7 @@ class _MemberDetailPageState extends ConsumerState<MemberDetailPage> {
                 onSelected: (value) {
                   if (value == 'delete') {
                     ref.read(deleteMemberProvider(widget.memberId));
+                    ref.invalidate(deleteMemberProvider);
                     ref.read(memberDataProvider.notifier).refresh();
                     ref.read(memberDataStats.notifier).refresh();
                     ref.read(cotisationDataProvider.notifier).refresh();

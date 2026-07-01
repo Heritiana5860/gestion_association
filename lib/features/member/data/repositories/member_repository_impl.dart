@@ -1,11 +1,7 @@
-import 'dart:io';
-
 import 'package:dartz/dartz.dart';
 import 'package:dio/dio.dart';
+import 'package:login_with_unite_test_and_clean_architecture/core/errors/dio_exception_mapper.dart';
 import 'package:login_with_unite_test_and_clean_architecture/core/errors/failure.dart';
-import 'package:login_with_unite_test_and_clean_architecture/core/errors/network_error.dart';
-import 'package:login_with_unite_test_and_clean_architecture/core/errors/server_error.dart';
-import 'package:login_with_unite_test_and_clean_architecture/core/errors/validation_error.dart';
 import 'package:login_with_unite_test_and_clean_architecture/features/member/data/datasources/member_datasource.dart';
 import 'package:login_with_unite_test_and_clean_architecture/features/member/data/models/member_model.dart';
 import 'package:login_with_unite_test_and_clean_architecture/features/member/domain/entities/member_entity.dart';
@@ -27,15 +23,10 @@ class MemberRepositoryImpl implements MemberRepository {
         year: year,
       );
       return Right(response);
-    } on SocketException {
-      return Left(NetworkError());
     } on DioException catch (e) {
-      if (e.response?.statusCode == 400) {
-        return Left(ValidationError(e.response?.data));
-      }
-      return Left(ServerError());
-    } on Exception {
-      return Left(ServerError());
+      return Left(mapDioExceptionToFailure(e));
+    } catch (e) {
+      return Left(ServerFailure(message: e.toString()));
     }
   }
 
@@ -44,15 +35,10 @@ class MemberRepositoryImpl implements MemberRepository {
     try {
       final response = await datasource.add(model: model);
       return Right(response);
-    } on SocketException {
-      return Left(NetworkError());
     } on DioException catch (e) {
-      if (e.response?.statusCode == 400) {
-        return Left(ValidationError(e.response?.data));
-      }
-      return Left(ServerError());
-    } on Exception {
-      return Left(ServerError());
+      return Left(mapDioExceptionToFailure(e));
+    } catch (e) {
+      return Left(ServerFailure(message: e.toString()));
     }
   }
 
@@ -64,15 +50,10 @@ class MemberRepositoryImpl implements MemberRepository {
     try {
       final response = await datasource.update(id: id, model: model);
       return Right(response);
-    } on SocketException {
-      return Left(NetworkError());
     } on DioException catch (e) {
-      if (e.response?.statusCode == 400) {
-        return Left(ValidationError(e.response?.data));
-      }
-      return Left(ServerError());
-    } on Exception {
-      return Left(ServerError());
+      return Left(mapDioExceptionToFailure(e));
+    } catch (e) {
+      return Left(ServerFailure(message: e.toString()));
     }
   }
 
@@ -84,15 +65,10 @@ class MemberRepositoryImpl implements MemberRepository {
     try {
       final response = await datasource.detail(id: id, year: year);
       return Right(response);
-    } on SocketException {
-      return Left(NetworkError());
     } on DioException catch (e) {
-      if (e.response?.statusCode == 400) {
-        return Left(e.response?.data);
-      }
-      return Left(ServerError());
-    } on Exception {
-      return Left(ServerError());
+      return Left(mapDioExceptionToFailure(e));
+    } catch (e) {
+      return Left(ServerFailure(message: e.toString()));
     }
   }
 
@@ -101,15 +77,10 @@ class MemberRepositoryImpl implements MemberRepository {
     try {
       final response = await datasource.delete(id: id);
       return Right(response);
-    } on SocketException {
-      return Left(NetworkError());
     } on DioException catch (e) {
-      if (e.response?.statusCode == 400) {
-        return Left(ValidationError(e.response?.data));
-      }
-      return Left(ServerError());
-    } on Exception {
-      return Left(ServerError());
+      return Left(mapDioExceptionToFailure(e));
+    } catch (e) {
+      return Left(ServerFailure(message: e.toString()));
     }
   }
 }

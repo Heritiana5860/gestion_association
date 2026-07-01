@@ -11,7 +11,7 @@ import 'package:login_with_unite_test_and_clean_architecture/core/services/membe
 import 'package:login_with_unite_test_and_clean_architecture/core/widgets/app_text.dart';
 import 'package:login_with_unite_test_and_clean_architecture/features/auth/presentation/pages/auth_login_page.dart';
 import 'package:login_with_unite_test_and_clean_architecture/features/auth/presentation/pages/auth_register_page.dart';
-import 'package:login_with_unite_test_and_clean_architecture/features/auth/presentation/providers/info_provider.dart';
+import 'package:login_with_unite_test_and_clean_architecture/features/auth/presentation/providers/login/auth_login_notifier.dart';
 import 'package:login_with_unite_test_and_clean_architecture/features/cotisation/presentation/pages/cotisation_page.dart';
 import 'package:login_with_unite_test_and_clean_architecture/features/event/presentation/pages/event_detail_page.dart';
 import 'package:login_with_unite_test_and_clean_architecture/features/event/presentation/pages/event_page.dart';
@@ -144,16 +144,26 @@ final routerProvider = Provider<GoRouter>((ref) {
                     // Header
                     Consumer(
                       builder: (context, ref, child) {
-                        final info = ref.watch(infoProvider);
+                        final infos = ref.watch(loginProvider);
 
-                        final initialName = info.fullName.isNotEmpty
-                            ? info.fullName
-                                  .trim()
-                                  .split(" ")
-                                  .take(2)
-                                  .map((e) => e[0])
-                                  .join()
-                            : "NA";
+                        final initialName = infos.maybeWhen(
+                          data: (info) => info?.firstName
+                              .trim()
+                              .split(" ")
+                              .take(2)
+                              .map((e) => e[0])
+                              .join(),
+                          orElse: () => null,
+                        );
+
+                        // final initialName = info.fullName.isNotEmpty
+                        //     ? info.fullName
+                        //           .trim()
+                        //           .split(" ")
+                        //           .take(2)
+                        //           .map((e) => e[0])
+                        //           .join()
+                        //     : "NA";
 
                         return Container(
                           width: double.infinity,
@@ -178,7 +188,7 @@ final routerProvider = Provider<GoRouter>((ref) {
                                 radius: 34.r,
                                 backgroundColor: AppColor.white,
                                 child: AppText(
-                                  label: initialName.toUpperCase(),
+                                  label: initialName!.toUpperCase(),
                                   color: AppColor.blue,
                                   fontWeight: FontWeight.bold,
                                   fontSize: 18.sp,
@@ -188,14 +198,13 @@ final routerProvider = Provider<GoRouter>((ref) {
                               SizedBox(height: 12.h),
 
                               AppText(
-                                label: info.fullName,
+                                label: infos.value!.firstName,
                                 color: AppColor.white,
                                 fontSize: 16.sp,
                                 fontWeight: FontWeight.w700,
                               ),
 
-                              SizedBox(height: 4.h),
-
+                              // SizedBox(height: 4.h),
                               AppText(
                                 label: "Bienvenue 👋",
                                 color: AppColor.white.withValues(alpha: 0.8),

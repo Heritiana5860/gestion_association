@@ -298,7 +298,7 @@ class _AuthRegisterPageState extends ConsumerState<AuthRegisterPage> {
 
                     Text.rich(
                       TextSpan(
-                        style: GoogleFonts.dmSans(
+                        style: GoogleFonts.inter(
                           color: AppColor.textDescription,
                           fontSize: SizeFont.medium,
                         ),

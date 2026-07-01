@@ -1,10 +1,7 @@
-import 'dart:io';
 import 'package:dartz/dartz.dart';
 import 'package:dio/dio.dart';
+import 'package:login_with_unite_test_and_clean_architecture/core/errors/dio_exception_mapper.dart';
 import 'package:login_with_unite_test_and_clean_architecture/core/errors/failure.dart';
-import 'package:login_with_unite_test_and_clean_architecture/core/errors/network_error.dart';
-import 'package:login_with_unite_test_and_clean_architecture/core/errors/server_error.dart';
-import 'package:login_with_unite_test_and_clean_architecture/core/errors/validation_error.dart';
 import 'package:login_with_unite_test_and_clean_architecture/features/cotisation/data/datasources/cotisation_datasource.dart';
 import 'package:login_with_unite_test_and_clean_architecture/features/cotisation/data/models/add_cotisation_model.dart';
 import 'package:login_with_unite_test_and_clean_architecture/features/cotisation/domain/entities/cotisation_entity.dart';
@@ -23,15 +20,10 @@ class CotisationRepositoryImpl implements CotisationRepository {
     try {
       final response = await datasource.cotisation(search: search, year: year);
       return Right(response);
-    } on SocketException {
-      return Left(NetworkError());
     } on DioException catch (e) {
-      if (e.response?.statusCode == 400) {
-        return Left(ValidationError(e.response?.data));
-      }
-      return Left(ServerError());
-    } on Exception {
-      return Left(ServerError());
+      return Left(mapDioExceptionToFailure(e));
+    } catch (e) {
+      return Left(ServerFailure(message: e.toString()));
     }
   }
 
@@ -42,15 +34,10 @@ class CotisationRepositoryImpl implements CotisationRepository {
     try {
       final response = await datasource.addCotisation(model: model);
       return Right(response);
-    } on SocketException {
-      return Left(NetworkError());
     } on DioException catch (e) {
-      if (e.response?.statusCode == 400) {
-        return Left(ValidationError(e.response?.data));
-      }
-      return Left(ServerError());
-    } on Exception {
-      return Left(ServerError());
+      return Left(mapDioExceptionToFailure(e));
+    } catch (e) {
+      return Left(ServerFailure(message: e.toString()));
     }
   }
 }
