@@ -1,35 +1,30 @@
 import 'dart:async';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:login_with_unite_test_and_clean_architecture/features/auth/data/models/auth_register_model.dart';
+import 'package:login_with_unite_test_and_clean_architecture/features/auth/domain/entities/auth_register_entity.dart';
+import 'package:login_with_unite_test_and_clean_architecture/features/auth/domain/entities/auth_session_entity.dart';
 import 'package:login_with_unite_test_and_clean_architecture/features/auth/presentation/providers/register/register_provider.dart';
 
-class RegisterNotifier extends AsyncNotifier<void> {
+class RegisterNotifier extends AsyncNotifier<AuthSessionEntity?> {
   @override
-  FutureOr<void> build() {}
+  FutureOr<AuthSessionEntity?> build() {
+    return null;
+  }
 
-  Future<void> createNewUser({required AuthRegisterModel model}) async {
-    final usecase = ref.read(usecaseRegisterProvider);
-
+  Future<void> createNewUser({required AuthRegisterEntity entity}) async {
     state = AsyncLoading();
 
-    try {
-      final result = await usecase.newUser(model: model);
+    final usecase = ref.read(usecaseRegisterProvider);
 
-      result.fold(
-        (failure) {
-          state = AsyncError(failure.message, StackTrace.current);
-        },
-        (info) {
-          // ref.read(infoProvider.notifier).state = info;
-          state = const AsyncValue.data(null);
-        },
-      );
-    } catch (e, stack) {
-      state = AsyncError(e.toString(), stack);
-    }
+    final result = await usecase.call(entity);
+
+    result.fold(
+      (failure) => state = AsyncError(failure, StackTrace.current),
+      (info) => state = AsyncValue.data(info),
+    );
   }
 }
 
-final newUserProvider = AsyncNotifierProvider<RegisterNotifier, void>(
-  RegisterNotifier.new,
-);
+final newUserProvider =
+    AsyncNotifierProvider<RegisterNotifier, AuthSessionEntity?>(
+      RegisterNotifier.new,
+    );

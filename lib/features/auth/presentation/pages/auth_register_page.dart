@@ -3,18 +3,19 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:login_with_unite_test_and_clean_architecture/core/contants/colors/app_color.dart';
 import 'package:login_with_unite_test_and_clean_architecture/core/contants/keys/route_keys.dart';
 import 'package:login_with_unite_test_and_clean_architecture/core/contants/sizes/size_font.dart';
 import 'package:login_with_unite_test_and_clean_architecture/core/contants/sizes/size_height.dart';
+import 'package:login_with_unite_test_and_clean_architecture/core/errors/failure.dart';
 import 'package:login_with_unite_test_and_clean_architecture/core/widgets/app_button.dart';
 import 'package:login_with_unite_test_and_clean_architecture/core/widgets/app_input.dart';
 import 'package:login_with_unite_test_and_clean_architecture/core/widgets/app_text.dart';
 import 'package:login_with_unite_test_and_clean_architecture/core/widgets/auth/header_text.dart';
 import 'package:login_with_unite_test_and_clean_architecture/core/widgets/global_padding.dart';
 import 'package:login_with_unite_test_and_clean_architecture/core/widgets/list_animated.dart';
-import 'package:login_with_unite_test_and_clean_architecture/features/auth/data/models/auth_register_model.dart';
+import 'package:login_with_unite_test_and_clean_architecture/features/auth/domain/entities/auth_register_entity.dart';
+import 'package:login_with_unite_test_and_clean_architecture/features/auth/domain/entities/auth_session_entity.dart';
 import 'package:login_with_unite_test_and_clean_architecture/features/auth/presentation/providers/register/register_notifier.dart';
 import 'package:login_with_unite_test_and_clean_architecture/features/auth/presentation/widgets/logo.dart';
 import 'package:login_with_unite_test_and_clean_architecture/features/auth/presentation/widgets/sociaux_card.dart';
@@ -35,15 +36,53 @@ class _AuthRegisterPageState extends ConsumerState<AuthRegisterPage> {
   bool isConfirmVisibled = true;
   late TapGestureRecognizer _tapRecognizer;
 
-  final fullName = TextEditingController();
-  final username = TextEditingController();
-  final password = TextEditingController();
-  final confirm = TextEditingController();
+  late final TextEditingController fullName;
+  late final TextEditingController username;
+  late final TextEditingController password;
+  late final TextEditingController confirm;
+
+  late final ProviderSubscription<AsyncValue<AuthSessionEntity?>>
+  _registerSubscription;
 
   @override
   void initState() {
     super.initState();
     _tapRecognizer = TapGestureRecognizer()..onTap = _handleTap;
+
+    fullName = TextEditingController();
+    username = TextEditingController();
+    password = TextEditingController();
+    confirm = TextEditingController();
+
+    _registerSubscription = ref.listenManual(newUserProvider, (previous, next) {
+      next.whenOrNull(
+        data: (_) async {
+          if (!context.mounted) return;
+          context.goNamed(RouteKeys.homeName);
+
+          final obligationsNotifier = ref.read(obligationsProvider.notifier);
+          final memberStatsNotifier = ref.read(memberDataStats.notifier);
+          final cotisationStatsNotifier = ref.read(cotisationStats.notifier);
+
+          await Future.wait([
+            obligationsNotifier.refresh(),
+            memberStatsNotifier.refresh(),
+            cotisationStatsNotifier.refresh(),
+          ]);
+        },
+        error: (error, _) {
+          final message = error is Failure
+              ? error.message
+              : "Une erreur est survenue.";
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              backgroundColor: AppColor.red,
+              content: AppText(label: message, color: AppColor.white),
+            ),
+          );
+        },
+      );
+    });
   }
 
   void _handleTap() {
@@ -51,15 +90,15 @@ class _AuthRegisterPageState extends ConsumerState<AuthRegisterPage> {
   }
 
   void _submit() {
-    final model = AuthRegisterModel(
+    if (!formKey.currentState!.validate()) return;
+
+    final entity = AuthRegisterEntity(
       fullName: fullName.text.trim(),
       username: username.text.trim(),
       password: password.text,
     );
 
-    if (formKey.currentState!.validate()) {
-      ref.read(newUserProvider.notifier).createNewUser(model: model);
-    }
+    ref.read(newUserProvider.notifier).createNewUser(entity: entity);
   }
 
   void clear() {
@@ -73,28 +112,6 @@ class _AuthRegisterPageState extends ConsumerState<AuthRegisterPage> {
   Widget build(BuildContext context) {
     final newUser = ref.watch(newUserProvider);
     final isLoading = newUser is AsyncLoading;
-
-    ref.listen<AsyncValue<void>>(newUserProvider, (previous, next) {
-      next.whenOrNull(
-        data: (_) {
-          clear();
-
-          ref.read(obligationsProvider.notifier).refresh();
-          ref.read(memberDataStats.notifier).refresh();
-          ref.watch(cotisationStats.notifier).refresh();
-
-          context.goNamed(RouteKeys.homeName);
-        },
-        error: (error, _) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              backgroundColor: AppColor.red,
-              content: AppText(label: "$error", color: AppColor.white),
-            ),
-          );
-        },
-      );
-    });
 
     return Scaffold(
       backgroundColor: AppColor.scaffoldBackground,
@@ -298,12 +315,13 @@ class _AuthRegisterPageState extends ConsumerState<AuthRegisterPage> {
 
                     Text.rich(
                       TextSpan(
-                        style: GoogleFonts.inter(
+                        style: TextStyle(
+                          fontFamily: 'Inter',
                           color: AppColor.textDescription,
                           fontSize: SizeFont.medium,
                         ),
                         children: [
-                          const TextSpan(text: "Vous avez déjà un compte ? "),
+                          TextSpan(text: "Vous avez déjà un compte ? "),
                           TextSpan(
                             text: "Se connecter",
                             recognizer: _tapRecognizer,
@@ -327,6 +345,7 @@ class _AuthRegisterPageState extends ConsumerState<AuthRegisterPage> {
 
   @override
   void dispose() {
+    _registerSubscription.close();
     _tapRecognizer.dispose();
     fullName.dispose();
     username.dispose();

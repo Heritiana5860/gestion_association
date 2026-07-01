@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:login_with_unite_test_and_clean_architecture/core/contants/colors/app_color.dart';
 import 'package:login_with_unite_test_and_clean_architecture/core/contants/keys/route_keys.dart';
 import 'package:login_with_unite_test_and_clean_architecture/core/contants/sizes/size_font.dart';
@@ -53,7 +52,7 @@ class _AuthLoginPageState extends ConsumerState<AuthLoginPage> {
 
     _loginSubscription = ref.listenManual(loginProvider, (previous, next) {
       next.whenOrNull(
-        data: (data) async {
+        data: (_) async {
           if (!context.mounted) return;
           context.goNamed(RouteKeys.homeName);
 
@@ -240,7 +239,8 @@ class _AuthLoginPageState extends ConsumerState<AuthLoginPage> {
 
                     Text.rich(
                       TextSpan(
-                        style: GoogleFonts.inter(
+                        style: TextStyle(
+                          fontFamily: 'Inter',
                           color: AppColor.textDescription,
                           fontSize: SizeFont.medium,
                         ),
