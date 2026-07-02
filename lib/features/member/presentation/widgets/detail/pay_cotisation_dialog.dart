@@ -2,13 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
-import 'package:login_with_unite_test_and_clean_architecture/core/contants/colors/app_color.dart';
+import 'package:login_with_unite_test_and_clean_architecture/core/contants/constant_text/cotisation_text.dart';
+import 'package:login_with_unite_test_and_clean_architecture/core/contants/constant_text/rad_text.dart';
 import 'package:login_with_unite_test_and_clean_architecture/core/contants/constant_text/validator_text.dart';
+import 'package:login_with_unite_test_and_clean_architecture/core/errors/ref_listen_error.dart';
 import 'package:login_with_unite_test_and_clean_architecture/core/providers/selected_year_notifier.dart';
 import 'package:login_with_unite_test_and_clean_architecture/core/widgets/app_button.dart';
 import 'package:login_with_unite_test_and_clean_architecture/core/widgets/app_input.dart';
-import 'package:login_with_unite_test_and_clean_architecture/core/widgets/app_text.dart';
-import 'package:login_with_unite_test_and_clean_architecture/features/cotisation/data/models/add_cotisation_model.dart';
+import 'package:login_with_unite_test_and_clean_architecture/features/cotisation/domain/entities/add_cotisation_entity.dart';
 import 'package:login_with_unite_test_and_clean_architecture/features/cotisation/presentation/providers/cotisation/add_cotisation_notifier.dart';
 import 'package:login_with_unite_test_and_clean_architecture/features/cotisation/presentation/providers/cotisation/cotisation_notifier.dart';
 import 'package:login_with_unite_test_and_clean_architecture/features/cotisation/presentation/providers/stats/cotisation_stats_notifier.dart';
@@ -31,6 +32,8 @@ class _PayCotisationDialogState extends ConsumerState<PayCotisationDialog> {
   final formKey = GlobalKey<FormState>();
   late final TextEditingController amount;
 
+  late final ProviderSubscription<AsyncValue<void>> _payCotisationSubscription;
+
   @override
   void initState() {
     super.initState();
@@ -38,33 +41,37 @@ class _PayCotisationDialogState extends ConsumerState<PayCotisationDialog> {
         ? widget.initialAmount.toString()
         : '';
     amount = TextEditingController(text: initialText);
+
+    _payCotisationSubscription = ref.listenManual<AsyncValue<void>>(
+      payCotisation,
+      (_, next) {
+        next.whenOrNull(
+          data: (data) async {
+            if (!context.mounted) return;
+
+            context.pop();
+
+            ref.invalidate(detailProvider(widget.id!));
+
+            await Future.wait([
+              ref.read(memberDataProvider.notifier).refresh(),
+              ref.read(cotisationDataProvider.notifier).refresh(),
+              ref.read(cotisationStats.notifier).refresh(),
+            ]);
+          },
+          error: (error, _) => RefListenError.errorListenProvider(
+            context: context,
+            error: error,
+          ),
+        );
+      },
+    );
   }
 
   @override
   Widget build(BuildContext context) {
     final pay = ref.watch(payCotisation);
     final isLoading = pay is AsyncLoading;
-
-    ref.listen<AsyncValue<void>>(payCotisation, (previous, next) {
-      next.whenOrNull(
-        data: (data) {
-          context.pop();
-
-          ref.read(memberDataProvider.notifier).refresh();
-          ref.invalidate(detailProvider(widget.id!));
-          ref.read(cotisationDataProvider.notifier).refresh();
-          ref.read(cotisationStats.notifier).refresh();
-        },
-        error: (error, stackTrace) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              backgroundColor: AppColor.red,
-              content: AppText(label: "$error", color: AppColor.white),
-            ),
-          );
-        },
-      );
-    });
 
     return Dialog(
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.r)),
@@ -75,13 +82,13 @@ class _PayCotisationDialogState extends ConsumerState<PayCotisationDialog> {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              DialogHeader(headerTitle: "Obligation"),
+              DialogHeader(headerTitle: CotisationText.title),
               SizedBox(height: 12.h),
 
               AppInput(
                 controller: amount,
                 keyboardType: TextInputType.number,
-                labelText: "Montant",
+                labelText: CotisationText.montant,
                 validator: (p0) {
                   if (p0 == null) {
                     return ValidatorText.obligatorField;
@@ -93,7 +100,7 @@ class _PayCotisationDialogState extends ConsumerState<PayCotisationDialog> {
               SizedBox(height: 16.h),
 
               AppButton(
-                label: isLoading ? "En cours..." : "Enregistrer",
+                label: isLoading ? RadText.saveEnCours : RadText.save,
                 onPressed: isLoading ? null : _saveBill,
               ),
             ],
@@ -106,19 +113,20 @@ class _PayCotisationDialogState extends ConsumerState<PayCotisationDialog> {
   @override
   void dispose() {
     amount.dispose();
+    _payCotisationSubscription.close();
     super.dispose();
   }
 
   void _saveBill() {
     final selectedYear = ref.read(selectedYearProvider) ?? "2026";
     if (formKey.currentState!.validate()) {
-      final model = AddCotisationModel(
+      final entity = AddCotisationEntity(
         id: widget.id!,
         amount: double.parse(amount.text),
         year: selectedYear,
       );
 
-      ref.read(payCotisation.notifier).newCotisation(model: model);
+      ref.read(payCotisation.notifier).newCotisation(entity: entity);
     }
   }
 }

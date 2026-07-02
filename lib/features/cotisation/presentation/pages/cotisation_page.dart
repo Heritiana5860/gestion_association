@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:login_with_unite_test_and_clean_architecture/core/contants/colors/app_color.dart';
+import 'package:login_with_unite_test_and_clean_architecture/core/contants/constant_text/cotisation_text.dart';
+import 'package:login_with_unite_test_and_clean_architecture/core/errors/provider_error.dart';
+import 'package:login_with_unite_test_and_clean_architecture/core/widgets/app_circular.dart';
 import 'package:login_with_unite_test_and_clean_architecture/core/widgets/app_input.dart';
 import 'package:login_with_unite_test_and_clean_architecture/core/widgets/app_text.dart';
 import 'package:login_with_unite_test_and_clean_architecture/core/widgets/global_padding.dart';
@@ -42,7 +45,7 @@ class _CotisationPageState extends ConsumerState<CotisationPage> {
           spacing: 16.h,
           children: [
             SizedBox(height: 0.h),
-            
+
             AppInput(
               labelText: "Recherche...",
               controller: search,
@@ -65,7 +68,7 @@ class _CotisationPageState extends ConsumerState<CotisationPage> {
                             ),
                           ),
                           AppText(
-                            label: "Aucune cotisation enregistrée",
+                            label: CotisationText.aucun,
                             fontWeight: FontWeight.bold,
                             fontSize: 16.sp,
                             textAlign: TextAlign.center,
@@ -90,12 +93,9 @@ class _CotisationPageState extends ConsumerState<CotisationPage> {
                   ),
                 );
               },
-              error: (error, _) => Center(
-                child: AppText(label: "Erreur: $error", color: AppColor.red),
-              ),
-              loading: () => Center(
-                child: Center(child: CircularProgressIndicator(color: AppColor.blue)),
-              ),
+              error: (error, _) =>
+                  errorProvider(context: context, error: error),
+              loading: () => const AppCircular(),
             ),
           ],
         ),

@@ -3,6 +3,8 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:login_with_unite_test_and_clean_architecture/core/contants/colors/app_color.dart';
+import 'package:login_with_unite_test_and_clean_architecture/core/contants/constant_text/cotisation_text.dart';
+import 'package:login_with_unite_test_and_clean_architecture/core/contants/keys/route_keys.dart';
 import 'package:login_with_unite_test_and_clean_architecture/core/widgets/app_text.dart';
 import 'package:login_with_unite_test_and_clean_architecture/features/cotisation/domain/entities/cotisation_entity.dart';
 import 'package:login_with_unite_test_and_clean_architecture/features/cotisation/presentation/widgets/build_item.dart';
@@ -42,16 +44,16 @@ class CotisationCard extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             BuildItem(
-              label: "Montant: ",
+              label: "${CotisationText.montant}: ",
               value: "${item.amount} Ar",
               color: item.isPaid! ? AppColor.green : AppColor.red,
             ),
-            BuildItem(label: "Année: ", value: item.year),
+            BuildItem(label: CotisationText.annee, value: item.year),
             BuildItem(
-              label: "Dernier mise à jour: ",
+              label: CotisationText.miseAJour,
               value: item.isUpdate.isNotEmpty
                   ? DateFormat(
-                      'dd/MM/yyyy',
+                      CotisationText.dateFormat,
                     ).format(DateTime.parse(item.isUpdate))
                   : '-',
             ),
@@ -60,7 +62,10 @@ class CotisationCard extends StatelessWidget {
         trailing: IconButton(
           onPressed: () {
             if (!context.mounted) return;
-            context.pushNamed("member-detail", extra: item.member.id);
+            context.pushNamed(
+              RouteKeys.memberDetailName,
+              extra: item.member.id,
+            );
           },
           icon: const Icon(Icons.visibility_rounded),
         ),

@@ -16,7 +16,7 @@ class CotisationStatsRepositoryImpl implements CotisationStatsRepository {
     required String year,
   }) async {
     try {
-      final response = await datasource.fetchCotisationStats(year: year);
+      final response = await datasource.cotisationStats(year);
       return Right(response);
     } on DioException catch (e) {
       return Left(mapDioExceptionToFailure(e));

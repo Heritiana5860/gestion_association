@@ -6,7 +6,7 @@ import 'package:login_with_unite_test_and_clean_architecture/features/cotisation
 
 final datasourceProvider = Provider((ref) {
   final dio = ref.watch(dioProvider);
-  return CotisationStatsDatasource(dio: dio);
+  return CotisationStatsDatasourceImpl(dio: dio);
 });
 
 final repositoryProvider = Provider((ref) {

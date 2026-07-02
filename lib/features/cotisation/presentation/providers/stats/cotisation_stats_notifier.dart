@@ -12,7 +12,7 @@ class CotisationStatsNotifier extends AsyncNotifier<CotisationStatsEntity> {
 
     final result = await usecase.call(year: selectedYear);
 
-    return result.fold((l) => throw Exception(l.message), (r) => r);
+    return result.fold((l) => throw Exception(l), (r) => r);
   }
 
   Future<void> refresh() async {

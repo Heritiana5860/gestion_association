@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:login_with_unite_test_and_clean_architecture/core/contants/colors/app_color.dart';
+import 'package:login_with_unite_test_and_clean_architecture/core/contants/constant_text/cotisation_text.dart';
 import 'package:login_with_unite_test_and_clean_architecture/core/widgets/app_text.dart';
 import 'package:login_with_unite_test_and_clean_architecture/features/cotisation/domain/entities/cotisation_stats_entity.dart';
 import 'package:login_with_unite_test_and_clean_architecture/features/cotisation/presentation/widgets/donut_chart.dart';
@@ -30,7 +31,7 @@ class CotisationStatsCard extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               AppText(
-                label: "Cotisations",
+                label: CotisationText.cotisation,
                 fontSize: 13.sp,
                 fontWeight: FontWeight.w600,
               ),
@@ -52,13 +53,13 @@ class CotisationStatsCard extends StatelessWidget {
                 child: Column(
                   children: [
                     BarRow(
-                      label: "Payés",
+                      label: CotisationText.paid,
                       pct: (stat.paidPercentage ?? 0) / 100,
                       color: AppColor.green,
                     ),
                     SizedBox(height: 8.h),
                     BarRow(
-                      label: "Non payés",
+                      label: CotisationText.notPaid,
                       pct: (stat.notPaidPercentage ?? 0) / 100,
                       color: AppColor.red,
                     ),
@@ -75,14 +76,14 @@ class CotisationStatsCard extends StatelessWidget {
               StatCard(
                 icon: Icons.check_circle_rounded,
                 value: "${stat.paid}",
-                label: "Payés",
+                label: CotisationText.paid,
                 color: AppColor.green,
               ),
               SizedBox(width: 8.w),
               StatCard(
                 icon: Icons.cancel_rounded,
                 value: "${stat.notPaid}",
-                label: "Non payés",
+                label: CotisationText.notPaid,
                 color: AppColor.red,
               ),
             ],
@@ -93,7 +94,7 @@ class CotisationStatsCard extends StatelessWidget {
           SizedBox(height: 10.h),
 
           AppText(
-            label: "Détail par statut",
+            label: CotisationText.detail,
             fontSize: 12.sp,
             fontWeight: FontWeight.w600,
             color: AppColor.textDescription,
@@ -103,7 +104,7 @@ class CotisationStatsCard extends StatelessWidget {
 
           StatusRow(
             icon: Icons.workspace_premium_rounded,
-            label: "Doyen(ne)s",
+            label: CotisationText.doyen,
             color: Colors.orange,
             paid: stat.doyenPaid ?? 0,
             notPaid: stat.doyenNotPaid ?? 0,
@@ -113,7 +114,7 @@ class CotisationStatsCard extends StatelessWidget {
           SizedBox(height: 10.h),
           StatusRow(
             icon: Icons.star_rounded,
-            label: "Ancien(ne)s",
+            label: CotisationText.ancien,
             color: AppColor.blue,
             paid: stat.anciensPaid ?? 0,
             notPaid: stat.anciensNotPaid ?? 0,
@@ -123,7 +124,7 @@ class CotisationStatsCard extends StatelessWidget {
           SizedBox(height: 10.h),
           StatusRow(
             icon: Icons.auto_awesome,
-            label: "Novices",
+            label: CotisationText.novice,
             color: AppColor.green,
             paid: stat.novicesPaid ?? 0,
             notPaid: stat.novicesNotPaid ?? 0,

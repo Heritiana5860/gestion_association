@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:login_with_unite_test_and_clean_architecture/core/contants/colors/app_color.dart';
+import 'package:login_with_unite_test_and_clean_architecture/core/contants/constant_text/cotisation_text.dart';
 import 'package:login_with_unite_test_and_clean_architecture/core/widgets/app_text.dart';
 import 'package:login_with_unite_test_and_clean_architecture/features/home/presentation/widgets/bar_row.dart';
 
@@ -53,7 +54,7 @@ class StatusRow extends StatelessWidget {
 
           // Barre de progression payés
           BarRow(
-            label: "Payés ($paid)",
+            label: "${CotisationText.paid} ($paid)",
             pct: paidPct / 100,
             color: AppColor.green,
           ),
@@ -61,7 +62,7 @@ class StatusRow extends StatelessWidget {
 
           // Barre de progression non payés
           BarRow(
-            label: "Non payés ($notPaid)",
+            label: "${CotisationText.notPaid} ($notPaid)",
             pct: notPaidPct / 100,
             color: AppColor.red,
           ),

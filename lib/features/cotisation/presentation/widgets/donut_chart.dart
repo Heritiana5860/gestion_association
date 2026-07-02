@@ -2,6 +2,7 @@ import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:login_with_unite_test_and_clean_architecture/core/contants/colors/app_color.dart';
+import 'package:login_with_unite_test_and_clean_architecture/core/contants/constant_text/cotisation_text.dart';
 import 'package:login_with_unite_test_and_clean_architecture/core/widgets/app_text.dart';
 
 class DonutChart extends StatelessWidget {
@@ -52,7 +53,7 @@ class DonutChart extends StatelessWidget {
                 fontWeight: FontWeight.bold,
               ),
               AppText(
-                label: "total",
+                label: CotisationText.total,
                 fontSize: 9.sp,
                 color: AppColor.textDescription,
               ),

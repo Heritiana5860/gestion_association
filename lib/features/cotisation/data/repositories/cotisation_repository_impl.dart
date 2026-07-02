@@ -4,6 +4,7 @@ import 'package:login_with_unite_test_and_clean_architecture/core/errors/dio_exc
 import 'package:login_with_unite_test_and_clean_architecture/core/errors/failure.dart';
 import 'package:login_with_unite_test_and_clean_architecture/features/cotisation/data/datasources/cotisation_datasource.dart';
 import 'package:login_with_unite_test_and_clean_architecture/features/cotisation/data/models/add_cotisation_model.dart';
+import 'package:login_with_unite_test_and_clean_architecture/features/cotisation/domain/entities/add_cotisation_entity.dart';
 import 'package:login_with_unite_test_and_clean_architecture/features/cotisation/domain/entities/cotisation_entity.dart';
 import 'package:login_with_unite_test_and_clean_architecture/features/cotisation/domain/repositories/cotisation_repository.dart';
 
@@ -13,12 +14,12 @@ class CotisationRepositoryImpl implements CotisationRepository {
   const CotisationRepositoryImpl({required this.datasource});
 
   @override
-  Future<Either<Failure, List<CotisationEntity>>> fetchCotisation({
+  Future<Either<Failure, List<CotisationEntity>>> cotisations({
     String? search,
     required String year,
   }) async {
     try {
-      final response = await datasource.cotisation(search: search, year: year);
+      final response = await datasource.cotisations(search: search, year: year);
       return Right(response);
     } on DioException catch (e) {
       return Left(mapDioExceptionToFailure(e));
@@ -28,11 +29,16 @@ class CotisationRepositoryImpl implements CotisationRepository {
   }
 
   @override
-  Future<Either<Failure, void>> addCotisation({
-    required AddCotisationModel model,
-  }) async {
+  Future<Either<Failure, void>> addCotisation(
+    AddCotisationEntity entity,
+  ) async {
     try {
-      final response = await datasource.addCotisation(model: model);
+      final model = AddCotisationModel(
+        id: entity.id,
+        amount: entity.amount,
+        year: entity.year,
+      );
+      final response = await datasource.addCotisation(model);
       return Right(response);
     } on DioException catch (e) {
       return Left(mapDioExceptionToFailure(e));
