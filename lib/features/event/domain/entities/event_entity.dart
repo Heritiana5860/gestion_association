@@ -17,7 +17,7 @@ class EventEntity {
     required this.startTime,
     required this.endTime,
     required this.year,
-    required this.id,
+    this.id,
     this.members,
   });
 }

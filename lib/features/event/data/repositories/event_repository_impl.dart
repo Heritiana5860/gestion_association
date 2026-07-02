@@ -13,11 +13,9 @@ class EventRepositoryImpl implements EventRepository {
   const EventRepositoryImpl({required this.datasource});
 
   @override
-  Future<Either<Failure, List<EventEntity>>> fetchEvent({
-    required String year,
-  }) async {
+  Future<Either<Failure, List<EventEntity>>> events(String year) async {
     try {
-      final response = await datasource.events(year: year);
+      final response = await datasource.events(year);
       return Right(response);
     } on DioException catch (e) {
       return Left(mapDioExceptionToFailure(e));
@@ -27,11 +25,9 @@ class EventRepositoryImpl implements EventRepository {
   }
 
   @override
-  Future<Either<Failure, EventEntity>> fetchDetailEvent({
-    required int id,
-  }) async {
+  Future<Either<Failure, EventEntity>> eventDetail(int id) async {
     try {
-      final response = await datasource.eventDetail(id: id);
+      final response = await datasource.eventDetail(id);
       return Right(response);
     } on DioException catch (e) {
       return Left(mapDioExceptionToFailure(e));
@@ -41,9 +37,18 @@ class EventRepositoryImpl implements EventRepository {
   }
 
   @override
-  Future<Either<Failure, void>> submitEvent({required EventModel model}) async {
+  Future<Either<Failure, void>> addEvent(EventEntity entity) async {
     try {
-      final response = await datasource.submit(model: model);
+      final model = EventModel(
+        eventName: entity.eventName,
+        eventDescription: entity.eventDescription,
+        eventDate: entity.eventDate,
+        startTime: entity.startTime,
+        endTime: entity.endTime,
+        year: entity.year,
+      );
+
+      final response = await datasource.addEvent(model);
       return Right(response);
     } on DioException catch (e) {
       return Left(mapDioExceptionToFailure(e));

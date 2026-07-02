@@ -8,4 +8,6 @@ class ApiEndpoints {
   static const String cotisationSatats = "cotisation/statistics/";
   static const String cotisation = "cotisation/";
   static const String addCotisation = "cotisation/add/";
+  static const String event = "event/";
+  static const String comingMember = "/add_coming_member/";
 }

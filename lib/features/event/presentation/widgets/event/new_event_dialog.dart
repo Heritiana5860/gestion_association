@@ -3,10 +3,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:login_with_unite_test_and_clean_architecture/core/contants/colors/app_color.dart';
+import 'package:login_with_unite_test_and_clean_architecture/core/errors/ref_listen_error.dart';
 import 'package:login_with_unite_test_and_clean_architecture/core/widgets/app_button.dart';
 import 'package:login_with_unite_test_and_clean_architecture/core/widgets/app_input.dart';
-import 'package:login_with_unite_test_and_clean_architecture/core/widgets/app_text.dart';
-import 'package:login_with_unite_test_and_clean_architecture/features/event/data/models/event_model.dart';
+import 'package:login_with_unite_test_and_clean_architecture/features/event/domain/entities/event_entity.dart';
 import 'package:login_with_unite_test_and_clean_architecture/features/event/presentation/providers/event_notifier.dart';
 import 'package:login_with_unite_test_and_clean_architecture/features/event/presentation/providers/event_submit_notifier.dart';
 import 'package:login_with_unite_test_and_clean_architecture/features/member/presentation/widgets/member/dialog_header.dart';
@@ -26,6 +26,8 @@ class _NewEventDialogState extends ConsumerState<NewEventDialog> {
 
   String? _apiStartTime;
   String? _apiEndTime;
+
+  late final ProviderSubscription<AsyncValue<void>> _eventSubscription;
 
   final titre = TextEditingController();
   final description = TextEditingController();
@@ -138,7 +140,7 @@ class _NewEventDialogState extends ConsumerState<NewEventDialog> {
       return;
     }
 
-    final model = EventModel(
+    final entity = EventEntity(
       eventName: titre.text.trim(),
       eventDescription: description.text.trim(),
       eventDate: eventDate.text,
@@ -147,7 +149,28 @@ class _NewEventDialogState extends ConsumerState<NewEventDialog> {
       year: _selectedDate!.year,
     );
 
-    ref.read(newEventProvider.notifier).submitEvent(model: model);
+    ref.read(newEventProvider.notifier).submitEvent(entity: entity);
+  }
+
+  @override
+  void initState() {
+    super.initState();
+
+    _eventSubscription = ref.listenManual<AsyncValue<void>>(newEventProvider, (
+      _,
+      next,
+    ) {
+      next.whenOrNull(
+        error: (error, _) =>
+            RefListenError.errorListenProvider(context: context, error: error),
+        data: (_) async {
+          if (!context.mounted) return;
+          context.pop();
+
+          await ref.read(eventProvider.notifier).refresh();
+        },
+      );
+    });
   }
 
   @override
@@ -157,6 +180,8 @@ class _NewEventDialogState extends ConsumerState<NewEventDialog> {
     eventDate.dispose();
     startTime.dispose();
     endTime.dispose();
+
+    _eventSubscription.close();
     super.dispose();
   }
 
@@ -164,24 +189,6 @@ class _NewEventDialogState extends ConsumerState<NewEventDialog> {
   Widget build(BuildContext context) {
     final newEvent = ref.watch(newEventProvider);
     final isLoading = newEvent is AsyncLoading;
-
-    ref.listen<AsyncValue<void>>(newEventProvider, (previous, next) {
-      if (previous is! AsyncLoading) return;
-      next.whenOrNull(
-        error: (error, _) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              backgroundColor: AppColor.red,
-              content: AppText(label: "$error", color: AppColor.white),
-            ),
-          );
-        },
-        data: (data) {
-          ref.read(eventProvider.notifier).refresh();
-          context.pop();
-        },
-      );
-    });
 
     return Dialog(
       backgroundColor: AppColor.scaffoldBackground,

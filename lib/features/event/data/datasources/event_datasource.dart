@@ -1,25 +1,27 @@
 import 'package:dio/dio.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
-import 'package:login_with_unite_test_and_clean_architecture/core/contants/keys/url_key.dart';
-import 'package:login_with_unite_test_and_clean_architecture/core/network/autorisation_token.dart';
+import 'package:login_with_unite_test_and_clean_architecture/core/network/api_endpoints.dart';
 import 'package:login_with_unite_test_and_clean_architecture/features/event/data/models/event_model.dart';
-import 'package:login_with_unite_test_and_clean_architecture/features/event/domain/entities/event_entity.dart';
 
-class EventDatasource {
+abstract class EventDatasource {
+  Future<List<EventModel>> events(String year);
+  Future<EventModel> eventDetail(int id);
+  Future<void> addEvent(EventModel model);
+  Future<Map<String, dynamic>> addComingMember({
+    required int eventId,
+    required String memberCde,
+  });
+}
+
+class EventDatasourceImpl implements EventDatasource {
   final Dio dio;
 
-  const EventDatasource({required this.dio});
+  const EventDatasourceImpl({required this.dio});
 
-  Future<List<EventEntity>> events({required String year}) async {
-    final url = dotenv.env[UrlKey.urlKey] ?? "";
-
-    final Map<String, dynamic> queryParams = {};
-    queryParams['year'] = year;
-
+  @override
+  Future<List<EventModel>> events(String year) async {
     final response = await dio.get(
-      "${url}event/",
-      queryParameters: queryParams,
-      options: Options(headers: await AutorisationToken.headers()),
+      ApiEndpoints.event,
+      queryParameters: {'year': year},
     );
 
     final List<dynamic> data = response.data;
@@ -27,28 +29,25 @@ class EventDatasource {
     return data.map((e) => EventModel.fromJson(e)).toList();
   }
 
-  Future<EventEntity> eventDetail({required int id}) async {
-    final url = dotenv.env[UrlKey.urlKey] ?? "";
-
-    final response = await dio.get("${url}event/$id/");
+  @override
+  Future<EventModel> eventDetail(int id) async {
+    final response = await dio.get("${ApiEndpoints.event}$id/");
 
     return EventModel.fromJson(response.data);
   }
 
-  Future<void> submit({required EventModel model}) async {
-    final url = dotenv.env[UrlKey.urlKey] ?? "";
-
-    await dio.post("${url}event/", data: model.toJson());
+  @override
+  Future<void> addEvent(EventModel model) async {
+    await dio.post(ApiEndpoints.event, data: model.toJson());
   }
 
+  @override
   Future<Map<String, dynamic>> addComingMember({
     required int eventId,
     required String memberCde,
   }) async {
-    final url = dotenv.env[UrlKey.urlKey] ?? "";
-
     final response = await dio.post(
-      "${url}event/$eventId/add_coming_member/",
+      "${ApiEndpoints.event}$eventId${ApiEndpoints.comingMember}",
       data: {"member_cde": memberCde},
     );
 

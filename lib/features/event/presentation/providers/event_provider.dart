@@ -6,7 +6,7 @@ import 'package:login_with_unite_test_and_clean_architecture/features/event/doma
 
 final datasourceProvider = Provider((ref) {
   final dio = ref.watch(dioProvider);
-  return EventDatasource(dio: dio);
+  return EventDatasourceImpl(dio: dio);
 });
 
 final repositoryProvider = Provider((ref) {

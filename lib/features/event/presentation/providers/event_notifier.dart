@@ -10,9 +10,9 @@ class EventNotifier extends AsyncNotifier<List<EventEntity>> {
     final selectedYear = ref.watch(selectedYearProvider) ?? "2026";
     final usecase = ref.watch(usecaseEventProvider);
 
-    final result = await usecase.call(year: selectedYear);
+    final result = await usecase.call(selectedYear);
 
-    return result.fold((l) => throw Exception(l.message), (r) => r);
+    return result.fold((l) => throw Exception(l), (r) => r);
   }
 
   Future<void> refresh() async {
