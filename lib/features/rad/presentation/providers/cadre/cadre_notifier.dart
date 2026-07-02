@@ -1,17 +1,17 @@
 import 'dart:async';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:login_with_unite_test_and_clean_architecture/features/rad/data/models/cadre_model.dart';
+import 'package:login_with_unite_test_and_clean_architecture/features/rad/domain/entities/cadre_entity.dart';
 import 'package:login_with_unite_test_and_clean_architecture/features/rad/presentation/providers/cadre/cadre_provider.dart';
 
 class CadreNotifier extends AsyncNotifier<void> {
   @override
   FutureOr<void> build() {}
 
-  Future<void> addNewCadre({required CadreModel model}) async {
+  Future<void> addNewCadre(CadreEntity entity) async {
     state = AsyncLoading();
 
     final usecase = ref.read(usecaseCadreProvider);
-    final result = await usecase.call(model: model);
+    final result = await usecase.call(entity);
 
     result.fold(
       (l) => state = AsyncError(l.message, StackTrace.current),
@@ -19,11 +19,14 @@ class CadreNotifier extends AsyncNotifier<void> {
     );
   }
 
-  Future<void> cadreUpdate({required int id, required CadreModel model}) async {
+  Future<void> cadreUpdate({
+    required int id,
+    required CadreEntity entity,
+  }) async {
     state = AsyncLoading();
 
     final usecase = ref.read(usecaseCadreProvider);
-    final result = await usecase.callCadreUpdate(id: id, model: model);
+    final result = await usecase.callCadreUpdate(id: id, entity: entity);
 
     result.fold(
       (l) => state = AsyncError(l.message, StackTrace.current),

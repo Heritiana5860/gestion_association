@@ -13,11 +13,16 @@ class HonneurRepositoryImpl implements HonneurRepository {
   const HonneurRepositoryImpl({required this.datasource});
 
   @override
-  Future<Either<Failure, void>> newHonneur({
-    required HonneurModel model,
-  }) async {
+  Future<Either<Failure, void>> addHonneur(HonneurEntity entity) async {
     try {
-      final res = await datasource.addHonneur(model: model);
+      final model = HonneurModel(
+        nom: entity.nom,
+        fonction: entity.fonction,
+        contact: entity.contact,
+        year: entity.year,
+        address: entity.address,
+      );
+      final res = await datasource.addHonneur(model);
       return Right(res);
     } on DioException catch (e) {
       return Left(mapDioExceptionToFailure(e));
@@ -27,9 +32,9 @@ class HonneurRepositoryImpl implements HonneurRepository {
   }
 
   @override
-  Future<Either<Failure, List<HonneurEntity>>> fetchHonneur() async {
+  Future<Either<Failure, List<HonneurEntity>>> honneurs() async {
     try {
-      final res = await datasource.getHonneur();
+      final res = await datasource.honneurs();
       return Right(res);
     } on DioException catch (e) {
       return Left(mapDioExceptionToFailure(e));
@@ -41,9 +46,16 @@ class HonneurRepositoryImpl implements HonneurRepository {
   @override
   Future<Either<Failure, void>> updateHonneur({
     required int id,
-    required HonneurModel model,
+    required HonneurEntity entity,
   }) async {
     try {
+      final model = HonneurModel(
+        nom: entity.nom,
+        fonction: entity.fonction,
+        contact: entity.contact,
+        year: entity.year,
+        address: entity.address,
+      );
       final res = await datasource.updateHonneur(id: id, model: model);
       return Right(res);
     } on DioException catch (e) {

@@ -13,11 +13,18 @@ class CollegeRepositoryImpl implements CollegeRepository {
   const CollegeRepositoryImpl({required this.datasource});
 
   @override
-  Future<Either<Failure, void>> addCollege({
-    required CollegeModel model,
-  }) async {
+  Future<Either<Failure, void>> addCollege(CollegeEntity entity) async {
     try {
-      final res = await datasource.addCollege(model: model);
+      final model = CollegeModel(
+        nom: entity.nom,
+        contact: entity.contact,
+        address: entity.address,
+        etablissement: entity.etablissement,
+        niveau: entity.niveau,
+        nomPromotion: entity.nomPromotion,
+        year: entity.year,
+      );
+      final res = await datasource.addCollege(model);
       return Right(res);
     } on DioException catch (e) {
       return Left(mapDioExceptionToFailure(e));
@@ -27,11 +34,9 @@ class CollegeRepositoryImpl implements CollegeRepository {
   }
 
   @override
-  Future<Either<Failure, List<CollegeEntity>>> fetchCollege({
-    required String year,
-  }) async {
+  Future<Either<Failure, List<CollegeEntity>>> colleges(String year) async {
     try {
-      final res = await datasource.getCollegeData(year: year);
+      final res = await datasource.colleges(year);
       return Right(res);
     } on DioException catch (e) {
       return Left(mapDioExceptionToFailure(e));
@@ -43,9 +48,19 @@ class CollegeRepositoryImpl implements CollegeRepository {
   @override
   Future<Either<Failure, void>> updateCollege({
     required int id,
-    required CollegeModel model,
+    required CollegeEntity entity,
   }) async {
     try {
+      final model = CollegeModel(
+        nom: entity.nom,
+        contact: entity.contact,
+        address: entity.address,
+        etablissement: entity.etablissement,
+        niveau: entity.niveau,
+        nomPromotion: entity.nomPromotion,
+        year: entity.year,
+      );
+
       final res = await datasource.updateCollege(id: id, model: model);
       return Right(res);
     } on DioException catch (e) {

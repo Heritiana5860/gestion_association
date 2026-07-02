@@ -3,6 +3,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:login_with_unite_test_and_clean_architecture/core/contants/colors/app_color.dart';
+import 'package:login_with_unite_test_and_clean_architecture/core/errors/provider_error.dart';
+import 'package:login_with_unite_test_and_clean_architecture/core/widgets/app_circular.dart';
 import 'package:login_with_unite_test_and_clean_architecture/core/widgets/app_text.dart';
 import 'package:login_with_unite_test_and_clean_architecture/features/cotisation/presentation/providers/cotisation/cotisation_notifier.dart';
 import 'package:login_with_unite_test_and_clean_architecture/features/member/presentation/providers/member_delete_notifier.dart';
@@ -67,15 +69,19 @@ class _MemberDetailPageState extends ConsumerState<MemberDetailPage> {
                   borderRadius: BorderRadius.circular(12.r),
                 ),
                 offset: Offset(0, 8),
-                onSelected: (value) {
+                onSelected: (value) async {
                   if (value == 'delete') {
-                    ref.read(deleteMemberProvider(widget.memberId));
-                    ref.invalidate(deleteMemberProvider);
-                    ref.read(memberDataProvider.notifier).refresh();
-                    ref.read(memberDataStats.notifier).refresh();
-                    ref.read(cotisationDataProvider.notifier).refresh();
-
+                    if (context.mounted) return;
                     context.pop();
+
+                    ref.invalidate(deleteMemberProvider);
+                    ref.read(deleteMemberProvider(widget.memberId));
+
+                    await Future.wait([
+                      ref.read(memberDataProvider.notifier).refresh(),
+                      ref.read(memberDataStats.notifier).refresh(),
+                      ref.read(cotisationDataProvider.notifier).refresh(),
+                    ]);
                   }
                 },
                 itemBuilder: (context) => [
@@ -188,14 +194,8 @@ class _MemberDetailPageState extends ConsumerState<MemberDetailPage> {
           ),
         );
       },
-      error: (e, _) => Scaffold(
-        body: Center(
-          child: AppText(label: 'Erreur: $e', color: AppColor.red),
-        ),
-      ),
-      loading: () => Scaffold(
-        body: Center(child: CircularProgressIndicator(color: AppColor.blue)),
-      ),
+      error: (error, _) => errorProvider(context: context, error: error),
+      loading: () => const AppCircular(),
     );
   }
 }

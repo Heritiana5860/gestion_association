@@ -1,14 +1,12 @@
 import 'package:dartz/dartz.dart';
 import 'package:login_with_unite_test_and_clean_architecture/core/errors/failure.dart';
-import 'package:login_with_unite_test_and_clean_architecture/features/rad/data/models/president_model.dart';
 import 'package:login_with_unite_test_and_clean_architecture/features/rad/domain/entities/president_entity.dart';
 
 abstract class PresidentRepository {
-  Future<Either<Failure, void>> addPresident({required PresidentModel model});
+  Future<Either<Failure, void>> addPresident(PresidentEntity entity);
   Future<Either<Failure, void>> updatePresident({
     required int id,
-    required PresidentModel model,
+    required PresidentEntity entity,
   });
-  // Future<Either<Failure, void>> deletePresident(String id);
-  Future<Either<Failure, List<PresidentEntity>>> getPresidents();
+  Future<Either<Failure, List<PresidentEntity>>> presidents();
 }

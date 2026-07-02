@@ -13,11 +13,15 @@ class PresidentRepositoryImpl implements PresidentRepository {
   const PresidentRepositoryImpl({required this.datasource});
 
   @override
-  Future<Either<Failure, void>> addPresident({
-    required PresidentModel model,
-  }) async {
+  Future<Either<Failure, void>> addPresident(PresidentEntity entity) async {
     try {
-      final res = await datasource.president(model: model);
+      final model = PresidentModel(
+        nom: entity.nom,
+        contact: entity.contact,
+        year: entity.year,
+        bio: entity.bio,
+      );
+      final res = await datasource.addPresident(model);
       return Right(res);
     } on DioException catch (e) {
       return Left(mapDioExceptionToFailure(e));
@@ -27,9 +31,9 @@ class PresidentRepositoryImpl implements PresidentRepository {
   }
 
   @override
-  Future<Either<Failure, List<PresidentEntity>>> getPresidents() async {
+  Future<Either<Failure, List<PresidentEntity>>> presidents() async {
     try {
-      final res = await datasource.fetchPresident();
+      final res = await datasource.presidents();
       return Right(res);
     } on DioException catch (e) {
       return Left(mapDioExceptionToFailure(e));
@@ -41,10 +45,16 @@ class PresidentRepositoryImpl implements PresidentRepository {
   @override
   Future<Either<Failure, void>> updatePresident({
     required int id,
-    required PresidentModel model,
+    required PresidentEntity entity,
   }) async {
     try {
-      final res = await datasource.presidentUpdate(id: id, model: model);
+      final model = PresidentModel(
+        nom: entity.nom,
+        contact: entity.contact,
+        year: entity.year,
+        bio: entity.bio,
+      );
+      final res = await datasource.updatePresident(id: id, model: model);
       return Right(res);
     } on DioException catch (e) {
       return Left(mapDioExceptionToFailure(e));

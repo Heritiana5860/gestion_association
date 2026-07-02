@@ -9,7 +9,7 @@ class GetCollegeNotifier extends AsyncNotifier<List<CollegeEntity>> {
   FutureOr<List<CollegeEntity>> build() async {
     final selectedYear = ref.watch(selectedYearProvider) ?? "2026";
     final usecase = ref.watch(usecaseCollegeProvider);
-    final result = await usecase.call(year: selectedYear);
+    final result = await usecase.call(selectedYear);
 
     return result.fold((l) => throw Exception(l.message), (r) => r);
   }

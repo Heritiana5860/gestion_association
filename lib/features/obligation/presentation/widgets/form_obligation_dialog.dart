@@ -4,10 +4,11 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:login_with_unite_test_and_clean_architecture/core/contants/colors/app_color.dart';
 import 'package:login_with_unite_test_and_clean_architecture/core/contants/constant_text/validator_text.dart';
+import 'package:login_with_unite_test_and_clean_architecture/core/errors/ref_listen_error.dart';
 import 'package:login_with_unite_test_and_clean_architecture/core/widgets/app_button.dart';
 import 'package:login_with_unite_test_and_clean_architecture/core/widgets/app_input.dart';
 import 'package:login_with_unite_test_and_clean_architecture/core/widgets/app_text.dart';
-import 'package:login_with_unite_test_and_clean_architecture/features/obligation/data/models/obligation_model.dart';
+import 'package:login_with_unite_test_and_clean_architecture/features/obligation/domain/entities/obligation_entity.dart';
 import 'package:login_with_unite_test_and_clean_architecture/features/obligation/presentation/providers/add_obligation_notifier.dart';
 import 'package:login_with_unite_test_and_clean_architecture/features/obligation/presentation/providers/obligation_notifier.dart';
 
@@ -22,6 +23,8 @@ class FormObligationDialog extends ConsumerStatefulWidget {
 class _FormObligationDialogState extends ConsumerState<FormObligationDialog> {
   final formKey = GlobalKey<FormState>();
 
+  late final ProviderSubscription<AsyncValue<void>> _obligationSubscription;
+
   final doyenInterne = TextEditingController();
   final doyenExterne = TextEditingController();
   final noviceInterne = TextEditingController();
@@ -30,7 +33,7 @@ class _FormObligationDialogState extends ConsumerState<FormObligationDialog> {
 
   void _submit() {
     if (formKey.currentState!.validate()) {
-      final model = ObligationModel(
+      final entity = ObligationEntity(
         noviceAmountIn: double.tryParse(noviceInterne.text) ?? 0.0,
         noviceAmountExt: double.tryParse(doyenExterne.text) ?? 0.0,
         doyenAncienIn: double.tryParse(doyenInterne.text) ?? 0.0,
@@ -38,7 +41,7 @@ class _FormObligationDialogState extends ConsumerState<FormObligationDialog> {
         year: int.tryParse(year.text) ?? DateTime.now().year,
       );
 
-      ref.read(insertObligationProvider.notifier).newObligation(model: model);
+      ref.read(insertObligationProvider.notifier).newObligation(entity);
     }
   }
 
@@ -51,24 +54,33 @@ class _FormObligationDialogState extends ConsumerState<FormObligationDialog> {
   }
 
   @override
+  void initState() {
+    super.initState();
+
+    _obligationSubscription = ref.listenManual<AsyncValue<void>>(
+      insertObligationProvider,
+      (previous, next) {
+        next.whenOrNull(
+          data: (_) {
+            if (!context.mounted) return;
+            context.pop();
+
+            ref.read(obligationsProvider.notifier).refresh();
+            _clear();
+          },
+          error: (error, _) => RefListenError.errorListenProvider(
+            context: context,
+            error: error,
+          ),
+        );
+      },
+    );
+  }
+
+  @override
   Widget build(BuildContext context) {
     final addOb = ref.watch(insertObligationProvider);
     final isLoading = addOb is AsyncLoading;
-
-    ref.listen<AsyncValue<void>>(insertObligationProvider, (previous, next) {
-      next.whenOrNull(
-        data: (_) {
-          ref.read(obligationsProvider.notifier).refresh();
-          _clear();
-          context.pop();
-        },
-        error: (error, _) => ScaffoldMessenger(
-          child: SnackBar(
-            content: AppText(label: "Erreur: $error", color: AppColor.red),
-          ),
-        ),
-      );
-    });
 
     return Dialog(
       backgroundColor: AppColor.scaffoldBackground,
@@ -185,6 +197,7 @@ class _FormObligationDialogState extends ConsumerState<FormObligationDialog> {
     noviceExterne.dispose();
     noviceInterne.dispose();
     year.dispose();
+    _obligationSubscription.close();
     super.dispose();
   }
 }

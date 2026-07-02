@@ -5,11 +5,11 @@ import 'package:go_router/go_router.dart';
 import 'package:login_with_unite_test_and_clean_architecture/core/contants/colors/app_color.dart';
 import 'package:login_with_unite_test_and_clean_architecture/core/contants/constant_text/rad_text.dart';
 import 'package:login_with_unite_test_and_clean_architecture/core/contants/constant_text/validator_text.dart';
+import 'package:login_with_unite_test_and_clean_architecture/core/errors/ref_listen_error.dart';
 import 'package:login_with_unite_test_and_clean_architecture/core/widgets/app_button.dart';
 import 'package:login_with_unite_test_and_clean_architecture/core/widgets/app_input.dart';
 import 'package:login_with_unite_test_and_clean_architecture/core/widgets/app_text.dart';
 import 'package:login_with_unite_test_and_clean_architecture/features/member/presentation/widgets/member/dialog_header.dart';
-import 'package:login_with_unite_test_and_clean_architecture/features/rad/data/models/honneur_model.dart';
 import 'package:login_with_unite_test_and_clean_architecture/features/rad/domain/entities/honneur_entity.dart';
 import 'package:login_with_unite_test_and_clean_architecture/features/rad/presentation/providers/honneur/get_honneur_provider.dart';
 import 'package:login_with_unite_test_and_clean_architecture/features/rad/presentation/providers/honneur/honneur_notifier.dart';
@@ -32,6 +32,8 @@ class _HonneurDialogState extends ConsumerState<HonneurDialog> {
   final mandat = TextEditingController();
   final address = TextEditingController();
 
+  late final ProviderSubscription<AsyncValue<void>> _honneurSubscription;
+
   @override
   void initState() {
     super.initState();
@@ -42,70 +44,15 @@ class _HonneurDialogState extends ConsumerState<HonneurDialog> {
       mandat.text = widget.item!.year;
       address.text = widget.item!.address;
     }
-  }
 
-  @override
-  void dispose() {
-    nom.dispose();
-    contact.dispose();
-    fonction.dispose();
-    mandat.dispose();
-    address.dispose();
-    super.dispose();
-  }
-
-  void _createHonneur() {
-    try {
-      final model = HonneurModel(
-        nom: nom.text,
-        fonction: fonction.text,
-        contact: contact.text,
-        year: mandat.text,
-        address: address.text,
-      );
-
-      if (formKey.currentState!.validate()) {
-        ref.read(honneurProvider.notifier).createHonneur(model: model);
-      }
-    } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          backgroundColor: AppColor.red,
-          content: AppText(label: "Erreur: $e", color: AppColor.white),
-        ),
-      );
-    }
-  }
-
-  void _updateHonneur() {
-    if (!formKey.currentState!.validate()) return;
-
-    final model = HonneurModel(
-      nom: nom.text,
-      fonction: fonction.text,
-      contact: contact.text,
-      year: mandat.text,
-      address: address.text,
-    );
-
-    ref
-        .read(honneurProvider.notifier)
-        .honneurUpdateProvider(id: widget.item!.id!, model: model);
-  }
-
-  bool get _isEditing => widget.item != null;
-
-  @override
-  Widget build(BuildContext context) {
-    final honneurs = ref.watch(honneurProvider);
-    final isLoading = honneurs is AsyncLoading;
-
-    ref.listen<AsyncValue<void>>(honneurProvider, (_, next) {
+    _honneurSubscription = ref.listenManual<AsyncValue<void>>(honneurProvider, (
+      _,
+      next,
+    ) {
       next.whenOrNull(
-        data: (_) {
+        data: (_) async {
+          if (!context.mounted) return;
           context.pop();
-
-          ref.read(getHonneurs.notifier).refresh();
 
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
@@ -118,9 +65,62 @@ class _HonneurDialogState extends ConsumerState<HonneurDialog> {
               ),
             ),
           );
+
+          await ref.read(getHonneurs.notifier).refresh();
         },
+        error: (error, _) =>
+            RefListenError.errorListenProvider(context: context, error: error),
       );
     });
+  }
+
+  @override
+  void dispose() {
+    nom.dispose();
+    contact.dispose();
+    fonction.dispose();
+    mandat.dispose();
+    address.dispose();
+    _honneurSubscription.close();
+    super.dispose();
+  }
+
+  void _createHonneur() {
+    if (!formKey.currentState!.validate()) return;
+
+    final entity = HonneurEntity(
+      nom: nom.text,
+      fonction: fonction.text,
+      contact: contact.text,
+      year: mandat.text,
+      address: address.text,
+    );
+
+    ref.read(honneurProvider.notifier).createHonneur(entity);
+  }
+
+  void _updateHonneur() {
+    if (!formKey.currentState!.validate()) return;
+
+    final entity = HonneurEntity(
+      nom: nom.text,
+      fonction: fonction.text,
+      contact: contact.text,
+      year: mandat.text,
+      address: address.text,
+    );
+
+    ref
+        .read(honneurProvider.notifier)
+        .honneurUpdateProvider(id: widget.item!.id!, entity: entity);
+  }
+
+  bool get _isEditing => widget.item != null;
+
+  @override
+  Widget build(BuildContext context) {
+    final honneurs = ref.watch(honneurProvider);
+    final isLoading = honneurs is AsyncLoading;
 
     return Dialog(
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8.r)),

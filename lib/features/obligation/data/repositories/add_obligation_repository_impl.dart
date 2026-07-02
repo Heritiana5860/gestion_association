@@ -13,11 +13,17 @@ class AddObligationRepositoryImpl implements AddObligationRepository {
   const AddObligationRepositoryImpl({required this.datasource});
 
   @override
-  Future<Either<Failure, void>> addObligation({
-    required ObligationModel model,
-  }) async {
+  Future<Either<Failure, void>> addObligation(ObligationEntity entity) async {
     try {
-      final response = await datasource.createObligation(model: model);
+      final model = ObligationModel(
+        noviceAmountIn: entity.noviceAmountIn,
+        noviceAmountExt: entity.noviceAmountExt,
+        doyenAncienIn: entity.doyenAncienIn,
+        doyenAncienExt: entity.doyenAncienExt,
+        year: entity.year,
+      );
+
+      final response = await datasource.addObligation(model);
       return Right(response);
     } on DioException catch (e) {
       return Left(mapDioExceptionToFailure(e));
@@ -27,9 +33,9 @@ class AddObligationRepositoryImpl implements AddObligationRepository {
   }
 
   @override
-  Future<Either<Failure, List<ObligationEntity>>> fetchObligation() async {
+  Future<Either<Failure, List<ObligationEntity>>> obligations() async {
     try {
-      final response = await datasource.allObligations();
+      final response = await datasource.obligations();
       return Right(response);
     } on DioException catch (e) {
       return Left(mapDioExceptionToFailure(e));

@@ -26,12 +26,33 @@ class HomePage extends ConsumerStatefulWidget {
 }
 
 class _HomePageState extends ConsumerState<HomePage> {
+  late final ProviderSubscription<AsyncValue<void>> _obligationSubscription;
 
-@override
-void initState() {
-  super.initState();
-  
-}
+  @override
+  void initState() {
+    super.initState();
+
+    _obligationSubscription = ref.listenManual<AsyncValue>(
+      obligationsProvider,
+      (_, next) {
+        next.whenData((obligations) {
+          final years = obligations
+              .map((o) => o.year.toString())
+              .toSet()
+              .toList();
+          if (years.isNotEmpty && ref.read(selectedYearProvider) == null) {
+            ref.read(selectedYearProvider.notifier).changeYear(years.first);
+          }
+        });
+      },
+    );
+  }
+
+  @override
+  void dispose() {
+    _obligationSubscription.close();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -51,18 +72,6 @@ void initState() {
         (selectedYear != null && years.contains(selectedYear))
         ? selectedYear
         : (years.isNotEmpty ? years.first : null);
-
-    ref.listen<AsyncValue>(obligationsProvider, (_, next) {
-      next.whenData((obligations) {
-        final years = obligations
-            .map((o) => o.year.toString())
-            .toSet()
-            .toList();
-        if (years.isNotEmpty && ref.read(selectedYearProvider) == null) {
-          ref.read(selectedYearProvider.notifier).changeYear(years.first);
-        }
-      });
-    });
 
     return Scaffold(
       backgroundColor: AppColor.scaffoldBackground,

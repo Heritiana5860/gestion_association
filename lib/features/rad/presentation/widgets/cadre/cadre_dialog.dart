@@ -5,11 +5,11 @@ import 'package:go_router/go_router.dart';
 import 'package:login_with_unite_test_and_clean_architecture/core/contants/colors/app_color.dart';
 import 'package:login_with_unite_test_and_clean_architecture/core/contants/constant_text/rad_text.dart';
 import 'package:login_with_unite_test_and_clean_architecture/core/contants/constant_text/validator_text.dart';
+import 'package:login_with_unite_test_and_clean_architecture/core/errors/ref_listen_error.dart';
 import 'package:login_with_unite_test_and_clean_architecture/core/widgets/app_button.dart';
 import 'package:login_with_unite_test_and_clean_architecture/core/widgets/app_input.dart';
 import 'package:login_with_unite_test_and_clean_architecture/core/widgets/app_text.dart';
 import 'package:login_with_unite_test_and_clean_architecture/features/member/presentation/widgets/member/dialog_header.dart';
-import 'package:login_with_unite_test_and_clean_architecture/features/rad/data/models/cadre_model.dart';
 import 'package:login_with_unite_test_and_clean_architecture/features/rad/domain/entities/cadre_entity.dart';
 import 'package:login_with_unite_test_and_clean_architecture/features/rad/presentation/providers/cadre/cadre_notifier.dart';
 import 'package:login_with_unite_test_and_clean_architecture/features/rad/presentation/providers/cadre/fetch_cadre_notifier.dart';
@@ -26,6 +26,8 @@ class CadreDialog extends ConsumerStatefulWidget {
 class _CadreDialogState extends ConsumerState<CadreDialog> {
   final formKey = GlobalKey<FormState>();
 
+  late final ProviderSubscription<AsyncValue<void>> _cadreSubscription;
+
   final nom = TextEditingController();
   final fonction = TextEditingController();
   final contact = TextEditingController();
@@ -41,67 +43,15 @@ class _CadreDialogState extends ConsumerState<CadreDialog> {
       contact.text = i.contact;
       address.text = i.address;
     }
-  }
 
-  bool get _isEditing => widget.item != null;
-
-  void _createCadre() {
-    try {
-      final model = CadreModel(
-        nom: nom.text,
-        fonction: fonction.text,
-        contact: contact.text,
-        address: address.text,
-      );
-
-      if (formKey.currentState!.validate()) {
-        ref.read(cadreProvider.notifier).addNewCadre(model: model);
-      }
-    } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          backgroundColor: AppColor.red,
-          content: AppText(label: "$e", color: AppColor.white),
-        ),
-      );
-    }
-  }
-
-  void _updateCadre() {
-    if (!formKey.currentState!.validate()) return;
-
-    final model = CadreModel(
-      nom: nom.text,
-      fonction: fonction.text,
-      contact: contact.text,
-      address: address.text,
-    );
-
-    ref
-        .read(cadreProvider.notifier)
-        .cadreUpdate(id: widget.item!.id ?? 0, model: model);
-  }
-
-  @override
-  void dispose() {
-    nom.dispose();
-    fonction.dispose();
-    contact.dispose();
-    address.dispose();
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    final cadre = ref.watch(cadreProvider);
-    final isLoading = cadre is AsyncLoading;
-
-    ref.listen<AsyncValue<void>>(cadreProvider, (_, next) {
+    _cadreSubscription = ref.listenManual<AsyncValue<void>>(cadreProvider, (
+      _,
+      next,
+    ) {
       next.whenOrNull(
-        data: (data) {
+        data: (_) async {
+          if (!context.mounted) return;
           context.pop();
-
-          ref.read(fetchCadre.notifier).refresh();
 
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
@@ -114,9 +64,59 @@ class _CadreDialogState extends ConsumerState<CadreDialog> {
               ),
             ),
           );
+
+          await ref.read(fetchCadre.notifier).refresh();
         },
+        error: (error, _) =>
+            RefListenError.errorListenProvider(context: context, error: error),
       );
     });
+  }
+
+  bool get _isEditing => widget.item != null;
+
+  void _createCadre() {
+    if (!formKey.currentState!.validate()) return;
+
+    final entity = CadreEntity(
+      nom: nom.text,
+      fonction: fonction.text,
+      contact: contact.text,
+      address: address.text,
+    );
+
+    ref.read(cadreProvider.notifier).addNewCadre(entity);
+  }
+
+  void _updateCadre() {
+    if (!formKey.currentState!.validate()) return;
+
+    final entity = CadreEntity(
+      nom: nom.text,
+      fonction: fonction.text,
+      contact: contact.text,
+      address: address.text,
+    );
+
+    ref
+        .read(cadreProvider.notifier)
+        .cadreUpdate(id: widget.item!.id ?? 0, entity: entity);
+  }
+
+  @override
+  void dispose() {
+    nom.dispose();
+    fonction.dispose();
+    contact.dispose();
+    address.dispose();
+    _cadreSubscription.close();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final cadre = ref.watch(cadreProvider);
+    final isLoading = cadre is AsyncLoading;
 
     return Dialog(
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8.r)),

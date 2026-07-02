@@ -6,7 +6,7 @@ import 'package:login_with_unite_test_and_clean_architecture/features/rad/domain
 
 final datasourceProvider = Provider((ref) {
   final dio = ref.read(dioProvider);
-  return CollegeDatasource(dio: dio);
+  return CollegeDatasourceImpl(dio: dio);
 });
 
 final repositoryProvider = Provider((ref) {

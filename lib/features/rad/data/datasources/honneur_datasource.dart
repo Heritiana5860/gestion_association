@@ -1,45 +1,36 @@
 import 'package:dio/dio.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
-import 'package:login_with_unite_test_and_clean_architecture/core/contants/keys/url_key.dart';
-import 'package:login_with_unite_test_and_clean_architecture/core/network/autorisation_token.dart';
+import 'package:login_with_unite_test_and_clean_architecture/core/network/api_endpoints.dart';
 import 'package:login_with_unite_test_and_clean_architecture/features/rad/data/models/honneur_model.dart';
-import 'package:login_with_unite_test_and_clean_architecture/features/rad/domain/entities/honneur_entity.dart';
 
-class HonneurDatasource {
+abstract class HonneurDatasource {
+  Future<void> addHonneur(HonneurModel model);
+  Future<List<HonneurModel>> honneurs();
+  Future<void> updateHonneur({required int id, required HonneurModel model});
+}
+
+class HonneurDatasourceImpl implements HonneurDatasource {
   final Dio dio;
 
-  const HonneurDatasource({required this.dio});
+  const HonneurDatasourceImpl({required this.dio});
 
-  Future<void> addHonneur({required HonneurModel model}) async {
-    final url = dotenv.env[UrlKey.urlKey] ?? '';
-
-    await dio.post(
-      "${url}honneur/",
-      data: model.toJson(),
-      options: Options(headers: await AutorisationToken.headers()),
-    );
+  @override
+  Future<void> addHonneur(HonneurModel model) async {
+    await dio.post(ApiEndpoints.honneur, data: model.toJson());
   }
 
-  Future<List<HonneurEntity>> getHonneur() async {
-    final url = dotenv.env[UrlKey.urlKey] ?? '';
-
-    final response = await dio.get("${url}honneur/");
-
+  @override
+  Future<List<HonneurModel>> honneurs() async {
+    final response = await dio.get(ApiEndpoints.honneur);
     final List<dynamic> data = response.data;
 
     return data.map((e) => HonneurModel.fromJson(e)).toList();
   }
 
+  @override
   Future<void> updateHonneur({
     required int id,
     required HonneurModel model,
   }) async {
-    final url = dotenv.env[UrlKey.urlKey] ?? '';
-
-    await dio.put(
-      "${url}honneur/$id/",
-      data: model.toJson(),
-      options: Options(headers: await AutorisationToken.headers()),
-    );
+    await dio.put("${ApiEndpoints.honneur}$id/", data: model.toJson());
   }
 }

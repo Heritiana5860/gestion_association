@@ -9,7 +9,6 @@ import 'package:login_with_unite_test_and_clean_architecture/core/widgets/app_bu
 import 'package:login_with_unite_test_and_clean_architecture/core/widgets/app_input.dart';
 import 'package:login_with_unite_test_and_clean_architecture/core/widgets/app_text.dart';
 import 'package:login_with_unite_test_and_clean_architecture/features/member/presentation/widgets/member/dialog_header.dart';
-import 'package:login_with_unite_test_and_clean_architecture/features/rad/data/models/president_model.dart';
 import 'package:login_with_unite_test_and_clean_architecture/features/rad/domain/entities/president_entity.dart';
 import 'package:login_with_unite_test_and_clean_architecture/features/rad/presentation/providers/president/get_president_provider.dart';
 import 'package:login_with_unite_test_and_clean_architecture/features/rad/presentation/providers/president/president_notifier.dart';
@@ -31,6 +30,8 @@ class _PresidentDialogState extends ConsumerState<PresidentDialog> {
   final bio = TextEditingController();
   final mandat = TextEditingController();
 
+  late final ProviderSubscription<AsyncValue<void>> _presidentSubscription;
+
   @override
   void initState() {
     super.initState();
@@ -41,34 +42,51 @@ class _PresidentDialogState extends ConsumerState<PresidentDialog> {
       bio.text = widget.item!.bio;
       mandat.text = widget.item!.year;
     }
+
+    _presidentSubscription = ref.listenManual<AsyncValue<void>>(
+      presidenProvider,
+      (_, next) {
+        next.whenOrNull(
+          data: (_) async {
+            if (!context.mounted) return;
+            context.pop();
+
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                backgroundColor: AppColor.green,
+                content: AppText(
+                  label: _isEditing
+                      ? RadText.modifSucces
+                      : "Président ajouté avec succès !",
+                  color: AppColor.white,
+                ),
+              ),
+            );
+
+            await ref.read(getPresidentProvider.notifier).refresh();
+          },
+        );
+      },
+    );
   }
 
   void _createPresident() {
-    try {
-      final model = PresidentModel(
-        nom: nom.text,
-        contact: contact.text,
-        year: mandat.text,
-        bio: bio.text,
-      );
+    if (!formKey.currentState!.validate()) return;
 
-      if (formKey.currentState!.validate()) {
-        ref.read(presidenProvider.notifier).addPresident(model: model);
-      }
-    } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          backgroundColor: AppColor.red,
-          content: AppText(label: "Erreur: $e", color: AppColor.white),
-        ),
-      );
-    }
+    final entity = PresidentEntity(
+      nom: nom.text,
+      contact: contact.text,
+      year: mandat.text,
+      bio: bio.text,
+    );
+
+    ref.read(presidenProvider.notifier).addPresident(entity);
   }
 
   void _updatePresident() {
     if (!formKey.currentState!.validate()) return;
 
-    final model = PresidentModel(
+    final entity = PresidentEntity(
       nom: nom.text,
       contact: contact.text,
       year: mandat.text,
@@ -77,7 +95,7 @@ class _PresidentDialogState extends ConsumerState<PresidentDialog> {
 
     ref
         .read(presidenProvider.notifier)
-        .updatePresident(id: widget.item!.id!, model: model);
+        .updatePresident(id: widget.item!.id!, entity: entity);
   }
 
   @override
@@ -86,6 +104,7 @@ class _PresidentDialogState extends ConsumerState<PresidentDialog> {
     contact.dispose();
     bio.dispose();
     mandat.dispose();
+    _presidentSubscription.close();
     super.dispose();
   }
 
@@ -95,28 +114,6 @@ class _PresidentDialogState extends ConsumerState<PresidentDialog> {
   Widget build(BuildContext context) {
     final presidents = ref.watch(presidenProvider);
     final isLoading = presidents is AsyncLoading;
-
-    ref.listen<AsyncValue<void>>(presidenProvider, (_, next) {
-      next.whenOrNull(
-        data: (_) {
-          context.pop();
-
-          ref.read(getPresidentProvider.notifier).refresh();
-
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              backgroundColor: AppColor.green,
-              content: AppText(
-                label: _isEditing
-                    ? RadText.modifSucces
-                    : "Président ajouté avec succès !",
-                color: AppColor.white,
-              ),
-            ),
-          );
-        },
-      );
-    });
 
     return Dialog(
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8.r)),

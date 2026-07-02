@@ -3,6 +3,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:login_with_unite_test_and_clean_architecture/core/contants/colors/app_color.dart';
+import 'package:login_with_unite_test_and_clean_architecture/core/errors/provider_error.dart';
+import 'package:login_with_unite_test_and_clean_architecture/core/widgets/app_circular.dart';
 import 'package:login_with_unite_test_and_clean_architecture/core/widgets/app_text.dart';
 import 'package:login_with_unite_test_and_clean_architecture/core/widgets/button_foating_card.dart';
 import 'package:login_with_unite_test_and_clean_architecture/core/widgets/global_padding.dart';
@@ -181,35 +183,9 @@ class _ObligationPageState extends ConsumerState<ObligationPage> {
                   );
                 },
 
-                error: (error, _) {
-                  debugPrint("error: $error");
-
-                  return Center(
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Icon(
-                          Icons.cloud_off_rounded,
-                          size: 48.sp,
-                          color: AppColor.red,
-                        ),
-
-                        SizedBox(height: 12.h),
-
-                        AppText(
-                          label:
-                              "Une erreur est survenue lors de la connexion au serveur.",
-                          color: AppColor.textDescription,
-                          textAlign: TextAlign.center,
-                        ),
-                      ],
-                    ),
-                  );
-                },
-
-                loading: () => Center(
-                  child: CircularProgressIndicator(color: AppColor.blue),
-                ),
+                error: (error, _) =>
+                    errorProvider(context: context, error: error),
+                loading: () => const AppCircular(),
               ),
             ),
           ],

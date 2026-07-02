@@ -13,9 +13,16 @@ class CadreRepositoryImpl implements CadreRepository {
   const CadreRepositoryImpl({required this.datasource});
 
   @override
-  Future<Either<Failure, void>> newCadre({required CadreModel model}) async {
+  Future<Either<Failure, void>> addCadre(CadreEntity entity) async {
     try {
-      final res = await datasource.addCadre(model: model);
+      final model = CadreModel(
+        nom: entity.nom,
+        fonction: entity.fonction,
+        contact: entity.contact,
+        address: entity.address,
+      );
+
+      final res = await datasource.addCadre(model);
       return Right(res);
     } on DioException catch (e) {
       return Left(mapDioExceptionToFailure(e));
@@ -25,9 +32,9 @@ class CadreRepositoryImpl implements CadreRepository {
   }
 
   @override
-  Future<Either<Failure, List<CadreEntity>>> fetchCadre() async {
+  Future<Either<Failure, List<CadreEntity>>> cadres() async {
     try {
-      final res = await datasource.getCadre();
+      final res = await datasource.cadres();
       return Right(res);
     } on DioException catch (e) {
       return Left(mapDioExceptionToFailure(e));
@@ -39,10 +46,16 @@ class CadreRepositoryImpl implements CadreRepository {
   @override
   Future<Either<Failure, void>> updateCadre({
     required int id,
-    required CadreModel model,
+    required CadreEntity entity,
   }) async {
     try {
-      final res = await datasource.updateCadreData(id: id, model: model);
+      final model = CadreModel(
+        nom: entity.nom,
+        fonction: entity.fonction,
+        contact: entity.contact,
+        address: entity.address,
+      );
+      final res = await datasource.updateCadre(id: id, model: model);
       return Right(res);
     } on DioException catch (e) {
       return Left(mapDioExceptionToFailure(e));

@@ -6,12 +6,12 @@ import 'package:login_with_unite_test_and_clean_architecture/core/contants/color
 import 'package:login_with_unite_test_and_clean_architecture/core/contants/constant_text/rad_text.dart';
 import 'package:login_with_unite_test_and_clean_architecture/core/contants/constant_text/validator_text.dart';
 import 'package:login_with_unite_test_and_clean_architecture/core/contants/data/member_data_list.dart';
+import 'package:login_with_unite_test_and_clean_architecture/core/errors/ref_listen_error.dart';
 import 'package:login_with_unite_test_and_clean_architecture/core/widgets/app_button.dart';
 import 'package:login_with_unite_test_and_clean_architecture/core/widgets/app_dropdown.dart';
 import 'package:login_with_unite_test_and_clean_architecture/core/widgets/app_input.dart';
 import 'package:login_with_unite_test_and_clean_architecture/core/widgets/app_text.dart';
 import 'package:login_with_unite_test_and_clean_architecture/features/member/presentation/widgets/member/dialog_header.dart';
-import 'package:login_with_unite_test_and_clean_architecture/features/rad/data/models/college_model.dart';
 import 'package:login_with_unite_test_and_clean_architecture/features/rad/domain/entities/college_entity.dart';
 import 'package:login_with_unite_test_and_clean_architecture/features/rad/presentation/providers/college/college_notifier.dart';
 import 'package:login_with_unite_test_and_clean_architecture/features/rad/presentation/providers/college/get_college_notifier.dart';
@@ -28,6 +28,8 @@ class CollegeDialog extends ConsumerStatefulWidget {
 class _CollegeDialogState extends ConsumerState<CollegeDialog> {
   final formKey = GlobalKey<FormState>();
 
+  late final ProviderSubscription<AsyncValue<void>> _collegeSubscription;
+
   final nom = TextEditingController();
   final contact = TextEditingController();
   final etablissement = TextEditingController();
@@ -38,7 +40,9 @@ class _CollegeDialogState extends ConsumerState<CollegeDialog> {
   String selectedLevel = "L1";
 
   void _createCollege() {
-    final model = CollegeModel(
+    if (!formKey.currentState!.validate()) return;
+
+    final entity = CollegeEntity(
       nom: nom.text,
       contact: contact.text,
       address: address.text,
@@ -48,15 +52,13 @@ class _CollegeDialogState extends ConsumerState<CollegeDialog> {
       year: year.text,
     );
 
-    if (formKey.currentState!.validate()) {
-      ref.read(collegeProvider.notifier).newCollegeProvider(model: model);
-    }
+    ref.read(collegeProvider.notifier).newCollegeProvider(entity);
   }
 
   void _updateCollege() {
     if (!formKey.currentState!.validate()) return;
 
-    final model = CollegeModel(
+    final entity = CollegeEntity(
       nom: nom.text,
       contact: contact.text,
       address: address.text,
@@ -68,7 +70,7 @@ class _CollegeDialogState extends ConsumerState<CollegeDialog> {
 
     ref
         .read(collegeProvider.notifier)
-        .updateCollegeProvider(id: widget.item!.id!, model: model);
+        .updateCollegeProvider(id: widget.item!.id!, entity: entity);
   }
 
   @override
@@ -83,6 +85,22 @@ class _CollegeDialogState extends ConsumerState<CollegeDialog> {
       nomPromotion.text = widget.item!.nomPromotion;
       year.text = widget.item!.year;
     }
+
+    _collegeSubscription = ref.listenManual<AsyncValue<void>>(collegeProvider, (
+      _,
+      next,
+    ) {
+      next.whenOrNull(
+        data: (_) async {
+          if (!context.mounted) return;
+          context.pop();
+
+          await ref.read(collegeDataProvider.notifier).refresh();
+        },
+        error: (error, _) =>
+            RefListenError.errorListenProvider(context: context, error: error),
+      );
+    });
   }
 
   bool get _isEditing => widget.item != null;
@@ -95,29 +113,12 @@ class _CollegeDialogState extends ConsumerState<CollegeDialog> {
     nomPromotion.dispose();
     address.dispose();
     year.dispose();
+    _collegeSubscription.close();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    ref.listen<AsyncValue<void>>(collegeProvider, (_, next) {
-      next.whenOrNull(
-        data: (data) {
-          context.pop();
-
-          ref.read(collegeDataProvider.notifier).refresh();
-        },
-        error: (error, _) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              backgroundColor: AppColor.red,
-              content: AppText(label: "$error", color: AppColor.white),
-            ),
-          );
-        },
-      );
-    });
-
     final college = ref.watch(collegeProvider);
     final isLoading = college is AsyncLoading;
 

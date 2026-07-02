@@ -3,14 +3,14 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:login_with_unite_test_and_clean_architecture/core/contants/colors/app_color.dart';
+import 'package:login_with_unite_test_and_clean_architecture/core/errors/provider_error.dart';
+import 'package:login_with_unite_test_and_clean_architecture/core/widgets/app_circular.dart';
 import 'package:login_with_unite_test_and_clean_architecture/core/widgets/app_input.dart';
 import 'package:login_with_unite_test_and_clean_architecture/core/widgets/app_text.dart';
-import 'package:login_with_unite_test_and_clean_architecture/core/widgets/build_loading.dart';
 import 'package:login_with_unite_test_and_clean_architecture/core/widgets/button_foating_card.dart';
 import 'package:login_with_unite_test_and_clean_architecture/core/widgets/empty_list.dart';
 import 'package:login_with_unite_test_and_clean_architecture/core/widgets/global_padding.dart';
 import 'package:login_with_unite_test_and_clean_architecture/core/widgets/rad/header_card_rad.dart';
-import 'package:login_with_unite_test_and_clean_architecture/core/widgets/widget_provider/build_error.dart';
 import 'package:login_with_unite_test_and_clean_architecture/features/rad/presentation/providers/honneur/get_honneur_provider.dart';
 import 'package:login_with_unite_test_and_clean_architecture/features/rad/presentation/widgets/honneur/honneur_card.dart';
 import 'package:login_with_unite_test_and_clean_architecture/features/rad/presentation/widgets/honneur/honneur_dialog.dart';
@@ -144,8 +144,9 @@ class _HonneurPageState extends ConsumerState<HonneurPage> {
                   separatorBuilder: (context, index) => SizedBox(height: 10.h),
                 );
               },
-              error: (error, _) => BuildError(error: error),
-              loading: () => BuildLoading(),
+              error: (error, _) =>
+                  errorProvider(context: context, error: error),
+              loading: () => const AppCircular(),
             ),
           ],
         ),

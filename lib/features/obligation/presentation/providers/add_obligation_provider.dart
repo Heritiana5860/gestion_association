@@ -6,7 +6,7 @@ import 'package:login_with_unite_test_and_clean_architecture/features/obligation
 
 final datasourceProvider = Provider((ref) {
   final dio = ref.watch(dioProvider);
-  return AddObligationDatasource(dio: dio);
+  return AddObligationDatasourceImpl(dio: dio);
 });
 
 final repositoryProvider = Provider((ref) {
