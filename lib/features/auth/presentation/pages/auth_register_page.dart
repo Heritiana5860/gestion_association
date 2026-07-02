@@ -4,6 +4,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:login_with_unite_test_and_clean_architecture/core/contants/colors/app_color.dart';
+import 'package:login_with_unite_test_and_clean_architecture/core/contants/constant_text/register_text.dart';
+import 'package:login_with_unite_test_and_clean_architecture/core/contants/constant_text/validator_text.dart';
 import 'package:login_with_unite_test_and_clean_architecture/core/contants/keys/route_keys.dart';
 import 'package:login_with_unite_test_and_clean_architecture/core/contants/sizes/size_font.dart';
 import 'package:login_with_unite_test_and_clean_architecture/core/contants/sizes/size_height.dart';
@@ -189,7 +191,7 @@ class _AuthRegisterPageState extends ConsumerState<AuthRegisterPage> {
                     AppInput(
                       controller: password,
                       enabled: !isLoading,
-                      labelText: "Mot de passe",
+                      labelText: RegisterText.mpdLabel,
                       prefixIcon: Icons.lock,
                       obscureText: isVisibled,
                       keyboardType: TextInputType.visiblePassword,
@@ -205,15 +207,15 @@ class _AuthRegisterPageState extends ConsumerState<AuthRegisterPage> {
                       ),
                       validator: (value) {
                         if (value == null) {
-                          return "Ce champ est obligatoir.";
+                          return ValidatorText.obligatorField;
                         }
 
                         if (value.length < 6) {
-                          return "Mot de passe doit être plus de 6 caractère.";
+                          return RegisterText.mpdLength;
                         }
 
                         if (password.text != confirm.text) {
-                          return "Mot de passe doit être les mêmes.";
+                          return RegisterText.sameMpd;
                         }
 
                         return null;
@@ -223,7 +225,7 @@ class _AuthRegisterPageState extends ConsumerState<AuthRegisterPage> {
                     AppInput(
                       controller: confirm,
                       enabled: !isLoading,
-                      labelText: "Confirme mot de passe",
+                      labelText: RegisterText.confirmMdp,
                       prefixIcon: Icons.lock,
                       obscureText: isConfirmVisibled,
                       keyboardType: TextInputType.visiblePassword,
@@ -241,15 +243,15 @@ class _AuthRegisterPageState extends ConsumerState<AuthRegisterPage> {
                       ),
                       validator: (value) {
                         if (value == null) {
-                          return "Ce champ est obligatoir.";
+                          return ValidatorText.obligatorField;
                         }
 
                         if (value.length < 6) {
-                          return "Mot de passe doit être plus de 6 caractère.";
+                          return RegisterText.mpdLength;
                         }
 
                         if (password.text != confirm.text) {
-                          return "Mot de passe doit être les mêmes.";
+                          return RegisterText.sameMpd;
                         }
 
                         return null;

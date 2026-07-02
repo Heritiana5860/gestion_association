@@ -14,7 +14,7 @@ class MemberStatsRepositoryImpl implements MemberStatsRepository {
   @override
   Future<Either<Failure, MemberStatsEntity>> memberStats() async {
     try {
-      final response = await datasource.stats();
+      final response = await datasource.memberStats();
       return Right(response);
     } on DioException catch (e) {
       return Left(mapDioExceptionToFailure(e));

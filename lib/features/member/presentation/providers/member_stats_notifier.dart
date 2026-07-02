@@ -9,10 +9,7 @@ class MemberStatsNotifier extends AsyncNotifier<MemberStatsEntity> {
     final usecase = ref.watch(memberStatsUsecase);
     final result = await usecase.call();
 
-    return result.fold(
-      (failure) => throw Exception(failure.message),
-      (stats) => stats,
-    );
+    return result.fold((failure) => throw Exception(failure), (stats) => stats);
   }
 
   Future<void> refresh() async {

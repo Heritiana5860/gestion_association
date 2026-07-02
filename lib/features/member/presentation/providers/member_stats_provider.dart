@@ -6,7 +6,7 @@ import 'package:login_with_unite_test_and_clean_architecture/features/member/dom
 
 final datasourceProvider = Provider((ref) {
   final dio = ref.watch(dioProvider);
-  return MemberStatsDatasource(dio: dio);
+  return MemberStatsDatasourceImpl(dio: dio);
 });
 
 final repositoryProvider = Provider((ref) {
