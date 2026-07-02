@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:login_with_unite_test_and_clean_architecture/core/contants/colors/app_color.dart';
+import 'package:login_with_unite_test_and_clean_architecture/core/widgets/app_circular.dart';
 
 class BuildLoading extends StatelessWidget {
   const BuildLoading({super.key});
@@ -8,7 +8,7 @@ class BuildLoading extends StatelessWidget {
   Widget build(BuildContext context) {
     return const SliverFillRemaining(
       hasScrollBody: false,
-      child: Center(child: CircularProgressIndicator(color: AppColor.blue)),
+      child: AppCircular(),
     );
   }
 }

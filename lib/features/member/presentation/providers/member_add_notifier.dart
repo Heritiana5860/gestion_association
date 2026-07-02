@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:login_with_unite_test_and_clean_architecture/features/cotisation/presentation/providers/stats/cotisation_stats_notifier.dart';
-import 'package:login_with_unite_test_and_clean_architecture/features/member/data/models/member_model.dart';
+import 'package:login_with_unite_test_and_clean_architecture/features/member/domain/entities/member_entity.dart';
 import 'package:login_with_unite_test_and_clean_architecture/features/member/presentation/providers/member_notifier.dart';
 import 'package:login_with_unite_test_and_clean_architecture/features/member/presentation/providers/member_provider.dart';
 import 'package:login_with_unite_test_and_clean_architecture/features/member/presentation/providers/member_stats_notifier.dart';
@@ -10,15 +9,15 @@ class MemberAddNotifier extends AsyncNotifier<void> {
   @override
   FutureOr<void> build() {}
 
-  Future<void> addMember({required MemberModel model}) async {
-    final usecase = ref.read(memberUsecaseProvider);
+  Future<void> addMember({required MemberEntity entity}) async {
     state = AsyncLoading();
 
-    final result = await usecase.callAddMember(model: model);
+    final usecase = ref.read(memberUsecaseProvider);
+    final result = await usecase.callAddMember(entity: entity);
 
     result.fold(
-      (l) => state = AsyncError(l.message, StackTrace.current),
-      (r) => state = AsyncValue.data(null),
+      (l) => state = AsyncError(l, StackTrace.current),
+      (r) => state = AsyncValue.data(r),
     );
 
     if (state is! AsyncError) {
@@ -29,25 +28,17 @@ class MemberAddNotifier extends AsyncNotifier<void> {
 
   Future<void> updateMember({
     required int id,
-    required MemberModel model,
+    required MemberEntity entity,
   }) async {
-    final usecase = ref.read(memberUsecaseProvider);
     state = AsyncLoading();
 
-    state = await AsyncValue.guard(
-      () => usecase.callUpdateMember(id: id, model: model),
-    );
+    final usecase = ref.read(memberUsecaseProvider);
+    final result = await usecase.callUpdateMember(id: id, entity: entity);
 
-    final result = await usecase.callUpdateMember(id: id, model: model);
+    result.fold((l) => state = AsyncError(l, StackTrace.current), (r) async {
+      await Future.wait([]);
 
-    result.fold((l) => state = AsyncError(l.message, StackTrace.current), (
-      r,
-    ) async {
-      await ref.read(memberDataProvider.notifier).refresh();
-      await ref.read(memberDataStats.notifier).refresh();
-      await ref.read(cotisationStats.notifier).refresh();
-
-      AsyncValue.data(null);
+      state = AsyncData(r);
     });
   }
 }

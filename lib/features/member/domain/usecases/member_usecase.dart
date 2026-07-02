@@ -1,6 +1,5 @@
 import 'package:dartz/dartz.dart';
 import 'package:login_with_unite_test_and_clean_architecture/core/errors/failure.dart';
-import 'package:login_with_unite_test_and_clean_architecture/features/member/data/models/member_model.dart';
 import 'package:login_with_unite_test_and_clean_architecture/features/member/domain/entities/member_entity.dart';
 import 'package:login_with_unite_test_and_clean_architecture/features/member/domain/repositories/member_repository.dart';
 
@@ -15,15 +14,15 @@ class MemberUsecase {
     return repository.members(params: params, year: year);
   }
 
-  Future<Either<Failure, void>> callAddMember({required MemberModel model}) {
-    return repository.addMember(model: model);
+  Future<Either<Failure, void>> callAddMember({required MemberEntity entity}) {
+    return repository.addMember(entity);
   }
 
   Future<Either<Failure, void>> callUpdateMember({
     required int id,
-    required MemberModel model,
+    required MemberEntity entity,
   }) {
-    return repository.updateMember(id: id, model: model);
+    return repository.updateMember(id: id, entity: entity);
   }
 
   Future<Either<Failure, MemberEntity>> callDetailMember({
@@ -34,6 +33,6 @@ class MemberUsecase {
   }
 
   Future<Either<Failure, void>> callDeleteMember({required int id}) {
-    return repository.deleteMember(id: id);
+    return repository.deleteMember(id);
   }
 }

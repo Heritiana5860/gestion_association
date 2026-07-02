@@ -9,7 +9,7 @@ import 'package:login_with_unite_test_and_clean_architecture/core/contants/const
 import 'package:login_with_unite_test_and_clean_architecture/core/contants/keys/route_keys.dart';
 import 'package:login_with_unite_test_and_clean_architecture/core/contants/sizes/size_font.dart';
 import 'package:login_with_unite_test_and_clean_architecture/core/contants/sizes/size_height.dart';
-import 'package:login_with_unite_test_and_clean_architecture/core/errors/failure.dart';
+import 'package:login_with_unite_test_and_clean_architecture/core/errors/ref_listen_error.dart';
 import 'package:login_with_unite_test_and_clean_architecture/core/widgets/app_button.dart';
 import 'package:login_with_unite_test_and_clean_architecture/core/widgets/app_input.dart';
 import 'package:login_with_unite_test_and_clean_architecture/core/widgets/app_text.dart';
@@ -71,18 +71,11 @@ class _AuthRegisterPageState extends ConsumerState<AuthRegisterPage> {
             memberStatsNotifier.refresh(),
             cotisationStatsNotifier.refresh(),
           ]);
+
+          clear();
         },
-        error: (error, _) {
-          final message = error is Failure
-              ? error.message
-              : "Une erreur est survenue.";
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              backgroundColor: AppColor.red,
-              content: AppText(label: message, color: AppColor.white),
-            ),
-          );
-        },
+        error: (error, _) =>
+            RefListenError.errorListenProvider(context: context, error: error),
       );
     });
   }

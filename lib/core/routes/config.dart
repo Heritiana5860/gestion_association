@@ -147,7 +147,7 @@ final routerProvider = Provider<GoRouter>((ref) {
                         final infos = ref.watch(loginProvider);
 
                         final initialName = infos.maybeWhen(
-                          data: (info) => info?.firstName
+                          data: (info) => info!.firstName
                               .trim()
                               .split(" ")
                               .take(2)
@@ -155,15 +155,6 @@ final routerProvider = Provider<GoRouter>((ref) {
                               .join(),
                           orElse: () => null,
                         );
-
-                        // final initialName = info.fullName.isNotEmpty
-                        //     ? info.fullName
-                        //           .trim()
-                        //           .split(" ")
-                        //           .take(2)
-                        //           .map((e) => e[0])
-                        //           .join()
-                        //     : "NA";
 
                         return Container(
                           width: double.infinity,

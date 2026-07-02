@@ -3,20 +3,23 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:login_with_unite_test_and_clean_architecture/core/contants/colors/app_color.dart';
+import 'package:login_with_unite_test_and_clean_architecture/core/contants/constant_text/member_text.dart';
 import 'package:login_with_unite_test_and_clean_architecture/core/contants/constant_text/rad_text.dart';
 import 'package:login_with_unite_test_and_clean_architecture/core/contants/constant_text/validator_text.dart';
 import 'package:login_with_unite_test_and_clean_architecture/core/contants/data/member_data_list.dart';
+import 'package:login_with_unite_test_and_clean_architecture/core/errors/ref_listen_error.dart';
 import 'package:login_with_unite_test_and_clean_architecture/core/widgets/app_button.dart';
 import 'package:login_with_unite_test_and_clean_architecture/core/widgets/app_checkbox.dart';
 import 'package:login_with_unite_test_and_clean_architecture/core/widgets/app_dropdown.dart';
 import 'package:login_with_unite_test_and_clean_architecture/core/widgets/app_input.dart';
 import 'package:login_with_unite_test_and_clean_architecture/core/widgets/app_text.dart';
 import 'package:login_with_unite_test_and_clean_architecture/features/cotisation/presentation/providers/cotisation/cotisation_notifier.dart';
-import 'package:login_with_unite_test_and_clean_architecture/features/member/data/models/member_model.dart';
+import 'package:login_with_unite_test_and_clean_architecture/features/cotisation/presentation/providers/stats/cotisation_stats_notifier.dart';
 import 'package:login_with_unite_test_and_clean_architecture/features/member/domain/entities/member_entity.dart';
 import 'package:login_with_unite_test_and_clean_architecture/features/member/presentation/providers/member_add_notifier.dart';
 import 'package:login_with_unite_test_and_clean_architecture/features/member/presentation/providers/member_detail_provider.dart';
 import 'package:login_with_unite_test_and_clean_architecture/features/member/presentation/providers/member_notifier.dart';
+import 'package:login_with_unite_test_and_clean_architecture/features/member/presentation/providers/member_stats_notifier.dart';
 import 'package:login_with_unite_test_and_clean_architecture/features/member/presentation/widgets/member/dialog_header.dart';
 
 class AddMemberDialog extends ConsumerStatefulWidget {
@@ -37,6 +40,8 @@ class _AddMemberDialogState extends ConsumerState<AddMemberDialog> {
 
   final formKey = GlobalKey<FormState>();
 
+  late final ProviderSubscription<AsyncValue<void>> _addMemberSubscription;
+
   String selectedLevel = "L1";
   String selectedStatut = "Novice";
   bool? isInside = false;
@@ -48,7 +53,7 @@ class _AddMemberDialogState extends ConsumerState<AddMemberDialog> {
 
   void _newMember() {
     try {
-      final model = MemberModel(
+      final entity = MemberEntity(
         fullName: fullNameController.text.trim(),
         numberPhone: numberPhoneController.text.trim(),
         isInside: isInside ?? false,
@@ -59,7 +64,7 @@ class _AddMemberDialogState extends ConsumerState<AddMemberDialog> {
         statut: selectedStatut.toUpperCase(),
       );
       if (formKey.currentState!.validate()) {
-        ref.read(newMemberProvider.notifier).addMember(model: model);
+        ref.read(newMemberProvider.notifier).addMember(entity: entity);
       }
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -76,7 +81,7 @@ class _AddMemberDialogState extends ConsumerState<AddMemberDialog> {
   void _updateMember() {
     if (!formKey.currentState!.validate()) return;
 
-    final model = MemberModel(
+    final entity = MemberEntity(
       fullName: fullNameController.text.trim(),
       numberPhone: numberPhoneController.text.trim(),
       isInside: isInside as bool,
@@ -89,7 +94,7 @@ class _AddMemberDialogState extends ConsumerState<AddMemberDialog> {
 
     ref
         .read(newMemberProvider.notifier)
-        .updateMember(id: widget.member!.id ?? 0, model: model);
+        .updateMember(id: widget.member!.id ?? 0, entity: entity);
   }
 
   @override
@@ -106,6 +111,34 @@ class _AddMemberDialogState extends ConsumerState<AddMemberDialog> {
       selectedStatut = _capitalize(m.statut.toLowerCase());
       isInside = m.isInside;
     }
+
+    _addMemberSubscription = ref.listenManual<AsyncValue<void>>(
+      newMemberProvider,
+      (previous, next) {
+        next.whenOrNull(
+          data: (_) async {
+            if (!context.mounted) return;
+            context.pop();
+
+            ref.invalidate(detailProvider);
+            if (widget.member?.id != null) {
+              ref.invalidate(detailProvider(widget.member!.id!));
+            }
+
+            await Future.wait([
+              ref.read(memberDataProvider.notifier).refresh(),
+              ref.read(cotisationDataProvider.notifier).refresh(),
+              ref.read(memberDataStats.notifier).refresh(),
+              ref.read(cotisationStats.notifier).refresh(),
+            ]);
+          },
+          error: (error, _) => RefListenError.errorListenProvider(
+            context: context,
+            error: error,
+          ),
+        );
+      },
+    );
   }
 
   bool get _isEditing => widget.member != null;
@@ -117,6 +150,8 @@ class _AddMemberDialogState extends ConsumerState<AddMemberDialog> {
     cdeController.dispose();
     adresseController.dispose();
     etablissementController.dispose();
+
+    _addMemberSubscription.close();
     super.dispose();
   }
 
@@ -124,29 +159,6 @@ class _AddMemberDialogState extends ConsumerState<AddMemberDialog> {
   Widget build(BuildContext context) {
     final newMember = ref.watch(newMemberProvider);
     final isLoading = newMember is AsyncLoading;
-
-    ref.listen<AsyncValue<void>>(newMemberProvider, (previous, next) {
-      next.whenOrNull(
-        data: (_) {
-          ref.watch(memberDataProvider);
-          ref.invalidate(detailProvider);
-          ref.read(cotisationDataProvider.notifier).refresh();
-          if (widget.member?.id != null) {
-            ref.invalidate(detailProvider(widget.member!.id!));
-          }
-
-          context.pop();
-        },
-        error: (error, _) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              backgroundColor: AppColor.red,
-              content: AppText(label: "$error", color: AppColor.white),
-            ),
-          );
-        },
-      );
-    });
 
     return Dialog(
       backgroundColor: AppColor.scaffoldBackground,
@@ -162,11 +174,11 @@ class _AddMemberDialogState extends ConsumerState<AddMemberDialog> {
               spacing: 12.h,
               children: [
                 // Header
-                DialogHeader(headerTitle: "Nouveau membre"),
+                DialogHeader(headerTitle: MemberText.title),
 
                 // Body
                 AppInput(
-                  labelText: "Nom complet",
+                  labelText: MemberText.fullName,
                   controller: fullNameController,
                   enabled: !isLoading,
                   validator: (value) {
@@ -178,7 +190,7 @@ class _AddMemberDialogState extends ConsumerState<AddMemberDialog> {
                 ),
 
                 AppInput(
-                  labelText: "Numero téléphone",
+                  labelText: MemberText.contact,
                   controller: numberPhoneController,
                   keyboardType: TextInputType.phone,
                   enabled: !isLoading,
@@ -192,7 +204,7 @@ class _AddMemberDialogState extends ConsumerState<AddMemberDialog> {
                 ),
 
                 AppInput(
-                  labelText: "N° carte d'étudiant",
+                  labelText: MemberText.cde,
                   controller: cdeController,
                   keyboardType: TextInputType.visiblePassword,
                   enabled: !isLoading,
@@ -205,7 +217,7 @@ class _AddMemberDialogState extends ConsumerState<AddMemberDialog> {
                 ),
 
                 AppInput(
-                  labelText: "Adresse",
+                  labelText: MemberText.address,
                   controller: adresseController,
                   keyboardType: TextInputType.visiblePassword,
                   enabled: !isLoading,
@@ -218,7 +230,7 @@ class _AddMemberDialogState extends ConsumerState<AddMemberDialog> {
                 ),
 
                 AppInput(
-                  labelText: "Etablissement",
+                  labelText: MemberText.school,
                   controller: etablissementController,
                   enabled: !isLoading,
                   validator: (value) {
@@ -230,7 +242,7 @@ class _AddMemberDialogState extends ConsumerState<AddMemberDialog> {
                 ),
 
                 AppDropdown(
-                  labelText: "Niveau",
+                  labelText: MemberText.level,
                   value: selectedLevel,
                   items: levelData
                       .map(
@@ -248,7 +260,7 @@ class _AddMemberDialogState extends ConsumerState<AddMemberDialog> {
                 ),
 
                 AppDropdown(
-                  labelText: "Statut",
+                  labelText: MemberText.statut,
                   value: selectedStatut,
                   items: statutData
                       .map(
@@ -266,7 +278,7 @@ class _AddMemberDialogState extends ConsumerState<AddMemberDialog> {
                 ),
 
                 AppCheckbox(
-                  title: "Résidez-vous sur le campus universitaire ?",
+                  title: MemberText.residance,
                   value: isInside,
                   onChanged: (value) {
                     setState(() {

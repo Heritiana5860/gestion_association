@@ -18,10 +18,7 @@ class MemberRepositoryImpl implements MemberRepository {
     required String year,
   }) async {
     try {
-      final response = await datasource.fetchMembers(
-        params: params,
-        year: year,
-      );
+      final response = await datasource.members(params: params, year: year);
       return Right(response);
     } on DioException catch (e) {
       return Left(mapDioExceptionToFailure(e));
@@ -31,10 +28,18 @@ class MemberRepositoryImpl implements MemberRepository {
   }
 
   @override
-  Future<Either<Failure, void>> addMember({required MemberModel model}) async {
+  Future<Either<Failure, void>> addMember(MemberEntity entity) async {
     try {
-      final response = await datasource.add(model: model);
-      return Right(response);
+      final model = MemberModel(
+        fullName: entity.fullName,
+        numberPhone: entity.numberPhone,
+        isInside: entity.isInside,
+        cde: entity.cde,
+        statut: entity.statut,
+      );
+
+      final res = await datasource.addMember(model);
+      return Right(res);
     } on DioException catch (e) {
       return Left(mapDioExceptionToFailure(e));
     } catch (e) {
@@ -45,11 +50,19 @@ class MemberRepositoryImpl implements MemberRepository {
   @override
   Future<Either<Failure, void>> updateMember({
     required int id,
-    required MemberModel model,
+    required MemberEntity entity,
   }) async {
     try {
-      final response = await datasource.update(id: id, model: model);
-      return Right(response);
+      final model = MemberModel(
+        fullName: entity.fullName,
+        numberPhone: entity.numberPhone,
+        isInside: entity.isInside,
+        cde: entity.cde,
+        statut: entity.statut,
+      );
+
+      final res = await datasource.updateMember(id: id, model: model);
+      return Right(res);
     } on DioException catch (e) {
       return Left(mapDioExceptionToFailure(e));
     } catch (e) {
@@ -63,8 +76,8 @@ class MemberRepositoryImpl implements MemberRepository {
     required String year,
   }) async {
     try {
-      final response = await datasource.detail(id: id, year: year);
-      return Right(response);
+      final res = await datasource.detailMember(id: id, year: year);
+      return Right(res);
     } on DioException catch (e) {
       return Left(mapDioExceptionToFailure(e));
     } catch (e) {
@@ -73,10 +86,10 @@ class MemberRepositoryImpl implements MemberRepository {
   }
 
   @override
-  Future<Either<Failure, void>> deleteMember({required int id}) async {
+  Future<Either<Failure, void>> deleteMember(int id) async {
     try {
-      final response = await datasource.delete(id: id);
-      return Right(response);
+      final res = await datasource.deleteMember(id);
+      return Right(res);
     } on DioException catch (e) {
       return Left(mapDioExceptionToFailure(e));
     } catch (e) {

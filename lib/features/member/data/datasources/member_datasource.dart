@@ -1,90 +1,72 @@
 import 'package:dio/dio.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
-import 'package:login_with_unite_test_and_clean_architecture/core/network/autorisation_token.dart';
+import 'package:login_with_unite_test_and_clean_architecture/core/network/api_endpoints.dart';
 import 'package:login_with_unite_test_and_clean_architecture/features/member/data/models/member_model.dart';
-import 'package:login_with_unite_test_and_clean_architecture/features/member/domain/entities/member_entity.dart';
 
-class MemberDatasource {
+abstract class MemberDatasource {
+  Future<List<MemberModel>> members({
+    Map<String, dynamic>? params,
+    required String year,
+  });
+
+  Future<void> addMember(MemberModel model);
+  Future<void> updateMember({required int id, required MemberModel model});
+  Future<void> deleteMember(int id);
+  Future<MemberModel> detailMember({required int id, required String year});
+}
+
+class MemberDatasourceImpl implements MemberDatasource {
   final Dio dio;
 
-  const MemberDatasource({required this.dio});
+  const MemberDatasourceImpl({required this.dio});
 
-  Future<List<MemberEntity>> fetchMembers({
+  @override
+  Future<List<MemberModel>> members({
     Map<String, dynamic>? params,
     required String year,
   }) async {
-    final baseUrl = dotenv.env['url'] ?? "";
-
     final Map<String, dynamic> queryQueryParams = {
       if (params != null) ...params,
       'year': year,
     };
 
     final response = await dio.get(
-      "${baseUrl}member/",
+      ApiEndpoints.member,
       queryParameters: queryQueryParams,
-      options: Options(headers: await AutorisationToken.headers()),
     );
 
     final List<dynamic> data = response.data;
 
-    if (data.isEmpty) {
-      return [];
-    }
-
     return data.map((e) => MemberModel.fromJson(e)).toList();
   }
 
-  Future<void> add({required MemberModel model}) async {
-    final baseUrl = dotenv.env['url'] ?? "";
-
-    try {
-      await dio.post(
-        "${baseUrl}member/",
-        data: model.toJson(),
-        options: Options(headers: await AutorisationToken.headers()),
-      );
-    } on DioException catch (e) {
-      debugPrint("Erreur add: ${e.response?.data} | ${e.message}");
-      rethrow;
-    }
+  @override
+  Future<void> addMember(MemberModel model) async {
+    await dio.post(ApiEndpoints.member, data: model.toJson());
   }
 
-  Future<void> update({required int id, required MemberModel model}) async {
-    final baseUrl = dotenv.env['url'] ?? "";
-
-    try {
-      await dio.put(
-        "${baseUrl}member/$id/",
-        data: model.toJson(),
-        options: Options(headers: await AutorisationToken.headers()),
-      );
-    } on DioException catch (e) {
-      debugPrint("Erreur add: ${e.response?.data} | ${e.message}");
-      rethrow;
-    }
+  @override
+  Future<void> updateMember({
+    required int id,
+    required MemberModel model,
+  }) async {
+    await dio.put("${ApiEndpoints.member}$id/", data: model.toJson());
   }
 
-  Future<MemberEntity> detail({required int id, required String year}) async {
-    final baseUrl = dotenv.env['url'] ?? "";
+  @override
+  Future<void> deleteMember(int id) async {
+    await dio.delete("${ApiEndpoints.member}$id/");
+  }
 
+  @override
+  Future<MemberModel> detailMember({
+    required int id,
+    required String year,
+  }) async {
     final response = await dio.get(
-      "${baseUrl}member/$id/",
+      "${ApiEndpoints.member}$id/",
       queryParameters: {'year': year},
-      options: Options(headers: await AutorisationToken.headers()),
     );
 
-    final dynamic data = response.data;
-
-    return MemberModel.fromJson(data);
-  }
-
-  Future<void> delete({required int id}) async {
-    final baseUrl = dotenv.env['url'] ?? "";
-    await dio.delete(
-      "${baseUrl}member/$id/",
-      options: Options(headers: await AutorisationToken.headers()),
-    );
+    return MemberModel.fromJson(response.data);
   }
 }
