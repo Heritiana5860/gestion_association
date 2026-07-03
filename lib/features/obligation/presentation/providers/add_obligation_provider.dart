@@ -3,6 +3,7 @@ import 'package:login_with_unite_test_and_clean_architecture/core/providers/dio_
 import 'package:login_with_unite_test_and_clean_architecture/features/obligation/data/datasources/add_obligation_datasource.dart';
 import 'package:login_with_unite_test_and_clean_architecture/features/obligation/data/repositories/add_obligation_repository_impl.dart';
 import 'package:login_with_unite_test_and_clean_architecture/features/obligation/domain/usecases/add_obligation_usecase.dart';
+import 'package:login_with_unite_test_and_clean_architecture/features/obligation/domain/usecases/obligation_usercase.dart';
 
 final datasourceProvider = Provider((ref) {
   final dio = ref.watch(dioProvider);
@@ -17,4 +18,9 @@ final repositoryProvider = Provider((ref) {
 final usecaseAddObligationProvider = Provider((ref) {
   final repository = ref.watch(repositoryProvider);
   return AddObligationUsecase(repository: repository);
+});
+
+final usecaseObligationProvider = Provider((ref) {
+  final repository = ref.watch(repositoryProvider);
+  return ObligationUsercase(repository: repository);
 });

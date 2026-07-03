@@ -6,7 +6,7 @@ import 'package:login_with_unite_test_and_clean_architecture/features/obligation
 class ObligationNotifier extends AsyncNotifier<List<ObligationEntity>> {
   @override
   FutureOr<List<ObligationEntity>> build() async {
-    final usecase = ref.watch(usecaseAddObligationProvider);
+    final usecase = ref.watch(usecaseObligationProvider);
     final result = await usecase.call();
     return result.fold((l) => throw Exception(l.message), (r) => r);
   }

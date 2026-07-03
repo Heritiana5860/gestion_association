@@ -1,4 +1,6 @@
-class ObligationEntity {
+import 'package:equatable/equatable.dart';
+
+class ObligationEntity extends Equatable {
   final double noviceAmountIn;
   final double noviceAmountExt;
   final double doyenAncienIn;
@@ -12,4 +14,12 @@ class ObligationEntity {
     required this.doyenAncienExt,
     required this.year,
   });
+
+  @override
+  List<Object?> get props => [
+    noviceAmountIn,
+    noviceAmountExt,
+    doyenAncienIn,
+    doyenAncienExt,
+  ];
 }
