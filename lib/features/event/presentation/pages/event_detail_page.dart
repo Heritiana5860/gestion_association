@@ -2,11 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:login_with_unite_test_and_clean_architecture/core/contants/colors/app_color.dart';
+import 'package:login_with_unite_test_and_clean_architecture/core/errors/ref_listen_error.dart';
 import 'package:login_with_unite_test_and_clean_architecture/core/widgets/app_text.dart';
 import 'package:login_with_unite_test_and_clean_architecture/core/widgets/button_foating_card.dart';
 import 'package:login_with_unite_test_and_clean_architecture/features/event/domain/entities/event_entity.dart';
 import 'package:login_with_unite_test_and_clean_architecture/features/event/presentation/providers/event_detail_notifier.dart';
-import 'package:login_with_unite_test_and_clean_architecture/features/event/presentation/providers/event_provider.dart';
+import 'package:login_with_unite_test_and_clean_architecture/features/event/presentation/providers/event_submit_notifier.dart';
 import 'package:login_with_unite_test_and_clean_architecture/features/event/presentation/widgets/detail/event_detail_body.dart';
 import 'package:login_with_unite_test_and_clean_architecture/features/event/presentation/widgets/detail/scan/qr_scanner_overlay.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
@@ -22,6 +23,8 @@ class EventDetailPage extends ConsumerStatefulWidget {
 
 class _EventDetailPageState extends ConsumerState<EventDetailPage> {
   bool _isProcessing = false;
+
+  late final ProviderSubscription<AsyncValue<void>> _eventSubscription;
 
   bool isWithinEventTime(EventEntity event) {
     final now = DateTime.now().toUtc(); // ← forcer UTC
@@ -42,11 +45,15 @@ class _EventDetailPageState extends ConsumerState<EventDetailPage> {
 
     setState(() => _isProcessing = true);
 
-    final usecase = ref.read(usecaseEventProvider);
-    final res = await usecase.callAddComingMember(
-      eventId: widget.eventId!,
-      memberCde: code,
-    );
+    // final usecase = ref.read(comingMemberUsecaseProvider);
+    // final res = await usecase.callAddComingMember(
+    //   eventId: widget.eventId!,
+    //   memberCde: code,
+    // );
+
+    await ref
+        .read(newEventProvider.notifier)
+        .comingMember(eventId: widget.eventId!, memberCde: code);
 
     if (!mounted) return;
 
@@ -54,24 +61,53 @@ class _EventDetailPageState extends ConsumerState<EventDetailPage> {
       Navigator.of(scannerContext).pop();
     }
 
-    res.fold(
-      (failure) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(failure.message),
-            backgroundColor: AppColor.red,
-          ),
-        );
-      },
-      (message) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(message), backgroundColor: Colors.green),
-        );
-        ref.invalidate(eventDetailProvider(widget.eventId!));
-      },
-    );
+    // res.fold(
+    //   (failure) {
+    //     ScaffoldMessenger.of(context).showSnackBar(
+    //       SnackBar(
+    //         content: Text(failure.message),
+    //         backgroundColor: AppColor.red,
+    //       ),
+    //     );
+    //   },
+    //   (message) {
+    //     ScaffoldMessenger.of(context).showSnackBar(
+    //       SnackBar(content: Text(message), backgroundColor: Colors.green),
+    //     );
+    //     ref.invalidate(eventDetailProvider(widget.eventId!));
+    //   },
+    // );
 
     setState(() => _isProcessing = false);
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _eventSubscription = ref.listenManual(newEventProvider, (_, next) {
+      next.whenOrNull(
+        data: (_) {
+          if (!context.mounted) return;
+
+          ref.invalidate(eventDetailProvider(widget.eventId!));
+
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: AppText(label: "Succès", color: AppColor.green),
+              backgroundColor: AppColor.green,
+            ),
+          );
+        },
+        error: (error, _) =>
+            RefListenError.errorListenProvider(context: context, error: error),
+      );
+    });
+  }
+
+  @override
+  void dispose() {
+    _eventSubscription.close();
+    super.dispose();
   }
 
   @override

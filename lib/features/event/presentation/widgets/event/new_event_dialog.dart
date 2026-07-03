@@ -149,7 +149,7 @@ class _NewEventDialogState extends ConsumerState<NewEventDialog> {
       year: _selectedDate!.year,
     );
 
-    ref.read(newEventProvider.notifier).submitEvent(entity: entity);
+    ref.read(newEventProvider.notifier).submitEvent(entity);
   }
 
   @override

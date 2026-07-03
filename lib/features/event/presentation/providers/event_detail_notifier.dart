@@ -6,7 +6,7 @@ final eventDetailProvider = FutureProvider.family<EventEntity, int>((
   ref,
   id,
 ) async {
-  final usecase = ref.watch(usecaseEventProvider);
+  final usecase = ref.watch(usecaseEventDetailProvider);
   final result = await usecase.callDetail(id);
 
   return result.fold((l) => throw Exception(l.message), (r) => r);

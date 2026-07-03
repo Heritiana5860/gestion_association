@@ -2,6 +2,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:login_with_unite_test_and_clean_architecture/core/providers/dio_provider.dart';
 import 'package:login_with_unite_test_and_clean_architecture/features/event/data/datasources/event_datasource.dart';
 import 'package:login_with_unite_test_and_clean_architecture/features/event/data/repositories/event_repository_impl.dart';
+import 'package:login_with_unite_test_and_clean_architecture/features/event/domain/usecases/add_event_usecase.dart';
+import 'package:login_with_unite_test_and_clean_architecture/features/event/domain/usecases/coming_member_usecase.dart';
+import 'package:login_with_unite_test_and_clean_architecture/features/event/domain/usecases/event_detail_usecase.dart';
 import 'package:login_with_unite_test_and_clean_architecture/features/event/domain/usecases/event_usecase.dart';
 
 final datasourceProvider = Provider((ref) {
@@ -17,4 +20,19 @@ final repositoryProvider = Provider((ref) {
 final usecaseEventProvider = Provider((ref) {
   final repository = ref.watch(repositoryProvider);
   return EventUsecase(repository: repository);
+});
+
+final usecaseEventDetailProvider = Provider((ref) {
+  final repository = ref.watch(repositoryProvider);
+  return EventDetailUsecase(repository: repository);
+});
+
+final usecaseEventAddProvider = Provider((ref) {
+  final repository = ref.watch(repositoryProvider);
+  return AddEventUsecase(repository: repository);
+});
+
+final comingMemberUsecaseProvider = Provider((ref) {
+  final repository = ref.watch(repositoryProvider);
+  return ComingMemberUsecase(repository: repository);
 });

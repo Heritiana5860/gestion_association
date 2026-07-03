@@ -7,16 +7,29 @@ class EventSubmitNotifier extends AsyncNotifier<void> {
   @override
   FutureOr<void> build() {}
 
-  Future<void> submitEvent({required EventEntity entity}) async {
+  Future<void> submitEvent(EventEntity entity) async {
     state = AsyncLoading();
-    final usecase = ref.read(usecaseEventProvider);
+    final usecase = ref.read(usecaseEventAddProvider);
 
-    final result = await usecase.callSubmit(entity);
+    final result = await usecase.addEventcall(entity);
 
     result.fold(
       (l) => state = AsyncError(l, StackTrace.current),
       (r) => state = AsyncData(r),
     );
+  }
+
+  Future<String> comingMember({
+    required int eventId,
+    required String memberCde,
+  }) async {
+    final usecase = ref.read(comingMemberUsecaseProvider);
+    final res = await usecase.callAddComingMember(
+      eventId: eventId,
+      memberCde: memberCde,
+    );
+
+    return res.fold((l) => throw l, (r) => r);
   }
 }
 

@@ -1,6 +1,7 @@
+import 'package:equatable/equatable.dart';
 import 'package:login_with_unite_test_and_clean_architecture/features/member/domain/entities/member_entity.dart';
 
-class EventEntity {
+class EventEntity extends Equatable {
   final int? id;
   final String eventName;
   final String eventDescription;
@@ -20,4 +21,16 @@ class EventEntity {
     this.id,
     this.members,
   });
+
+  @override
+  List<Object?> get props => [
+    id,
+    eventName,
+    eventDescription,
+    eventDate,
+    startTime,
+    endTime,
+    year,
+    members,
+  ];
 }
