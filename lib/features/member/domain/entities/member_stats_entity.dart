@@ -1,4 +1,6 @@
-class MemberStatsEntity {
+import 'package:equatable/equatable.dart';
+
+class MemberStatsEntity extends Equatable {
   final int total;
   final int novices;
   final int anciens;
@@ -16,4 +18,15 @@ class MemberStatsEntity {
     required this.anciensPourcentage,
     required this.doyensPourcantage,
   });
+
+  @override
+  List<Object?> get props => [
+    total,
+    novices,
+    anciens,
+    doyens,
+    novicesPourcentage,
+    anciensPourcentage,
+    doyensPourcantage,
+  ];
 }

@@ -3,14 +3,15 @@ import 'package:login_with_unite_test_and_clean_architecture/core/errors/failure
 import 'package:login_with_unite_test_and_clean_architecture/features/member/domain/entities/member_entity.dart';
 import 'package:login_with_unite_test_and_clean_architecture/features/member/domain/repositories/member_repository.dart';
 
-class MemberUsecase {
+class UpdateMemberUsecase {
   final MemberRepository repository;
-  const MemberUsecase({required this.repository});
 
-  Future<Either<Failure, List<MemberEntity>>> call({
-    Map<String, dynamic>? params,
-    required String year,
+  const UpdateMemberUsecase({required this.repository});
+
+  Future<Either<Failure, void>> callUpdateMember({
+    required int id,
+    required MemberEntity entity,
   }) {
-    return repository.members(params: params, year: year);
+    return repository.updateMember(id: id, entity: entity);
   }
 }

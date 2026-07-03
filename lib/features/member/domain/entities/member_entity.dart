@@ -1,6 +1,7 @@
+import 'package:equatable/equatable.dart';
 import 'package:login_with_unite_test_and_clean_architecture/features/cotisation/data/models/cotisation_inline_model.dart';
 
-class MemberEntity {
+class MemberEntity extends Equatable {
   final int? id;
   final String fullName;
   final String numberPhone;
@@ -26,4 +27,19 @@ class MemberEntity {
     this.createdAt,
     this.cotisations,
   });
+
+  @override
+  List<Object?> get props => [
+    id,
+    fullName,
+    numberPhone,
+    isInside,
+    cde,
+    address,
+    school,
+    level,
+    statut,
+    createdAt,
+    cotisations,
+  ];
 }

@@ -12,7 +12,7 @@ class MemberAddNotifier extends AsyncNotifier<void> {
   Future<void> addMember({required MemberEntity entity}) async {
     state = AsyncLoading();
 
-    final usecase = ref.read(memberUsecaseProvider);
+    final usecase = ref.read(addMemberUsecaseProvider);
     final result = await usecase.callAddMember(entity: entity);
 
     result.fold(
@@ -32,7 +32,7 @@ class MemberAddNotifier extends AsyncNotifier<void> {
   }) async {
     state = AsyncLoading();
 
-    final usecase = ref.read(memberUsecaseProvider);
+    final usecase = ref.read(updateMemberUsecaseProvider);
     final result = await usecase.callUpdateMember(id: id, entity: entity);
 
     result.fold((l) => state = AsyncError(l, StackTrace.current), (r) async {

@@ -8,7 +8,7 @@ final detailProvider = FutureProvider.family<MemberEntity, int>((
   id,
 ) async {
   final selectedYear = ref.watch(selectedYearProvider) ?? "2026";
-  final usecase = ref.watch(memberUsecaseProvider);
+  final usecase = ref.watch(detailMemberUsecaseProvider);
 
   final result = await usecase.callDetailMember(id: id, year: selectedYear);
   return result.fold((l) => throw Exception(l.message), (r) => r);
