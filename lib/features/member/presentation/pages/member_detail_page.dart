@@ -71,17 +71,20 @@ class _MemberDetailPageState extends ConsumerState<MemberDetailPage> {
                 offset: Offset(0, 8),
                 onSelected: (value) async {
                   if (value == 'delete') {
-                    if (context.mounted) return;
-                    context.pop();
-
                     ref.invalidate(deleteMemberProvider);
-                    ref.read(deleteMemberProvider(widget.memberId));
+                    await ref.read(
+                      deleteMemberProvider(widget.memberId).future,
+                    );
 
                     await Future.wait([
                       ref.read(memberDataProvider.notifier).refresh(),
                       ref.read(memberDataStats.notifier).refresh(),
                       ref.read(cotisationDataProvider.notifier).refresh(),
                     ]);
+
+                    if (context.mounted) {
+                      context.pop();
+                    }
                   }
                 },
                 itemBuilder: (context) => [
@@ -137,7 +140,7 @@ class _MemberDetailPageState extends ConsumerState<MemberDetailPage> {
                     icon: Icons.location_on_outlined,
                     color: AppColor.green,
                     label: 'Adresse',
-                    value: member.address ?? "",
+                    value: member.address,
                   ),
                 ],
               ),
@@ -150,7 +153,7 @@ class _MemberDetailPageState extends ConsumerState<MemberDetailPage> {
                     icon: Icons.school_outlined,
                     color: AppColor.purple,
                     label: 'École',
-                    value: member.school ?? "",
+                    value: member.school,
                   ),
                   InfoRow(
                     icon: Icons.confirmation_number,
@@ -162,7 +165,7 @@ class _MemberDetailPageState extends ConsumerState<MemberDetailPage> {
                     icon: Icons.workspace_premium_outlined,
                     color: AppColor.darkOrange,
                     label: 'Niveau',
-                    value: member.level ?? "",
+                    value: member.level,
                   ),
                 ],
               ),

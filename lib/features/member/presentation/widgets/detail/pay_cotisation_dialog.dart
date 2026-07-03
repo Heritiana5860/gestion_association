@@ -47,10 +47,6 @@ class _PayCotisationDialogState extends ConsumerState<PayCotisationDialog> {
       (_, next) {
         next.whenOrNull(
           data: (data) async {
-            if (!context.mounted) return;
-
-            context.pop();
-
             ref.invalidate(detailProvider(widget.id!));
 
             await Future.wait([
@@ -58,6 +54,10 @@ class _PayCotisationDialogState extends ConsumerState<PayCotisationDialog> {
               ref.read(cotisationDataProvider.notifier).refresh(),
               ref.read(cotisationStats.notifier).refresh(),
             ]);
+
+            if (mounted) {
+              context.pop();
+            }
           },
           error: (error, _) => RefListenError.errorListenProvider(
             context: context,

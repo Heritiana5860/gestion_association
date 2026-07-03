@@ -144,9 +144,13 @@ class _HonneurPageState extends ConsumerState<HonneurPage> {
                   separatorBuilder: (context, index) => SizedBox(height: 10.h),
                 );
               },
-              error: (error, _) =>
-                  errorProvider(context: context, error: error),
-              loading: () => const AppCircular(),
+              error: (error, _) {
+                return SliverFillRemaining(
+                  child: errorProvider(context: context, error: error),
+                );
+              },
+
+              loading: () => SliverFillRemaining(child: AppCircular()),
             ),
           ],
         ),

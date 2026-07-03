@@ -48,9 +48,6 @@ class _PresidentDialogState extends ConsumerState<PresidentDialog> {
       (_, next) {
         next.whenOrNull(
           data: (_) async {
-            if (!context.mounted) return;
-            context.pop();
-
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(
                 backgroundColor: AppColor.green,
@@ -64,6 +61,10 @@ class _PresidentDialogState extends ConsumerState<PresidentDialog> {
             );
 
             await ref.read(getPresidentProvider.notifier).refresh();
+
+            if (mounted) {
+              context.pop();
+            }
           },
         );
       },

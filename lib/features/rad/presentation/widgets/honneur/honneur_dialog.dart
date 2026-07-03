@@ -51,9 +51,6 @@ class _HonneurDialogState extends ConsumerState<HonneurDialog> {
     ) {
       next.whenOrNull(
         data: (_) async {
-          if (!context.mounted) return;
-          context.pop();
-
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
               backgroundColor: AppColor.green,
@@ -67,6 +64,10 @@ class _HonneurDialogState extends ConsumerState<HonneurDialog> {
           );
 
           await ref.read(getHonneurs.notifier).refresh();
+
+          if (mounted) {
+            context.pop();
+          }
         },
         error: (error, _) =>
             RefListenError.errorListenProvider(context: context, error: error),

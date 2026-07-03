@@ -140,9 +140,13 @@ class _CollegePageState extends ConsumerState<CollegePage> {
                   separatorBuilder: (context, index) => SizedBox(height: 10.h),
                 );
               },
-              error: (error, _) =>
-                  errorProvider(context: context, error: error),
-              loading: () => const AppCircular(),
+              error: (error, _) {
+                return SliverFillRemaining(
+                  child: errorProvider(context: context, error: error),
+                );
+              },
+
+              loading: () => SliverFillRemaining(child: AppCircular()),
             ),
           ],
         ),

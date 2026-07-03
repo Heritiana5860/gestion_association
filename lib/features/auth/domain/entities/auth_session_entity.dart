@@ -1,4 +1,6 @@
-class AuthSessionEntity {
+import 'package:equatable/equatable.dart';
+
+class AuthSessionEntity extends Equatable {
   final String refresh;
   final String access;
   final String username;
@@ -10,4 +12,7 @@ class AuthSessionEntity {
     required this.username,
     required this.firstName,
   });
+
+  @override
+  List<Object?> get props => [refresh, access, username, firstName];
 }

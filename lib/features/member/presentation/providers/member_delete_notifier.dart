@@ -5,8 +5,5 @@ final deleteMemberProvider = FutureProvider.family<void, int>((ref, id) async {
   final usecase = ref.read(memberUsecaseProvider);
   final result = await usecase.callDeleteMember(id: id);
 
-  return result.fold(
-    (l) => throw Exception(l.message),
-    (r) => AsyncValue.data(null),
-  );
+  return result.fold((l) => throw l, (r) => r);
 });

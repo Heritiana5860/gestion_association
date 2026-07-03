@@ -271,7 +271,6 @@ class _HomePageState extends ConsumerState<HomePage> {
                         );
                       },
                       error: (e, _) {
-                        debugPrint("Err: $e");
                         return Center(
                           child: AppText(
                             label: "Erreur serveur.",

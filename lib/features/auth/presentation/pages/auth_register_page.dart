@@ -60,6 +60,7 @@ class _AuthRegisterPageState extends ConsumerState<AuthRegisterPage> {
       next.whenOrNull(
         data: (_) async {
           if (!context.mounted) return;
+          clear();
           context.goNamed(RouteKeys.homeName);
 
           final obligationsNotifier = ref.read(obligationsProvider.notifier);
@@ -71,8 +72,6 @@ class _AuthRegisterPageState extends ConsumerState<AuthRegisterPage> {
             memberStatsNotifier.refresh(),
             cotisationStatsNotifier.refresh(),
           ]);
-
-          clear();
         },
         error: (error, _) =>
             RefListenError.errorListenProvider(context: context, error: error),

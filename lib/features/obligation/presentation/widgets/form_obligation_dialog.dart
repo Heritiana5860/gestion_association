@@ -45,13 +45,13 @@ class _FormObligationDialogState extends ConsumerState<FormObligationDialog> {
     }
   }
 
-  void _clear() {
-    doyenInterne.clear();
-    doyenExterne.clear();
-    noviceExterne.clear();
-    noviceInterne.clear();
-    year.clear();
-  }
+  // void _clear() {
+  //   doyenInterne.clear();
+  //   doyenExterne.clear();
+  //   noviceExterne.clear();
+  //   noviceInterne.clear();
+  //   year.clear();
+  // }
 
   @override
   void initState() {
@@ -62,11 +62,10 @@ class _FormObligationDialogState extends ConsumerState<FormObligationDialog> {
       (previous, next) {
         next.whenOrNull(
           data: (_) {
-            if (!context.mounted) return;
-            context.pop();
-
             ref.read(obligationsProvider.notifier).refresh();
-            _clear();
+            if (context.mounted) {
+              context.pop();
+            }
           },
           error: (error, _) => RefListenError.errorListenProvider(
             context: context,

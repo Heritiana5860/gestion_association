@@ -138,9 +138,13 @@ class _PresidentPageState extends ConsumerState<PresidentPage> {
                     },
                   );
                 },
-                error: (error, _) =>
-                    errorProvider(context: context, error: error),
-                loading: () => const AppCircular(),
+                error: (error, _) {
+                  return SliverFillRemaining(
+                    child: errorProvider(context: context, error: error),
+                  );
+                },
+
+                loading: () => SliverFillRemaining(child: AppCircular()),
               ),
             ],
           ),

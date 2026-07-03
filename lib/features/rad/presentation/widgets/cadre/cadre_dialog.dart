@@ -50,9 +50,6 @@ class _CadreDialogState extends ConsumerState<CadreDialog> {
     ) {
       next.whenOrNull(
         data: (_) async {
-          if (!context.mounted) return;
-          context.pop();
-
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
               backgroundColor: AppColor.green,
@@ -66,6 +63,10 @@ class _CadreDialogState extends ConsumerState<CadreDialog> {
           );
 
           await ref.read(fetchCadre.notifier).refresh();
+
+          if (mounted) {
+            context.pop();
+          }
         },
         error: (error, _) =>
             RefListenError.errorListenProvider(context: context, error: error),

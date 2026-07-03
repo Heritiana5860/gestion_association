@@ -105,9 +105,9 @@ class _AddMemberDialogState extends ConsumerState<AddMemberDialog> {
       fullNameController.text = m.fullName;
       numberPhoneController.text = m.numberPhone;
       cdeController.text = m.cde;
-      adresseController.text = m.address ?? "";
-      etablissementController.text = m.school ?? "";
-      selectedLevel = m.level ?? "";
+      adresseController.text = m.address;
+      etablissementController.text = m.school;
+      selectedLevel = m.level;
       selectedStatut = _capitalize(m.statut.toLowerCase());
       isInside = m.isInside;
     }

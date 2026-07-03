@@ -92,10 +92,10 @@ class _CollegeDialogState extends ConsumerState<CollegeDialog> {
     ) {
       next.whenOrNull(
         data: (_) async {
-          if (!context.mounted) return;
-          context.pop();
-
           await ref.read(collegeDataProvider.notifier).refresh();
+          if (mounted) {
+            context.pop();
+          }
         },
         error: (error, _) =>
             RefListenError.errorListenProvider(context: context, error: error),

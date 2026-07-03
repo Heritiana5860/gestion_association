@@ -36,6 +36,9 @@ class MemberRepositoryImpl implements MemberRepository {
         isInside: entity.isInside,
         cde: entity.cde,
         statut: entity.statut,
+        address: entity.address,
+        school: entity.school,
+        level: entity.level,
       );
 
       final res = await datasource.addMember(model);
@@ -59,6 +62,9 @@ class MemberRepositoryImpl implements MemberRepository {
         isInside: entity.isInside,
         cde: entity.cde,
         statut: entity.statut,
+        address: entity.address,
+        school: entity.school,
+        level: entity.level,
       );
 
       final res = await datasource.updateMember(id: id, model: model);

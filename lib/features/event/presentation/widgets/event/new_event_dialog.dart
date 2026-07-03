@@ -164,10 +164,11 @@ class _NewEventDialogState extends ConsumerState<NewEventDialog> {
         error: (error, _) =>
             RefListenError.errorListenProvider(context: context, error: error),
         data: (_) async {
-          if (!context.mounted) return;
-          context.pop();
-
           await ref.read(eventProvider.notifier).refresh();
+
+          if (mounted) {
+            context.pop();
+          }
         },
       );
     });
