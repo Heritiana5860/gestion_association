@@ -10,9 +10,9 @@ class AddCotisationNotifier extends AsyncNotifier<void> {
   Future<void> newCotisation({required AddCotisationEntity entity}) async {
     state = AsyncLoading();
 
-    final usecase = ref.read(usecaseCotisationProvider);
+    final usecase = ref.read(usecaseAddCotisationsProvider);
 
-    final result = await usecase.addCotisationCall(entity: entity);
+    final result = await usecase.addCotisationCall(entity);
 
     result.fold(
       (l) => state = AsyncError(l, StackTrace.current),

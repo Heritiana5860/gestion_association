@@ -1,6 +1,7 @@
+import 'package:equatable/equatable.dart';
 import 'package:login_with_unite_test_and_clean_architecture/features/member/domain/entities/member_entity.dart';
 
-class CotisationEntity {
+class CotisationEntity extends Equatable {
   final int? id;
   final double amount;
   final String isUpdate;
@@ -13,6 +14,10 @@ class CotisationEntity {
     required this.isUpdate,
     required this.year,
     required this.member,
-    this.id, this.isPaid,
+    this.id,
+    this.isPaid,
   });
+
+  @override
+  List<Object?> get props => [amount, isUpdate, year, member, isPaid];
 }

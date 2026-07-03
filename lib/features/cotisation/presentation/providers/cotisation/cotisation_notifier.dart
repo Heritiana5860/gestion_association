@@ -23,7 +23,7 @@ class CotisationNotifier extends AsyncNotifier<List<CotisationEntity>> {
     String? search,
     required String year,
   }) async {
-    final usecase = ref.read(usecaseCotisationProvider);
+    final usecase = ref.read(usecaseCotisationsProvider);
     final result = await usecase.call(search: search, year: year);
     return result.fold((l) => throw Exception(l.message), (r) => r);
   }
