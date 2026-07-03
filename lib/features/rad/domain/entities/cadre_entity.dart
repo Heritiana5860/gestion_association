@@ -1,4 +1,6 @@
-class CadreEntity {
+import 'package:equatable/equatable.dart';
+
+class CadreEntity extends Equatable {
   final int? id;
   final String nom;
   final String fonction;
@@ -12,4 +14,7 @@ class CadreEntity {
     required this.address,
     this.id,
   });
+
+  @override
+  List<Object?> get props => [id, nom, fonction, contact, address];
 }

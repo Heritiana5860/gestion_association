@@ -10,7 +10,7 @@ class CadreNotifier extends AsyncNotifier<void> {
   Future<void> addNewCadre(CadreEntity entity) async {
     state = AsyncLoading();
 
-    final usecase = ref.read(usecaseCadreProvider);
+    final usecase = ref.read(usecaseAddCadreProvider);
     final result = await usecase.call(entity);
 
     result.fold(
@@ -25,7 +25,7 @@ class CadreNotifier extends AsyncNotifier<void> {
   }) async {
     state = AsyncLoading();
 
-    final usecase = ref.read(usecaseCadreProvider);
+    final usecase = ref.read(usecaseUpdateCadreProvider);
     final result = await usecase.callCadreUpdate(id: id, entity: entity);
 
     result.fold(
