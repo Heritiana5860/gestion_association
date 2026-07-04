@@ -142,8 +142,8 @@ class _HonneurDialogState extends ConsumerState<HonneurDialog> {
                   keyboardType: TextInputType.text,
                   enabled: !isLoading,
                   labelText: "Nom complet",
-                  validator: (p0) {
-                    if (p0 == null) {
+                  validator: (value) {
+                    if (value == null || value.trim().isEmpty) {
                       return ValidatorText.obligatorField;
                     }
 
@@ -162,8 +162,8 @@ class _HonneurDialogState extends ConsumerState<HonneurDialog> {
                   enabled: !isLoading,
                   labelText: "Contact",
                   maxLength: 10,
-                  validator: (p0) {
-                    if (p0 == null) {
+                  validator: (value) {
+                    if (value == null || value.trim().isEmpty) {
                       return ValidatorText.obligatorField;
                     }
 

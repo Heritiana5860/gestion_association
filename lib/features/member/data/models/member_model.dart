@@ -28,8 +28,10 @@ class MemberModel extends MemberEntity {
       level: json['level'] as String,
       statut: json['statut'] as String,
       createdAt: json['created_at'] as String?,
-      cotisations: (json['cotisations'] as List<dynamic>)
-          .map((e) => CotisationInlineModel.fromJson(e as Map<String, dynamic>))
+      cotisations: (json['cotisations'] as List<dynamic>?)
+          ?.map(
+            (e) => CotisationInlineModel.fromJson(e as Map<String, dynamic>),
+          )
           .toList(),
     );
   }

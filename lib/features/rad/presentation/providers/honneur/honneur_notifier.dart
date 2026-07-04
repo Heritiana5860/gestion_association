@@ -10,7 +10,7 @@ class HonneurNotifier extends AsyncNotifier<void> {
   Future<void> createHonneur(HonneurEntity entity) async {
     state = AsyncLoading();
 
-    final usecase = ref.read(usecaseHonneurProvider);
+    final usecase = ref.read(usecaseAddHonneurProvider);
     final result = await usecase.call(entity: entity);
 
     result.fold(
@@ -25,7 +25,7 @@ class HonneurNotifier extends AsyncNotifier<void> {
   }) async {
     state = AsyncLoading();
 
-    final usecase = ref.read(usecaseHonneurProvider);
+    final usecase = ref.read(usecaseUpdateHonneurProvider);
     final result = await usecase.callUpdateHonneur(id: id, entity: entity);
 
     result.fold(

@@ -10,7 +10,7 @@ class CollegeNotifier extends AsyncNotifier<void> {
   Future<void> newCollegeProvider(CollegeEntity entity) async {
     state = AsyncLoading();
 
-    final usecase = ref.read(usecaseCollegeProvider);
+    final usecase = ref.read(usecaseAddCollegeProvider);
 
     final result = await usecase.callAddCollege(entity);
 
@@ -26,7 +26,7 @@ class CollegeNotifier extends AsyncNotifier<void> {
   }) async {
     state = AsyncLoading();
 
-    final usecase = ref.read(usecaseCollegeProvider);
+    final usecase = ref.read(usecaseUpdateCollegeProvider);
 
     final result = await usecase.callCollegeUpdate(id: id, entity: entity);
     result.fold(

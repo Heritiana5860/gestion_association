@@ -13,13 +13,9 @@ import 'package:login_with_unite_test_and_clean_architecture/core/widgets/app_ch
 import 'package:login_with_unite_test_and_clean_architecture/core/widgets/app_dropdown.dart';
 import 'package:login_with_unite_test_and_clean_architecture/core/widgets/app_input.dart';
 import 'package:login_with_unite_test_and_clean_architecture/core/widgets/app_text.dart';
-import 'package:login_with_unite_test_and_clean_architecture/features/cotisation/presentation/providers/cotisation/cotisation_notifier.dart';
-import 'package:login_with_unite_test_and_clean_architecture/features/cotisation/presentation/providers/stats/cotisation_stats_notifier.dart';
 import 'package:login_with_unite_test_and_clean_architecture/features/member/domain/entities/member_entity.dart';
 import 'package:login_with_unite_test_and_clean_architecture/features/member/presentation/providers/member_add_notifier.dart';
 import 'package:login_with_unite_test_and_clean_architecture/features/member/presentation/providers/member_detail_provider.dart';
-import 'package:login_with_unite_test_and_clean_architecture/features/member/presentation/providers/member_notifier.dart';
-import 'package:login_with_unite_test_and_clean_architecture/features/member/presentation/providers/member_stats_notifier.dart';
 import 'package:login_with_unite_test_and_clean_architecture/features/member/presentation/widgets/member/dialog_header.dart';
 
 class AddMemberDialog extends ConsumerStatefulWidget {
@@ -52,29 +48,20 @@ class _AddMemberDialogState extends ConsumerState<AddMemberDialog> {
   }
 
   void _newMember() {
-    try {
-      final entity = MemberEntity(
-        fullName: fullNameController.text.trim(),
-        numberPhone: numberPhoneController.text.trim(),
-        isInside: isInside ?? false,
-        cde: cdeController.text.trim(),
-        address: adresseController.text.trim(),
-        school: etablissementController.text.trim(),
-        level: selectedLevel,
-        statut: selectedStatut.toUpperCase(),
-      );
-      if (formKey.currentState!.validate()) {
-        ref.read(newMemberProvider.notifier).addMember(entity: entity);
-      }
-    } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: AppText(
-            label: "Une erreur est survenu!",
-            color: AppColor.red,
-          ),
-        ),
-      );
+    if (!formKey.currentState!.validate()) return;
+
+    final entity = MemberEntity(
+      fullName: fullNameController.text.trim(),
+      numberPhone: numberPhoneController.text.trim(),
+      isInside: isInside ?? false,
+      cde: cdeController.text.trim(),
+      address: adresseController.text.trim(),
+      school: etablissementController.text.trim(),
+      level: selectedLevel,
+      statut: selectedStatut.toUpperCase(),
+    );
+    if (formKey.currentState!.validate()) {
+      ref.read(newMemberProvider.notifier).addMember(entity: entity);
     }
   }
 
@@ -84,7 +71,7 @@ class _AddMemberDialogState extends ConsumerState<AddMemberDialog> {
     final entity = MemberEntity(
       fullName: fullNameController.text.trim(),
       numberPhone: numberPhoneController.text.trim(),
-      isInside: isInside as bool,
+      isInside: isInside ?? false,
       cde: cdeController.text.trim(),
       address: adresseController.text.trim(),
       school: etablissementController.text.trim(),
@@ -116,21 +103,13 @@ class _AddMemberDialogState extends ConsumerState<AddMemberDialog> {
       newMemberProvider,
       (previous, next) {
         next.whenOrNull(
-          data: (_) async {
-            if (!context.mounted) return;
-            context.pop();
+          data: (_) {
+            if (previous is! AsyncLoading) return;
 
-            ref.invalidate(detailProvider);
             if (widget.member?.id != null) {
               ref.invalidate(detailProvider(widget.member!.id!));
             }
-
-            await Future.wait([
-              ref.read(memberDataProvider.notifier).refresh(),
-              ref.read(cotisationDataProvider.notifier).refresh(),
-              ref.read(memberDataStats.notifier).refresh(),
-              ref.read(cotisationStats.notifier).refresh(),
-            ]);
+            if (context.mounted) context.pop();
           },
           error: (error, _) => RefListenError.errorListenProvider(
             context: context,
@@ -182,7 +161,7 @@ class _AddMemberDialogState extends ConsumerState<AddMemberDialog> {
                   controller: fullNameController,
                   enabled: !isLoading,
                   validator: (value) {
-                    if (value == null) {
+                    if (value == null || value.trim().isEmpty) {
                       return ValidatorText.obligatorField;
                     }
                     return null;
@@ -196,7 +175,7 @@ class _AddMemberDialogState extends ConsumerState<AddMemberDialog> {
                   enabled: !isLoading,
                   maxLength: 10,
                   validator: (value) {
-                    if (value == null) {
+                    if (value == null || value.trim().isEmpty) {
                       return ValidatorText.obligatorField;
                     }
                     return null;
@@ -209,7 +188,7 @@ class _AddMemberDialogState extends ConsumerState<AddMemberDialog> {
                   keyboardType: TextInputType.visiblePassword,
                   enabled: !isLoading,
                   validator: (value) {
-                    if (value == null) {
+                    if (value == null || value.trim().isEmpty) {
                       return ValidatorText.obligatorField;
                     }
                     return null;
@@ -222,7 +201,7 @@ class _AddMemberDialogState extends ConsumerState<AddMemberDialog> {
                   keyboardType: TextInputType.visiblePassword,
                   enabled: !isLoading,
                   validator: (value) {
-                    if (value == null) {
+                    if (value == null || value.trim().isEmpty) {
                       return ValidatorText.obligatorField;
                     }
                     return null;
@@ -234,7 +213,7 @@ class _AddMemberDialogState extends ConsumerState<AddMemberDialog> {
                   controller: etablissementController,
                   enabled: !isLoading,
                   validator: (value) {
-                    if (value == null) {
+                    if (value == null || value.trim().isEmpty) {
                       return ValidatorText.obligatorField;
                     }
                     return null;

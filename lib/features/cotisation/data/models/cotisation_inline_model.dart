@@ -1,16 +1,12 @@
-class CotisationInlineModel {
-  final int? id;
-  final String? year;
-  final double amount;
-  final bool isPaid;
-  final String? paymentDate;
+import 'package:login_with_unite_test_and_clean_architecture/features/cotisation/domain/entities/cotisation_inline_entity.dart';
 
+class CotisationInlineModel extends CotisationInlineEntity {
   const CotisationInlineModel({
-    this.id,
-    this.year,
-    required this.amount,
-    required this.isPaid,
-    this.paymentDate,
+    super.id,
+    super.year,
+    required super.amount,
+    required super.isPaid,
+    super.paymentDate,
   });
 
   factory CotisationInlineModel.fromJson(Map<String, dynamic> json) {
@@ -21,5 +17,15 @@ class CotisationInlineModel {
       isPaid: json['is_paid'] as bool? ?? false,
       paymentDate: json['payment_date'] as String?,
     );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      if (id != null) 'id': id,
+      'year': year,
+      'amount': amount,
+      'is_paid': isPaid,
+      'payment_date': paymentDate,
+    };
   }
 }

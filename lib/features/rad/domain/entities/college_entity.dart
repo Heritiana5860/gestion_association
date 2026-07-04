@@ -1,4 +1,6 @@
-class CollegeEntity {
+import 'package:equatable/equatable.dart';
+
+class CollegeEntity extends Equatable {
   final int? id;
   final String nom;
   final String contact;
@@ -18,4 +20,16 @@ class CollegeEntity {
     required this.nomPromotion,
     required this.year,
   });
+
+  @override
+  List<Object?> get props => [
+    id,
+    nom,
+    contact,
+    address,
+    etablissement,
+    niveau,
+    nomPromotion,
+    year,
+  ];
 }

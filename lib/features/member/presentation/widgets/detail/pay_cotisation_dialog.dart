@@ -11,10 +11,7 @@ import 'package:login_with_unite_test_and_clean_architecture/core/widgets/app_bu
 import 'package:login_with_unite_test_and_clean_architecture/core/widgets/app_input.dart';
 import 'package:login_with_unite_test_and_clean_architecture/features/cotisation/domain/entities/add_cotisation_entity.dart';
 import 'package:login_with_unite_test_and_clean_architecture/features/cotisation/presentation/providers/cotisation/add_cotisation_notifier.dart';
-import 'package:login_with_unite_test_and_clean_architecture/features/cotisation/presentation/providers/cotisation/cotisation_notifier.dart';
-import 'package:login_with_unite_test_and_clean_architecture/features/cotisation/presentation/providers/stats/cotisation_stats_notifier.dart';
 import 'package:login_with_unite_test_and_clean_architecture/features/member/presentation/providers/member_detail_provider.dart';
-import 'package:login_with_unite_test_and_clean_architecture/features/member/presentation/providers/member_notifier.dart';
 import 'package:login_with_unite_test_and_clean_architecture/features/member/presentation/widgets/member/dialog_header.dart';
 
 class PayCotisationDialog extends ConsumerStatefulWidget {
@@ -46,18 +43,11 @@ class _PayCotisationDialogState extends ConsumerState<PayCotisationDialog> {
       payCotisation,
       (_, next) {
         next.whenOrNull(
-          data: (data) async {
+          data: (data) {
+            if (!context.mounted) return;
+            context.pop();
+
             ref.invalidate(detailProvider(widget.id!));
-
-            await Future.wait([
-              ref.read(memberDataProvider.notifier).refresh(),
-              ref.read(cotisationDataProvider.notifier).refresh(),
-              ref.read(cotisationStats.notifier).refresh(),
-            ]);
-
-            if (mounted) {
-              context.pop();
-            }
           },
           error: (error, _) => RefListenError.errorListenProvider(
             context: context,
@@ -89,8 +79,8 @@ class _PayCotisationDialogState extends ConsumerState<PayCotisationDialog> {
                 controller: amount,
                 keyboardType: TextInputType.number,
                 labelText: CotisationText.montant,
-                validator: (p0) {
-                  if (p0 == null) {
+                validator: (value) {
+                  if (value == null || value.trim().isEmpty) {
                     return ValidatorText.obligatorField;
                   }
                   return null;

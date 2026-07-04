@@ -1,5 +1,5 @@
 import 'package:equatable/equatable.dart';
-import 'package:login_with_unite_test_and_clean_architecture/features/cotisation/data/models/cotisation_inline_model.dart';
+import 'package:login_with_unite_test_and_clean_architecture/features/cotisation/domain/entities/cotisation_inline_entity.dart';
 
 class MemberEntity extends Equatable {
   final int? id;
@@ -12,7 +12,7 @@ class MemberEntity extends Equatable {
   final String level;
   final String statut;
   final String? createdAt;
-  final List<CotisationInlineModel>? cotisations;
+  final List<CotisationInlineEntity>? cotisations;
 
   const MemberEntity({
     this.id,

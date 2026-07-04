@@ -141,8 +141,8 @@ class _CollegeDialogState extends ConsumerState<CollegeDialog> {
                   keyboardType: TextInputType.text,
                   enabled: !isLoading,
                   labelText: "Nom complet",
-                  validator: (p0) {
-                    if (p0 == null) {
+                  validator: (value) {
+                    if (value == null || value.trim().isEmpty) {
                       return ValidatorText.obligatorField;
                     }
 
@@ -155,8 +155,8 @@ class _CollegeDialogState extends ConsumerState<CollegeDialog> {
                   enabled: !isLoading,
                   labelText: "Contact",
                   maxLength: 10,
-                  validator: (p0) {
-                    if (p0 == null) {
+                  validator: (value) {
+                    if (value == null || value.trim().isEmpty) {
                       return ValidatorText.obligatorField;
                     }
 
@@ -168,8 +168,8 @@ class _CollegeDialogState extends ConsumerState<CollegeDialog> {
                   keyboardType: TextInputType.text,
                   enabled: !isLoading,
                   labelText: "Etablissement",
-                  validator: (p0) {
-                    if (p0 == null) {
+                  validator: (value) {
+                    if (value == null || value.trim().isEmpty) {
                       return ValidatorText.obligatorField;
                     }
 
@@ -198,8 +198,8 @@ class _CollegeDialogState extends ConsumerState<CollegeDialog> {
                   keyboardType: TextInputType.text,
                   enabled: !isLoading,
                   labelText: "Nom de promotion",
-                  validator: (p0) {
-                    if (p0 == null) {
+                  validator: (value) {
+                    if (value == null || value.trim().isEmpty) {
                       return ValidatorText.obligatorField;
                     }
 
@@ -211,8 +211,8 @@ class _CollegeDialogState extends ConsumerState<CollegeDialog> {
                   keyboardType: TextInputType.number,
                   enabled: !isLoading,
                   labelText: "Cette année",
-                  validator: (p0) {
-                    if (p0 == null) {
+                  validator: (value) {
+                    if (value == null || value.trim().isEmpty) {
                       return ValidatorText.obligatorField;
                     }
 
@@ -224,8 +224,8 @@ class _CollegeDialogState extends ConsumerState<CollegeDialog> {
                   keyboardType: TextInputType.text,
                   enabled: !isLoading,
                   labelText: "Adresse",
-                  validator: (p0) {
-                    if (p0 == null) {
+                  validator: (value) {
+                    if (value == null || value.trim().isEmpty) {
                       return ValidatorText.obligatorField;
                     }
 

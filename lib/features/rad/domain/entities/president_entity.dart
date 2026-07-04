@@ -1,4 +1,6 @@
-class PresidentEntity {
+import 'package:equatable/equatable.dart';
+
+class PresidentEntity extends Equatable {
   final int? id;
   final String nom;
   final String contact;
@@ -12,4 +14,7 @@ class PresidentEntity {
     required this.bio,
     this.id,
   });
+
+  @override
+  List<Object?> get props => [id, nom, contact, year, bio];
 }

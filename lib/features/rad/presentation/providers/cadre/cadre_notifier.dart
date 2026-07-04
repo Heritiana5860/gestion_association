@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:login_with_unite_test_and_clean_architecture/features/rad/domain/entities/cadre_entity.dart';
 import 'package:login_with_unite_test_and_clean_architecture/features/rad/presentation/providers/cadre/cadre_provider.dart';
+import 'package:login_with_unite_test_and_clean_architecture/features/rad/presentation/providers/cadre/fetch_cadre_notifier.dart';
 
 class CadreNotifier extends AsyncNotifier<void> {
   @override
@@ -28,10 +29,12 @@ class CadreNotifier extends AsyncNotifier<void> {
     final usecase = ref.read(usecaseUpdateCadreProvider);
     final result = await usecase.callCadreUpdate(id: id, entity: entity);
 
-    result.fold(
-      (l) => state = AsyncError(l.message, StackTrace.current),
-      (r) => state = AsyncData(null),
-    );
+    result.fold((l) => state = AsyncError(l.message, StackTrace.current), (
+      r,
+    ) async {
+      state = AsyncData(null);
+      await ref.read(fetchCadre.notifier).refresh();
+    });
   }
 }
 

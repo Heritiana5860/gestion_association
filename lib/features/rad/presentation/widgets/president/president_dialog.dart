@@ -10,7 +10,6 @@ import 'package:login_with_unite_test_and_clean_architecture/core/widgets/app_in
 import 'package:login_with_unite_test_and_clean_architecture/core/widgets/app_text.dart';
 import 'package:login_with_unite_test_and_clean_architecture/features/member/presentation/widgets/member/dialog_header.dart';
 import 'package:login_with_unite_test_and_clean_architecture/features/rad/domain/entities/president_entity.dart';
-import 'package:login_with_unite_test_and_clean_architecture/features/rad/presentation/providers/president/get_president_provider.dart';
 import 'package:login_with_unite_test_and_clean_architecture/features/rad/presentation/providers/president/president_notifier.dart';
 
 class PresidentDialog extends ConsumerStatefulWidget {
@@ -47,7 +46,10 @@ class _PresidentDialogState extends ConsumerState<PresidentDialog> {
       presidenProvider,
       (_, next) {
         next.whenOrNull(
-          data: (_) async {
+          data: (_) {
+            if (!context.mounted) return;
+            context.pop();
+
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(
                 backgroundColor: AppColor.green,
@@ -59,12 +61,6 @@ class _PresidentDialogState extends ConsumerState<PresidentDialog> {
                 ),
               ),
             );
-
-            await ref.read(getPresidentProvider.notifier).refresh();
-
-            if (mounted) {
-              context.pop();
-            }
           },
         );
       },
@@ -135,8 +131,8 @@ class _PresidentDialogState extends ConsumerState<PresidentDialog> {
                   keyboardType: TextInputType.text,
                   enabled: !isLoading,
                   labelText: "Nom complet",
-                  validator: (p0) {
-                    if (p0 == null) {
+                  validator: (value) {
+                    if (value == null || value.trim().isEmpty) {
                       return ValidatorText.obligatorField;
                     }
 
@@ -149,8 +145,8 @@ class _PresidentDialogState extends ConsumerState<PresidentDialog> {
                   enabled: !isLoading,
                   labelText: "Contact",
                   maxLength: 10,
-                  validator: (p0) {
-                    if (p0 == null) {
+                  validator: (value) {
+                    if (value == null || value.trim().isEmpty) {
                       return ValidatorText.obligatorField;
                     }
 
@@ -162,8 +158,8 @@ class _PresidentDialogState extends ConsumerState<PresidentDialog> {
                   keyboardType: TextInputType.number,
                   enabled: !isLoading,
                   labelText: "Année de mandat",
-                  validator: (p0) {
-                    if (p0 == null) {
+                  validator: (value) {
+                    if (value == null || value.trim().isEmpty) {
                       return ValidatorText.obligatorField;
                     }
 

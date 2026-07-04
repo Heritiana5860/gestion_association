@@ -12,7 +12,6 @@ import 'package:login_with_unite_test_and_clean_architecture/core/widgets/app_te
 import 'package:login_with_unite_test_and_clean_architecture/features/member/presentation/widgets/member/dialog_header.dart';
 import 'package:login_with_unite_test_and_clean_architecture/features/rad/domain/entities/cadre_entity.dart';
 import 'package:login_with_unite_test_and_clean_architecture/features/rad/presentation/providers/cadre/cadre_notifier.dart';
-import 'package:login_with_unite_test_and_clean_architecture/features/rad/presentation/providers/cadre/fetch_cadre_notifier.dart';
 
 class CadreDialog extends ConsumerStatefulWidget {
   const CadreDialog({super.key, this.item});
@@ -49,7 +48,10 @@ class _CadreDialogState extends ConsumerState<CadreDialog> {
       next,
     ) {
       next.whenOrNull(
-        data: (_) async {
+        data: (_) {
+          if (!context.mounted) return;
+          context.pop();
+
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
               backgroundColor: AppColor.green,
@@ -61,12 +63,6 @@ class _CadreDialogState extends ConsumerState<CadreDialog> {
               ),
             ),
           );
-
-          await ref.read(fetchCadre.notifier).refresh();
-
-          if (mounted) {
-            context.pop();
-          }
         },
         error: (error, _) =>
             RefListenError.errorListenProvider(context: context, error: error),
@@ -139,8 +135,8 @@ class _CadreDialogState extends ConsumerState<CadreDialog> {
                   keyboardType: TextInputType.text,
                   enabled: !isLoading,
                   labelText: "Nom complet",
-                  validator: (p0) {
-                    if (p0 == null) {
+                  validator: (value) {
+                    if (value == null || value.trim().isEmpty) {
                       return ValidatorText.obligatorField;
                     }
 
@@ -159,8 +155,8 @@ class _CadreDialogState extends ConsumerState<CadreDialog> {
                   enabled: !isLoading,
                   labelText: "Contact",
                   maxLength: 10,
-                  validator: (p0) {
-                    if (p0 == null) {
+                  validator: (value) {
+                    if (value == null || value.trim().isEmpty) {
                       return ValidatorText.obligatorField;
                     }
 

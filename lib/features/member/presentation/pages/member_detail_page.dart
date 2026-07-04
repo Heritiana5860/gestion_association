@@ -44,82 +44,104 @@ class _MemberDetailPageState extends ConsumerState<MemberDetailPage> {
   @override
   Widget build(BuildContext context) {
     final membersAsync = ref.watch(detailProvider(widget.memberId));
+    final deleteState = ref.watch(memberDeleteProvider);
+    final isDeleting = deleteState is AsyncLoading;
 
-    return membersAsync.when(
-      data: (member) {
-        return Scaffold(
-          backgroundColor: AppColor.scaffoldBackground,
-          appBar: AppBar(
-            leading: IconButton(
-              icon: const Icon(Icons.arrow_back_ios_new_rounded),
-              onPressed: () => context.pop(),
-            ),
-            title: const AppText(
-              label: 'Fiche membre',
-              fontWeight: FontWeight.w600,
-            ),
-            centerTitle: true,
-            actions: [
-              PopupMenuButton(
-                icon: Icon(Icons.more_horiz_rounded, color: AppColor.grey),
-                color: AppColor.white,
-                elevation: 8,
-                shadowColor: Colors.black.withValues(alpha: 0.12),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(12.r),
+    ref.listen<AsyncValue<void>>(memberDeleteProvider, (previous, next) {
+      next.whenOrNull(
+        data: (_) async {
+          if (previous is! AsyncData) {
+            await ref.read(memberDataProvider.notifier).refresh();
+            await ref.read(memberDataStats.notifier).refresh();
+            await ref.read(cotisationDataProvider.notifier).refresh();
+            if (context.mounted) context.pop();
+          }
+        },
+        error: (error, _) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('Erreur lors de la suppression')),
+          );
+        },
+      );
+    });
+
+    return Scaffold(
+      backgroundColor: AppColor.scaffoldBackground,
+      appBar: AppBar(
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back_ios_new_rounded),
+          onPressed: () => context.pop(),
+        ),
+        title: const AppText(
+          label: 'Fiche membre',
+          fontWeight: FontWeight.w600,
+        ),
+        centerTitle: true,
+        actions: [
+          if (isDeleting)
+            Padding(
+              padding: EdgeInsets.all(14.r),
+              child: SizedBox(
+                width: 18.r,
+                height: 18.r,
+                child: CircularProgressIndicator(
+                  strokeWidth: 2,
+                  color: AppColor.red,
                 ),
-                offset: Offset(0, 8),
-                onSelected: (value) async {
-                  if (value == 'delete') {
-                    ref.invalidate(deleteMemberProvider);
-                    await ref.read(
-                      deleteMemberProvider(widget.memberId).future,
-                    );
-
-                    await Future.wait([
-                      ref.read(memberDataProvider.notifier).refresh(),
-                      ref.read(memberDataStats.notifier).refresh(),
-                      ref.read(cotisationDataProvider.notifier).refresh(),
-                    ]);
-
-                    if (context.mounted) {
-                      context.pop();
-                    }
-                  }
-                },
-                itemBuilder: (context) => [
-                  PopupMenuItem(
-                    value: 'delete',
-                    height: 44.h,
-                    child: Row(
-                      children: [
-                        Container(
-                          padding: EdgeInsets.all(6.r),
-                          decoration: BoxDecoration(
-                            color: AppColor.red.withValues(alpha: 0.08),
-                            borderRadius: BorderRadius.circular(8.r),
-                          ),
-                          child: Icon(
-                            Icons.delete_outline_rounded,
-                            color: AppColor.red,
-                            size: 16.r,
-                          ),
-                        ),
-                        SizedBox(width: 10.w),
-                        AppText(
-                          label: 'Supprimer',
-                          fontSize: 14.sp,
-                          fontWeight: FontWeight.w500,
-                          color: AppColor.red,
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
               ),
-            ],
-          ),
-          body: ListView(
+            )
+          else
+            PopupMenuButton(
+              icon: Icon(Icons.more_horiz_rounded, color: AppColor.grey),
+              color: AppColor.white,
+              elevation: 8,
+              shadowColor: Colors.black.withValues(alpha: 0.12),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(12.r),
+              ),
+              offset: const Offset(0, 8),
+              onSelected: (value) {
+                if (value == 'delete') {
+                  ref
+                      .read(memberDeleteProvider.notifier)
+                      .deleteMember(widget.memberId);
+                }
+              },
+              itemBuilder: (context) => [
+                PopupMenuItem(
+                  value: 'delete',
+                  height: 44.h,
+                  child: Row(
+                    children: [
+                      Container(
+                        padding: EdgeInsets.all(6.r),
+                        decoration: BoxDecoration(
+                          color: AppColor.red.withValues(alpha: 0.08),
+                          borderRadius: BorderRadius.circular(8.r),
+                        ),
+                        child: Icon(
+                          Icons.delete_outline_rounded,
+                          color: AppColor.red,
+                          size: 16.r,
+                        ),
+                      ),
+                      SizedBox(width: 10.w),
+                      AppText(
+                        label: 'Supprimer',
+                        fontSize: 14.sp,
+                        fontWeight: FontWeight.w500,
+                        color: AppColor.red,
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+        ],
+      ),
+      body: membersAsync.when(
+        data: (member) {
+          return ListView(
             padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 20.h),
             children: [
               HeroCard(member: member, initials: _initials(member.fullName)),
@@ -190,15 +212,17 @@ class _MemberDetailPageState extends ConsumerState<MemberDetailPage> {
                 ],
               ),
               SizedBox(height: 24.h),
-              member.cotisations!.first.isPaid
-                  ? MemberCard(member: member)
-                  : SizedBox.shrink(),
+              if ((member.cotisations?.isNotEmpty ?? false) &&
+                  member.cotisations!.first.isPaid)
+                MemberCard(member: member)
+              else
+                SizedBox.shrink(),
             ],
-          ),
-        );
-      },
-      error: (error, _) => errorProvider(context: context, error: error),
-      loading: () => const AppCircular(),
+          );
+        },
+        error: (error, _) => errorProvider(context: context, error: error),
+        loading: () => const AppCircular(),
+      ),
     );
   }
 }

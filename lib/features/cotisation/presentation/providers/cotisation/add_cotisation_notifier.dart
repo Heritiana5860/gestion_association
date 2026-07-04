@@ -1,7 +1,10 @@
 import 'dart:async';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:login_with_unite_test_and_clean_architecture/features/cotisation/domain/entities/add_cotisation_entity.dart';
+import 'package:login_with_unite_test_and_clean_architecture/features/cotisation/presentation/providers/cotisation/cotisation_notifier.dart';
 import 'package:login_with_unite_test_and_clean_architecture/features/cotisation/presentation/providers/cotisation/cotisation_provider.dart';
+import 'package:login_with_unite_test_and_clean_architecture/features/cotisation/presentation/providers/stats/cotisation_stats_notifier.dart';
+import 'package:login_with_unite_test_and_clean_architecture/features/member/presentation/providers/member_notifier.dart';
 
 class AddCotisationNotifier extends AsyncNotifier<void> {
   @override
@@ -14,10 +17,15 @@ class AddCotisationNotifier extends AsyncNotifier<void> {
 
     final result = await usecase.addCotisationCall(entity);
 
-    result.fold(
-      (l) => state = AsyncError(l, StackTrace.current),
-      (r) => state = AsyncData(r),
-    );
+    result.fold((l) => state = AsyncError(l, StackTrace.current), (r) async {
+      state = AsyncData(r);
+
+      await Future.wait([
+        ref.read(memberDataProvider.notifier).refresh(),
+        ref.read(cotisationDataProvider.notifier).refresh(),
+        ref.read(cotisationStats.notifier).refresh(),
+      ]);
+    });
   }
 }
 

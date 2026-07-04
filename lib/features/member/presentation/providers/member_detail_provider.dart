@@ -11,5 +11,5 @@ final detailProvider = FutureProvider.family<MemberEntity, int>((
   final usecase = ref.watch(detailMemberUsecaseProvider);
 
   final result = await usecase.callDetailMember(id: id, year: selectedYear);
-  return result.fold((l) => throw Exception(l.message), (r) => r);
+  return result.fold((l) => throw l, (r) => r);
 });

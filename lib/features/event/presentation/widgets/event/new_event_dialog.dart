@@ -6,6 +6,7 @@ import 'package:login_with_unite_test_and_clean_architecture/core/contants/color
 import 'package:login_with_unite_test_and_clean_architecture/core/errors/ref_listen_error.dart';
 import 'package:login_with_unite_test_and_clean_architecture/core/widgets/app_button.dart';
 import 'package:login_with_unite_test_and_clean_architecture/core/widgets/app_input.dart';
+import 'package:login_with_unite_test_and_clean_architecture/core/widgets/app_text.dart';
 import 'package:login_with_unite_test_and_clean_architecture/features/event/domain/entities/event_entity.dart';
 import 'package:login_with_unite_test_and_clean_architecture/features/event/presentation/providers/event_notifier.dart';
 import 'package:login_with_unite_test_and_clean_architecture/features/event/presentation/providers/event_submit_notifier.dart';
@@ -135,7 +136,9 @@ class _NewEventDialogState extends ConsumerState<NewEventDialog> {
 
     if (_selectedDate == null) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text("Veuillez sélectionner une date")),
+        const SnackBar(
+          content: AppText(label: "Veuillez sélectionner une date"),
+        ),
       );
       return;
     }

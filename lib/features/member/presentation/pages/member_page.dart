@@ -111,6 +111,7 @@ class _MemberPageState extends ConsumerState<MemberPage> {
               ActiveFiltersBar(
                 filters: filters,
                 onClear: () {
+                  _debounce?.cancel();
                   _searchCtrl.clear();
                   ref
                       .read(memberFilterProvider.notifier)

@@ -8,18 +8,7 @@ class HonneurUsecase {
 
   const HonneurUsecase({required this.repository});
 
-  Future<Either<Failure, void>> call({required HonneurEntity entity}) {
-    return repository.addHonneur(entity);
-  }
-
   Future<Either<Failure, List<HonneurEntity>>> callFetchHonneur() {
     return repository.honneurs();
-  }
-
-  Future<Either<Failure, void>> callUpdateHonneur({
-    required int id,
-    required HonneurEntity entity,
-  }) {
-    return repository.updateHonneur(id: id, entity: entity);
   }
 }

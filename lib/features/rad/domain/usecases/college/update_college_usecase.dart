@@ -3,18 +3,10 @@ import 'package:login_with_unite_test_and_clean_architecture/core/errors/failure
 import 'package:login_with_unite_test_and_clean_architecture/features/rad/domain/entities/college_entity.dart';
 import 'package:login_with_unite_test_and_clean_architecture/features/rad/domain/repositories/college_repository.dart';
 
-class CollegeUsecase {
+class UpdateCollegeUsecase {
   final CollegeRepository repository;
 
-  const CollegeUsecase({required this.repository});
-
-  Future<Either<Failure, void>> callAddCollege(CollegeEntity entity) {
-    return repository.addCollege(entity);
-  }
-
-  Future<Either<Failure, List<CollegeEntity>>> call(String year) {
-    return repository.colleges(year);
-  }
+  const UpdateCollegeUsecase({required this.repository});
 
   Future<Either<Failure, void>> callCollegeUpdate({
     required int id,

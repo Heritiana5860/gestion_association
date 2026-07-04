@@ -1,4 +1,6 @@
-class HonneurEntity {
+import 'package:equatable/equatable.dart';
+
+class HonneurEntity extends Equatable {
   final int? id;
   final String nom;
   final String fonction;
@@ -14,4 +16,7 @@ class HonneurEntity {
     required this.address,
     this.id,
   });
+
+  @override
+  List<Object?> get props => [id, nom, fonction, contact, year, address];
 }
