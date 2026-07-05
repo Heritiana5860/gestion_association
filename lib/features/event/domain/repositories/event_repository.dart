@@ -6,7 +6,7 @@ abstract class EventRepository {
   Future<Either<Failure, List<EventEntity>>> events(String year);
   Future<Either<Failure, EventEntity>> eventDetail(int id);
   Future<Either<Failure, void>> addEvent(EventEntity entity);
-  Future<Either<Failure, String>> addComingMember({
+  Future<Either<Failure, void>> addComingMember({
     required int eventId,
     required String memberCde,
   });

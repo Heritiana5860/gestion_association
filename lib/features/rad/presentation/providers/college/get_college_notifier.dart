@@ -11,7 +11,7 @@ class GetCollegeNotifier extends AsyncNotifier<List<CollegeEntity>> {
     final usecase = ref.watch(usecaseCollegeProvider);
     final result = await usecase.call(selectedYear);
 
-    return result.fold((l) => throw Exception(l.message), (r) => r);
+    return result.fold((l) => throw l, (r) => r);
   }
 
   Future<void> refresh() async {

@@ -10,7 +10,7 @@ class GetPresidentProvider extends AsyncNotifier<List<PresidentEntity>> {
     final usecase = ref.watch(usecasePresidentProvider);
     final result = await usecase.fetchPresidentList();
 
-    return result.fold((l) => throw Exception(l.message), (r) => r);
+    return result.fold((l) => throw l, (r) => r);
   }
 
   Future<void> refresh() async {

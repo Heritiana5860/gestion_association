@@ -9,7 +9,7 @@ class FetchCadreNotifier extends AsyncNotifier<List<CadreEntity>> {
     final usecase = ref.watch(usecaseCadreProvider);
     final res = await usecase.callCadre();
 
-    return res.fold((l) => throw Exception(l.message), (r) => r);
+    return res.fold((l) => throw l, (r) => r);
   }
 
   Future<void> refresh() async {

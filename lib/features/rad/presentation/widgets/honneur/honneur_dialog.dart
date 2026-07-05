@@ -11,7 +11,6 @@ import 'package:login_with_unite_test_and_clean_architecture/core/widgets/app_in
 import 'package:login_with_unite_test_and_clean_architecture/core/widgets/app_text.dart';
 import 'package:login_with_unite_test_and_clean_architecture/features/member/presentation/widgets/member/dialog_header.dart';
 import 'package:login_with_unite_test_and_clean_architecture/features/rad/domain/entities/honneur_entity.dart';
-import 'package:login_with_unite_test_and_clean_architecture/features/rad/presentation/providers/honneur/get_honneur_provider.dart';
 import 'package:login_with_unite_test_and_clean_architecture/features/rad/presentation/providers/honneur/honneur_notifier.dart';
 
 class HonneurDialog extends ConsumerStatefulWidget {
@@ -46,32 +45,28 @@ class _HonneurDialogState extends ConsumerState<HonneurDialog> {
     }
 
     _honneurSubscription = ref.listenManual<AsyncValue<void>>(honneurProvider, (
-      _,
+      previous,
       next,
     ) {
-      next.whenOrNull(
-        data: (_) async {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              backgroundColor: AppColor.green,
-              content: AppText(
-                label: _isEditing
-                    ? RadText.modifSucces
-                    : "Président d'honneur ajouté avec succès!",
-                color: AppColor.white,
-              ),
+      if (previous is AsyncLoading && next is AsyncData) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            backgroundColor: AppColor.green,
+            content: AppText(
+              label: _isEditing
+                  ? RadText.modifSucces
+                  : RadText.saveSucces,
+              color: AppColor.white,
             ),
-          );
+          ),
+        );
 
-          await ref.read(getHonneurs.notifier).refresh();
+        if (context.mounted) context.pop();
+      }
 
-          if (mounted) {
-            context.pop();
-          }
-        },
-        error: (error, _) =>
-            RefListenError.errorListenProvider(context: context, error: error),
-      );
+      if (next is AsyncError) {
+        RefListenError.errorListenProvider(context: context, error: next.error);
+      }
     });
   }
 

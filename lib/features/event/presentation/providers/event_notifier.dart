@@ -12,7 +12,7 @@ class EventNotifier extends AsyncNotifier<List<EventEntity>> {
 
     final result = await usecase.call(selectedYear);
 
-    return result.fold((l) => throw Exception(l), (r) => r);
+    return result.fold((l) => throw l, (r) => r);
   }
 
   Future<void> refresh() async {

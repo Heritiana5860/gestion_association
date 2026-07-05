@@ -10,7 +10,7 @@ class GetHonneurProvider extends AsyncNotifier<List<HonneurEntity>> {
     final usecase = ref.watch(usecaseHonneurProvider);
     final result = await usecase.callFetchHonneur();
 
-    return result.fold((l) => throw Exception(l.message), (r) => r);
+    return result.fold((l) => throw l, (r) => r);
   }
 
   Future<void> refresh() async {

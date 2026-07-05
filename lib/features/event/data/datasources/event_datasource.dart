@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'package:flutter/material.dart';
 import 'package:login_with_unite_test_and_clean_architecture/core/network/api_endpoints.dart';
 import 'package:login_with_unite_test_and_clean_architecture/features/event/data/models/event_model.dart';
 
@@ -6,7 +7,7 @@ abstract class EventDatasource {
   Future<List<EventModel>> events(String year);
   Future<EventModel> eventDetail(int id);
   Future<void> addEvent(EventModel model);
-  Future<Map<String, dynamic>> addComingMember({
+  Future<void> addComingMember({
     required int eventId,
     required String memberCde,
   });
@@ -25,6 +26,7 @@ class EventDatasourceImpl implements EventDatasource {
     );
 
     final List<dynamic> data = response.data;
+    debugPrint("Events: $data");
 
     return data.map((e) => EventModel.fromJson(e)).toList();
   }
@@ -32,6 +34,8 @@ class EventDatasourceImpl implements EventDatasource {
   @override
   Future<EventModel> eventDetail(int id) async {
     final response = await dio.get("${ApiEndpoints.event}$id/");
+
+    debugPrint("Event detail: $response");
 
     return EventModel.fromJson(response.data);
   }
@@ -42,7 +46,7 @@ class EventDatasourceImpl implements EventDatasource {
   }
 
   @override
-  Future<Map<String, dynamic>> addComingMember({
+  Future<void> addComingMember({
     required int eventId,
     required String memberCde,
   }) async {
@@ -51,6 +55,9 @@ class EventDatasourceImpl implements EventDatasource {
       data: {"member_cde": memberCde},
     );
 
-    return response.data as Map<String, dynamic>;
+    final data = response.data;
+    if (data is Map && data.containsKey('error')) {
+      throw Exception(data['error']);
+    }
   }
 }

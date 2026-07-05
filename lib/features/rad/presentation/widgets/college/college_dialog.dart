@@ -7,6 +7,7 @@ import 'package:login_with_unite_test_and_clean_architecture/core/contants/const
 import 'package:login_with_unite_test_and_clean_architecture/core/contants/constant_text/validator_text.dart';
 import 'package:login_with_unite_test_and_clean_architecture/core/contants/data/member_data_list.dart';
 import 'package:login_with_unite_test_and_clean_architecture/core/errors/ref_listen_error.dart';
+import 'package:login_with_unite_test_and_clean_architecture/core/providers/selected_year_notifier.dart';
 import 'package:login_with_unite_test_and_clean_architecture/core/widgets/app_button.dart';
 import 'package:login_with_unite_test_and_clean_architecture/core/widgets/app_dropdown.dart';
 import 'package:login_with_unite_test_and_clean_architecture/core/widgets/app_input.dart';
@@ -14,7 +15,6 @@ import 'package:login_with_unite_test_and_clean_architecture/core/widgets/app_te
 import 'package:login_with_unite_test_and_clean_architecture/features/member/presentation/widgets/member/dialog_header.dart';
 import 'package:login_with_unite_test_and_clean_architecture/features/rad/domain/entities/college_entity.dart';
 import 'package:login_with_unite_test_and_clean_architecture/features/rad/presentation/providers/college/college_notifier.dart';
-import 'package:login_with_unite_test_and_clean_architecture/features/rad/presentation/providers/college/get_college_notifier.dart';
 
 class CollegeDialog extends ConsumerStatefulWidget {
   const CollegeDialog({super.key, this.item});
@@ -35,12 +35,13 @@ class _CollegeDialogState extends ConsumerState<CollegeDialog> {
   final etablissement = TextEditingController();
   final nomPromotion = TextEditingController();
   final address = TextEditingController();
-  final year = TextEditingController();
 
   String selectedLevel = "L1";
 
   void _createCollege() {
     if (!formKey.currentState!.validate()) return;
+
+    final selectedYear = ref.read(selectedYearProvider);
 
     final entity = CollegeEntity(
       nom: nom.text,
@@ -49,7 +50,7 @@ class _CollegeDialogState extends ConsumerState<CollegeDialog> {
       etablissement: etablissement.text,
       niveau: selectedLevel,
       nomPromotion: nomPromotion.text,
-      year: year.text,
+      year: selectedYear!,
     );
 
     ref.read(collegeProvider.notifier).newCollegeProvider(entity);
@@ -58,6 +59,8 @@ class _CollegeDialogState extends ConsumerState<CollegeDialog> {
   void _updateCollege() {
     if (!formKey.currentState!.validate()) return;
 
+    final selectedYear = ref.read(selectedYearProvider);
+
     final entity = CollegeEntity(
       nom: nom.text,
       contact: contact.text,
@@ -65,7 +68,7 @@ class _CollegeDialogState extends ConsumerState<CollegeDialog> {
       etablissement: etablissement.text,
       niveau: selectedLevel,
       nomPromotion: nomPromotion.text,
-      year: year.text,
+      year: selectedYear!,
     );
 
     ref
@@ -83,23 +86,31 @@ class _CollegeDialogState extends ConsumerState<CollegeDialog> {
       etablissement.text = widget.item!.etablissement;
       selectedLevel = widget.item!.niveau;
       nomPromotion.text = widget.item!.nomPromotion;
-      year.text = widget.item!.year;
     }
 
     _collegeSubscription = ref.listenManual<AsyncValue<void>>(collegeProvider, (
-      _,
+      previous,
       next,
     ) {
-      next.whenOrNull(
-        data: (_) async {
-          await ref.read(collegeDataProvider.notifier).refresh();
-          if (mounted) {
-            context.pop();
-          }
-        },
-        error: (error, _) =>
-            RefListenError.errorListenProvider(context: context, error: error),
-      );
+      if (previous is AsyncLoading && next is AsyncData) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            backgroundColor: AppColor.green,
+            content: AppText(
+              label: _isEditing
+                  ? RadText.modifSucces
+                  : RadText.saveSucces,
+              color: AppColor.white,
+            ),
+          ),
+        );
+
+        if (context.mounted) context.pop();
+      }
+
+      if (next is AsyncError) {
+        RefListenError.errorListenProvider(context: context, error: next.error);
+      }
     });
   }
 
@@ -112,7 +123,6 @@ class _CollegeDialogState extends ConsumerState<CollegeDialog> {
     etablissement.dispose();
     nomPromotion.dispose();
     address.dispose();
-    year.dispose();
     _collegeSubscription.close();
     super.dispose();
   }
@@ -198,26 +208,6 @@ class _CollegeDialogState extends ConsumerState<CollegeDialog> {
                   keyboardType: TextInputType.text,
                   enabled: !isLoading,
                   labelText: "Nom de promotion",
-                  validator: (value) {
-                    if (value == null || value.trim().isEmpty) {
-                      return ValidatorText.obligatorField;
-                    }
-
-                    return null;
-                  },
-                ),
-                AppInput(
-                  controller: year,
-                  keyboardType: TextInputType.number,
-                  enabled: !isLoading,
-                  labelText: "Cette année",
-                  validator: (value) {
-                    if (value == null || value.trim().isEmpty) {
-                      return ValidatorText.obligatorField;
-                    }
-
-                    return null;
-                  },
                 ),
                 AppInput(
                   controller: address,

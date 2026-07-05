@@ -20,7 +20,7 @@ class EventModel extends EventEntity {
       eventDate: json['event_date'] as String,
       startTime: json['event_start_time'] as String,
       endTime: json['event_end_time'] as String,
-      year: json['year'] as int,
+      year: json['year'] as String,
       id: json['id'] as int?,
       members: (json['present_members'] as List)
           .map((e) => MemberModel.fromJson(e))

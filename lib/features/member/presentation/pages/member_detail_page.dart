@@ -47,22 +47,27 @@ class _MemberDetailPageState extends ConsumerState<MemberDetailPage> {
     final deleteState = ref.watch(memberDeleteProvider);
     final isDeleting = deleteState is AsyncLoading;
 
-    ref.listen<AsyncValue<void>>(memberDeleteProvider, (previous, next) {
-      next.whenOrNull(
-        data: (_) async {
-          if (previous is! AsyncData) {
-            await ref.read(memberDataProvider.notifier).refresh();
-            await ref.read(memberDataStats.notifier).refresh();
-            await ref.read(cotisationDataProvider.notifier).refresh();
-            if (context.mounted) context.pop();
-          }
-        },
-        error: (error, _) {
+    ref.listen<AsyncValue<void>>(memberDeleteProvider, (previous, next) async {
+      if (previous is AsyncLoading && next is AsyncData) {
+        await Future.wait([
+          ref.read(memberDataProvider.notifier).refresh(),
+          ref.read(memberDataStats.notifier).refresh(),
+          ref.read(cotisationDataProvider.notifier).refresh(),
+        ]);
+        if (context.mounted) context.pop();
+      }
+
+      if (next is AsyncError) {
+        if (context.mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Erreur lors de la suppression')),
+            SnackBar(
+              content: AppText(
+                label: 'Erreur lors de la suppression: ${next.error}',
+              ),
+            ),
           );
-        },
-      );
+        }
+      }
     });
 
     return Scaffold(

@@ -18,7 +18,6 @@ void main() {
 
   const eventId = 1;
   const memberCde = "1234";
-  const response = "Succès";
 
   test("should return String when coming member added successful", () async {
     when(
@@ -26,14 +25,14 @@ void main() {
         eventId: eventId,
         memberCde: memberCde,
       ),
-    ).thenAnswer((_) async => const Right(response));
+    ).thenAnswer((_) async => const Right(null));
 
     final result = await usecase.callAddComingMember(
       eventId: eventId,
       memberCde: memberCde,
     );
 
-    expect(result, const Right(response));
+    expect(result, const Right(null));
     verify(
       () => mockRepository.addComingMember(
         eventId: eventId,

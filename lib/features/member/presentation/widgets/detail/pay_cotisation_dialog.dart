@@ -41,19 +41,18 @@ class _PayCotisationDialogState extends ConsumerState<PayCotisationDialog> {
 
     _payCotisationSubscription = ref.listenManual<AsyncValue<void>>(
       payCotisation,
-      (_, next) {
-        next.whenOrNull(
-          data: (data) {
-            if (!context.mounted) return;
-            context.pop();
+      (previous, next) {
+        if (previous is AsyncLoading && next is AsyncData) {
+          ref.invalidate(detailProvider(widget.id!));
+          if (context.mounted) context.pop();
+        }
 
-            ref.invalidate(detailProvider(widget.id!));
-          },
-          error: (error, _) => RefListenError.errorListenProvider(
+        if (next is AsyncError) {
+          RefListenError.errorListenProvider(
             context: context,
-            error: error,
-          ),
-        );
+            error: next.error,
+          );
+        }
       },
     );
   }

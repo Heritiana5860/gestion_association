@@ -14,10 +14,10 @@ class PresidentNotifier extends AsyncNotifier<void> {
     final usecase = ref.read(usecaseAddPresidentProvider);
     final result = await usecase.call(entity);
 
-    result.fold(
-      (l) => state = AsyncError(l, StackTrace.current),
-      (r) => state = AsyncData(r),
-    );
+    result.fold((l) => state = AsyncError(l, StackTrace.current), (r) async {
+      state = AsyncData(r);
+      await ref.read(getPresidentProvider.notifier).refresh();
+    });
   }
 
   Future<void> updatePresident({

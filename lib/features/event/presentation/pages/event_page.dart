@@ -35,53 +35,56 @@ class _EventPageState extends ConsumerState<EventPage> {
         onPressed: openDialog,
         icon: Icons.event_note,
       ),
-      body: CustomScrollView(
-        slivers: [
-          SliverToBoxAdapter(
-            child: Padding(
-              padding: globalPadding(),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  SizedBox(height: 8.h),
-                  BuildHeader(),
-                  SizedBox(height: 20.h),
-                ],
+      body: RefreshIndicator(
+        onRefresh: () => ref.read(eventProvider.notifier).refresh(),
+        child: CustomScrollView(
+          slivers: [
+            SliverToBoxAdapter(
+              child: Padding(
+                padding: globalPadding(),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    SizedBox(height: 8.h),
+                    BuildHeader(),
+                    SizedBox(height: 20.h),
+                  ],
+                ),
               ),
             ),
-          ),
-          events.when(
-            data: (eventList) {
-              if (eventList.isEmpty) {
-                return SliverFillRemaining(
-                  child: EmptyList(
-                    label: "Aucun événement trouvé",
-                    icon: Icons.event,
+            events.when(
+              data: (eventList) {
+                if (eventList.isEmpty) {
+                  return SliverFillRemaining(
+                    child: EmptyList(
+                      label: "Aucun événement trouvé",
+                      icon: Icons.event,
+                    ),
+                  );
+                }
+                return SliverPadding(
+                  padding: EdgeInsets.symmetric(horizontal: 16.w),
+                  sliver: SliverList(
+                    delegate: SliverChildBuilderDelegate((context, index) {
+                      return Padding(
+                        padding: EdgeInsets.only(bottom: 12.h),
+                        child: EventCard(event: eventList[index]),
+                      );
+                    }, childCount: eventList.length),
                   ),
                 );
-              }
-              return SliverPadding(
-                padding: EdgeInsets.symmetric(horizontal: 16.w),
-                sliver: SliverList(
-                  delegate: SliverChildBuilderDelegate((context, index) {
-                    return Padding(
-                      padding: EdgeInsets.only(bottom: 12.h),
-                      child: EventCard(event: eventList[index]),
-                    );
-                  }, childCount: eventList.length),
-                ),
-              );
-            },
-            error: (error, _) {
-              return SliverFillRemaining(
-                child: errorProvider(context: context, error: error),
-              );
-            },
+              },
+              error: (error, _) {
+                return SliverFillRemaining(
+                  child: errorProvider(context: context, error: error),
+                );
+              },
 
-            loading: () => SliverFillRemaining(child: AppCircular()),
-          ),
-          SliverToBoxAdapter(child: SizedBox(height: 24.h)),
-        ],
+              loading: () => SliverFillRemaining(child: AppCircular()),
+            ),
+            SliverToBoxAdapter(child: SizedBox(height: 24.h)),
+          ],
+        ),
       ),
     );
   }

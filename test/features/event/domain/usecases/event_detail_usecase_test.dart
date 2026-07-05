@@ -23,7 +23,7 @@ void main() {
     eventDate: "03/07/2026",
     startTime: "14h 00",
     endTime: "16H 00",
-    year: 2026,
+    year: "2026",
   );
 
   const tId = 1;

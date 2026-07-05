@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 import 'package:login_with_unite_test_and_clean_architecture/core/contants/colors/app_color.dart';
 import 'package:login_with_unite_test_and_clean_architecture/core/contants/constant_text/rad_text.dart';
 import 'package:login_with_unite_test_and_clean_architecture/core/contants/constant_text/validator_text.dart';
+import 'package:login_with_unite_test_and_clean_architecture/core/errors/ref_listen_error.dart';
 import 'package:login_with_unite_test_and_clean_architecture/core/widgets/app_button.dart';
 import 'package:login_with_unite_test_and_clean_architecture/core/widgets/app_input.dart';
 import 'package:login_with_unite_test_and_clean_architecture/core/widgets/app_text.dart';
@@ -44,25 +45,29 @@ class _PresidentDialogState extends ConsumerState<PresidentDialog> {
 
     _presidentSubscription = ref.listenManual<AsyncValue<void>>(
       presidenProvider,
-      (_, next) {
-        next.whenOrNull(
-          data: (_) {
-            if (!context.mounted) return;
-            context.pop();
-
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                backgroundColor: AppColor.green,
-                content: AppText(
-                  label: _isEditing
-                      ? RadText.modifSucces
-                      : "Président ajouté avec succès !",
-                  color: AppColor.white,
-                ),
+      (previous, next) {
+        if (previous is AsyncLoading && next is AsyncData) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              backgroundColor: AppColor.green,
+              content: AppText(
+                label: _isEditing
+                    ? RadText.modifSucces
+                    : RadText.saveSucces,
+                color: AppColor.white,
               ),
-            );
-          },
-        );
+            ),
+          );
+
+          if (context.mounted) context.pop();
+        }
+
+        if (next is AsyncError) {
+          RefListenError.errorListenProvider(
+            context: context,
+            error: next.error,
+          );
+        }
       },
     );
   }

@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:login_with_unite_test_and_clean_architecture/core/contants/colors/app_color.dart';
+import 'package:login_with_unite_test_and_clean_architecture/core/contants/constant_text/rad_text.dart';
 import 'package:login_with_unite_test_and_clean_architecture/core/contants/constant_text/validator_text.dart';
 import 'package:login_with_unite_test_and_clean_architecture/core/errors/ref_listen_error.dart';
 import 'package:login_with_unite_test_and_clean_architecture/core/widgets/app_button.dart';
@@ -10,7 +11,6 @@ import 'package:login_with_unite_test_and_clean_architecture/core/widgets/app_in
 import 'package:login_with_unite_test_and_clean_architecture/core/widgets/app_text.dart';
 import 'package:login_with_unite_test_and_clean_architecture/features/obligation/domain/entities/obligation_entity.dart';
 import 'package:login_with_unite_test_and_clean_architecture/features/obligation/presentation/providers/add_obligation_notifier.dart';
-import 'package:login_with_unite_test_and_clean_architecture/features/obligation/presentation/providers/obligation_notifier.dart';
 
 class FormObligationDialog extends ConsumerStatefulWidget {
   const FormObligationDialog({super.key});
@@ -45,14 +45,6 @@ class _FormObligationDialogState extends ConsumerState<FormObligationDialog> {
     }
   }
 
-  // void _clear() {
-  //   doyenInterne.clear();
-  //   doyenExterne.clear();
-  //   noviceExterne.clear();
-  //   noviceInterne.clear();
-  //   year.clear();
-  // }
-
   @override
   void initState() {
     super.initState();
@@ -60,18 +52,26 @@ class _FormObligationDialogState extends ConsumerState<FormObligationDialog> {
     _obligationSubscription = ref.listenManual<AsyncValue<void>>(
       insertObligationProvider,
       (previous, next) {
-        next.whenOrNull(
-          data: (_) {
-            ref.read(obligationsProvider.notifier).refresh();
-            if (context.mounted) {
-              context.pop();
-            }
-          },
-          error: (error, _) => RefListenError.errorListenProvider(
+        if (previous is AsyncLoading && next is AsyncData) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              backgroundColor: AppColor.green,
+              content: AppText(
+                label: RadText.saveSucces,
+                color: AppColor.white,
+              ),
+            ),
+          );
+
+          if (context.mounted) context.pop();
+        }
+
+        if (next is AsyncError) {
+          RefListenError.errorListenProvider(
             context: context,
-            error: error,
-          ),
-        );
+            error: next.error,
+          );
+        }
       },
     );
   }

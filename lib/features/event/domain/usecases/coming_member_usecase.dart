@@ -7,7 +7,7 @@ class ComingMemberUsecase {
 
   const ComingMemberUsecase({required this.repository});
 
-  Future<Either<Failure, String>> callAddComingMember({
+  Future<Either<Failure, void>> callAddComingMember({
     required int eventId,
     required String memberCde,
   }) {

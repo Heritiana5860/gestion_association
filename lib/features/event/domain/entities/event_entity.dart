@@ -8,7 +8,7 @@ class EventEntity extends Equatable {
   final String eventDate;
   final String startTime;
   final String endTime;
-  final int year;
+  final String year;
   final List<MemberEntity>? members;
 
   const EventEntity({

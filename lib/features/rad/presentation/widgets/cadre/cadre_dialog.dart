@@ -44,29 +44,28 @@ class _CadreDialogState extends ConsumerState<CadreDialog> {
     }
 
     _cadreSubscription = ref.listenManual<AsyncValue<void>>(cadreProvider, (
-      _,
+      previous,
       next,
     ) {
-      next.whenOrNull(
-        data: (_) {
-          if (!context.mounted) return;
-          context.pop();
-
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              backgroundColor: AppColor.green,
-              content: AppText(
-                label: _isEditing
-                    ? RadText.modifSucces
-                    : "Jeune cadre ajouté avec succès.",
-                color: AppColor.white,
-              ),
+      if (previous is AsyncLoading && next is AsyncData) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            backgroundColor: AppColor.green,
+            content: AppText(
+              label: _isEditing
+                  ? RadText.modifSucces
+                  : RadText.saveSucces,
+              color: AppColor.white,
             ),
-          );
-        },
-        error: (error, _) =>
-            RefListenError.errorListenProvider(context: context, error: error),
-      );
+          ),
+        );
+
+        if (context.mounted) context.pop();
+      }
+
+      if (next is AsyncError) {
+        RefListenError.errorListenProvider(context: context, error: next.error);
+      }
     });
   }
 

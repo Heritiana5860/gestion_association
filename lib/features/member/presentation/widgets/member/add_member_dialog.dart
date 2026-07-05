@@ -102,20 +102,30 @@ class _AddMemberDialogState extends ConsumerState<AddMemberDialog> {
     _addMemberSubscription = ref.listenManual<AsyncValue<void>>(
       newMemberProvider,
       (previous, next) {
-        next.whenOrNull(
-          data: (_) {
-            if (previous is! AsyncLoading) return;
+        if (previous is AsyncLoading && next is AsyncData) {
+          if (widget.member?.id != null) {
+            ref.invalidate(detailProvider(widget.member!.id!));
+          }
 
-            if (widget.member?.id != null) {
-              ref.invalidate(detailProvider(widget.member!.id!));
-            }
-            if (context.mounted) context.pop();
-          },
-          error: (error, _) => RefListenError.errorListenProvider(
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              backgroundColor: AppColor.green,
+              content: AppText(
+                label: _isEditing ? RadText.modifSucces : RadText.saveSucces,
+                color: AppColor.white,
+              ),
+            ),
+          );
+
+          if (context.mounted) context.pop();
+        }
+
+        if (next is AsyncError) {
+          RefListenError.errorListenProvider(
             context: context,
-            error: error,
-          ),
-        );
+            error: next.error,
+          );
+        }
       },
     );
   }

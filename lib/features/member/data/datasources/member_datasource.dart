@@ -1,5 +1,4 @@
 import 'package:dio/dio.dart';
-import 'package:flutter/material.dart';
 import 'package:login_with_unite_test_and_clean_architecture/core/network/api_endpoints.dart';
 import 'package:login_with_unite_test_and_clean_architecture/features/member/data/models/member_model.dart';
 
@@ -36,8 +35,6 @@ class MemberDatasourceImpl implements MemberDatasource {
     );
 
     final List<dynamic> data = response.data;
-
-    debugPrint("data: $data");
 
     return data.map((e) => MemberModel.fromJson(e)).toList();
   }

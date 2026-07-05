@@ -58,27 +58,14 @@ class EventRepositoryImpl implements EventRepository {
   }
 
   @override
-  Future<Either<Failure, String>> addComingMember({
+  Future<Either<Failure, void>> addComingMember({
     required int eventId,
     required String memberCde,
   }) async {
     try {
-      final response = await datasource.addComingMember(
-        eventId: eventId,
-        memberCde: memberCde,
-      );
+      await datasource.addComingMember(eventId: eventId, memberCde: memberCde);
 
-      if (response.containsKey('status')) {
-        return Right(response['status'] as String);
-      }
-      if (response.containsKey('Closed')) {
-        return Left(ServerFailure(message: response['Closed']));
-      }
-      if (response.containsKey('error')) {
-        return Left(ServerFailure(message: response['error']));
-      }
-
-      return const Right("Membre ajouté");
+      return const Right(null);
     } on DioException catch (e) {
       return Left(mapDioExceptionToFailure(e));
     } catch (e) {

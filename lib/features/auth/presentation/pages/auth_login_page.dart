@@ -19,9 +19,6 @@ import 'package:login_with_unite_test_and_clean_architecture/features/auth/domai
 import 'package:login_with_unite_test_and_clean_architecture/features/auth/presentation/providers/login/auth_login_notifier.dart';
 import 'package:login_with_unite_test_and_clean_architecture/features/auth/presentation/widgets/logo.dart';
 import 'package:login_with_unite_test_and_clean_architecture/features/auth/presentation/widgets/sociaux_card.dart';
-import 'package:login_with_unite_test_and_clean_architecture/features/cotisation/presentation/providers/stats/cotisation_stats_notifier.dart';
-import 'package:login_with_unite_test_and_clean_architecture/features/member/presentation/providers/member_stats_notifier.dart';
-import 'package:login_with_unite_test_and_clean_architecture/features/obligation/presentation/providers/obligation_notifier.dart';
 
 class AuthLoginPage extends ConsumerStatefulWidget {
   const AuthLoginPage({super.key});
@@ -50,27 +47,22 @@ class _AuthLoginPageState extends ConsumerState<AuthLoginPage> {
 
     _tapRecognizer = TapGestureRecognizer()..onTap = _handleTap;
 
-    _loginSubscription = ref.listenManual(loginProvider, (previous, next) {
-      next.whenOrNull(
-        data: (_) async {
-          if (!context.mounted) return;
+    _loginSubscription = ref.listenManual<AsyncValue<AuthSessionEntity?>>(
+      loginProvider,
+      (previous, next) {
+        if (previous is AsyncLoading && next is AsyncData) {
           clear();
-          context.goNamed(RouteKeys.homeName);
+          if (context.mounted) context.goNamed(RouteKeys.homeName);
+        }
 
-          final obligationsNotifier = ref.read(obligationsProvider.notifier);
-          final memberStatsNotifier = ref.read(memberDataStats.notifier);
-          final cotisationStatsNotifier = ref.read(cotisationStats.notifier);
-
-          await Future.wait([
-            obligationsNotifier.refresh(),
-            memberStatsNotifier.refresh(),
-            cotisationStatsNotifier.refresh(),
-          ]);
-        },
-        error: (error, _) =>
-            RefListenError.errorListenProvider(context: context, error: error),
-      );
-    });
+        if (next is AsyncError) {
+          RefListenError.errorListenProvider(
+            context: context,
+            error: next.error ?? "",
+          );
+        }
+      },
+    );
   }
 
   void _handleTap() {

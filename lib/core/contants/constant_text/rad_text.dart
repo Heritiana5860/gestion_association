@@ -6,4 +6,5 @@ class RadText {
   static const String modif = "Modifier";
   static const String save = "Enregistrer";
   static const String saveEnCours = "Ajouter en cours...";
+  static const String saveSucces = "Ajout avec succès.";
 }

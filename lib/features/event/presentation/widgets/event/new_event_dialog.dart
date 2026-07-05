@@ -3,12 +3,13 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:login_with_unite_test_and_clean_architecture/core/contants/colors/app_color.dart';
+import 'package:login_with_unite_test_and_clean_architecture/core/contants/constant_text/rad_text.dart';
 import 'package:login_with_unite_test_and_clean_architecture/core/errors/ref_listen_error.dart';
+import 'package:login_with_unite_test_and_clean_architecture/core/providers/selected_year_notifier.dart';
 import 'package:login_with_unite_test_and_clean_architecture/core/widgets/app_button.dart';
 import 'package:login_with_unite_test_and_clean_architecture/core/widgets/app_input.dart';
 import 'package:login_with_unite_test_and_clean_architecture/core/widgets/app_text.dart';
 import 'package:login_with_unite_test_and_clean_architecture/features/event/domain/entities/event_entity.dart';
-import 'package:login_with_unite_test_and_clean_architecture/features/event/presentation/providers/event_notifier.dart';
 import 'package:login_with_unite_test_and_clean_architecture/features/event/presentation/providers/event_submit_notifier.dart';
 import 'package:login_with_unite_test_and_clean_architecture/features/member/presentation/widgets/member/dialog_header.dart';
 
@@ -134,14 +135,7 @@ class _NewEventDialogState extends ConsumerState<NewEventDialog> {
   void _submit() {
     if (!formKey.currentState!.validate()) return;
 
-    if (_selectedDate == null) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: AppText(label: "Veuillez sélectionner une date"),
-        ),
-      );
-      return;
-    }
+    final selectedYear = ref.read(selectedYearProvider);
 
     final entity = EventEntity(
       eventName: titre.text.trim(),
@@ -149,7 +143,7 @@ class _NewEventDialogState extends ConsumerState<NewEventDialog> {
       eventDate: eventDate.text,
       startTime: _apiStartTime ?? '',
       endTime: _apiEndTime ?? '',
-      year: _selectedDate!.year,
+      year: selectedYear!,
     );
 
     ref.read(newEventProvider.notifier).submitEvent(entity);
@@ -160,20 +154,23 @@ class _NewEventDialogState extends ConsumerState<NewEventDialog> {
     super.initState();
 
     _eventSubscription = ref.listenManual<AsyncValue<void>>(newEventProvider, (
-      _,
+      previous,
       next,
     ) {
-      next.whenOrNull(
-        error: (error, _) =>
-            RefListenError.errorListenProvider(context: context, error: error),
-        data: (_) async {
-          await ref.read(eventProvider.notifier).refresh();
+      if (previous is AsyncLoading && next is AsyncData) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            backgroundColor: AppColor.green,
+            content: AppText(label: RadText.saveSucces, color: AppColor.white),
+          ),
+        );
 
-          if (mounted) {
-            context.pop();
-          }
-        },
-      );
+        if (context.mounted) context.pop();
+      }
+
+      if (next is AsyncError) {
+        RefListenError.errorListenProvider(context: context, error: next.error);
+      }
     });
   }
 

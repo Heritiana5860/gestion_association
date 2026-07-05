@@ -5,9 +5,11 @@ import 'package:go_router/go_router.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
 import 'package:login_with_unite_test_and_clean_architecture/core/contants/colors/app_color.dart';
 import 'package:login_with_unite_test_and_clean_architecture/core/contants/keys/route_keys.dart';
+import 'package:login_with_unite_test_and_clean_architecture/core/errors/provider_error.dart';
 import 'package:login_with_unite_test_and_clean_architecture/core/providers/flutter_secure_storage_provider.dart';
 import 'package:login_with_unite_test_and_clean_architecture/core/providers/selected_year_notifier.dart';
 import 'package:login_with_unite_test_and_clean_architecture/core/services/member_pdf_service.dart';
+import 'package:login_with_unite_test_and_clean_architecture/core/widgets/app_circular.dart';
 import 'package:login_with_unite_test_and_clean_architecture/core/widgets/app_text.dart';
 import 'package:login_with_unite_test_and_clean_architecture/features/auth/presentation/pages/auth_login_page.dart';
 import 'package:login_with_unite_test_and_clean_architecture/features/auth/presentation/pages/auth_register_page.dart';
@@ -144,65 +146,82 @@ final routerProvider = Provider<GoRouter>((ref) {
                     // Header
                     Consumer(
                       builder: (context, ref, child) {
-                        final infos = ref.watch(loginProvider);
+                        final infosAsync = ref.watch(loginProvider);
 
-                        final initialName = infos.maybeWhen(
-                          data: (info) => info!.firstName
-                              .trim()
-                              .split(" ")
-                              .take(2)
-                              .map((e) => e[0])
-                              .join(),
-                          orElse: () => null,
-                        );
+                        // On utilise le "when" de Riverpod pour gérer proprement tous les états
+                        return infosAsync.when(
+                          loading: () => const AppCircular(),
+                          error: (err, stack) =>
+                              errorProvider(context: context, error: err),
+                          data: (info) {
+                            if (info == null) {
+                              return const Center(
+                                child: AppText(label: "Non connecté"),
+                              );
+                            }
 
-                        return Container(
-                          width: double.infinity,
-                          padding: EdgeInsets.symmetric(
-                            horizontal: 20.w,
-                            vertical: 24.h,
-                          ),
-                          decoration: BoxDecoration(
-                            gradient: LinearGradient(
-                              colors: [AppColor.blue, AppColor.purple],
-                              begin: Alignment.topLeft,
-                              end: Alignment.bottomRight,
-                            ),
-                            borderRadius: BorderRadius.only(
-                              bottomLeft: Radius.circular(24.r),
-                              bottomRight: Radius.circular(24.r),
-                            ),
-                          ),
-                          child: Column(
-                            children: [
-                              CircleAvatar(
-                                radius: 34.r,
-                                backgroundColor: AppColor.white,
-                                child: AppText(
-                                  label: initialName!.toUpperCase(),
-                                  color: AppColor.blue,
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 18.sp,
+                            final firstName = info.firstName;
+                            String initialName = "?";
+
+                            if (firstName.trim().isNotEmpty) {
+                              initialName = firstName
+                                  .trim()
+                                  .split(" ")
+                                  .take(2)
+                                  .map((e) => e.isNotEmpty ? e[0] : "")
+                                  .join()
+                                  .toUpperCase();
+                            }
+
+                            return Container(
+                              width: double.infinity,
+                              padding: EdgeInsets.symmetric(
+                                horizontal: 20.w,
+                                vertical: 24.h,
+                              ),
+                              decoration: BoxDecoration(
+                                gradient: LinearGradient(
+                                  colors: [AppColor.blue, AppColor.purple],
+                                  begin: Alignment.topLeft,
+                                  end: Alignment.bottomRight,
+                                ),
+                                borderRadius: BorderRadius.only(
+                                  bottomLeft: Radius.circular(24.r),
+                                  bottomRight: Radius.circular(24.r),
                                 ),
                               ),
-
-                              SizedBox(height: 12.h),
-
-                              AppText(
-                                label: infos.value!.firstName,
-                                color: AppColor.white,
-                                fontSize: 16.sp,
-                                fontWeight: FontWeight.w700,
+                              child: Column(
+                                children: [
+                                  CircleAvatar(
+                                    radius: 34.r,
+                                    backgroundColor: AppColor.white,
+                                    child: AppText(
+                                      label:
+                                          initialName, // Plus besoin de "!" ici
+                                      color: AppColor.blue,
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 18.sp,
+                                    ),
+                                  ),
+                                  SizedBox(height: 12.h),
+                                  AppText(
+                                    label:
+                                        firstName, // Plus besoin de "!.firstName" ici
+                                    color: AppColor.white,
+                                    fontSize: 16.sp,
+                                    fontWeight: FontWeight.w700,
+                                  ),
+                                  AppText(
+                                    label: "Bienvenue 👋",
+                                    color: AppColor.white.withValues(
+                                      alpha: 0.8,
+                                    ),
+                                    fontSize: 12.sp,
+                                  ),
+                                ],
                               ),
-
-                              // SizedBox(height: 4.h),
-                              AppText(
-                                label: "Bienvenue 👋",
-                                color: AppColor.white.withValues(alpha: 0.8),
-                                fontSize: 12.sp,
-                              ),
-                            ],
-                          ),
+                            );
+                          },
                         );
                       },
                     ),
