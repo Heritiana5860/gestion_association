@@ -21,9 +21,6 @@ import 'package:login_with_unite_test_and_clean_architecture/features/auth/domai
 import 'package:login_with_unite_test_and_clean_architecture/features/auth/presentation/providers/register/register_notifier.dart';
 import 'package:login_with_unite_test_and_clean_architecture/features/auth/presentation/widgets/logo.dart';
 import 'package:login_with_unite_test_and_clean_architecture/features/auth/presentation/widgets/sociaux_card.dart';
-import 'package:login_with_unite_test_and_clean_architecture/features/cotisation/presentation/providers/stats/cotisation_stats_notifier.dart';
-import 'package:login_with_unite_test_and_clean_architecture/features/member/presentation/providers/member_stats_notifier.dart';
-import 'package:login_with_unite_test_and_clean_architecture/features/obligation/presentation/providers/obligation_notifier.dart';
 
 class AuthRegisterPage extends ConsumerStatefulWidget {
   const AuthRegisterPage({super.key});
@@ -57,25 +54,17 @@ class _AuthRegisterPageState extends ConsumerState<AuthRegisterPage> {
     confirm = TextEditingController();
 
     _registerSubscription = ref.listenManual(newUserProvider, (previous, next) {
-      next.whenOrNull(
-        data: (_) async {
-          if (!context.mounted) return;
-          clear();
-          context.goNamed(RouteKeys.homeName);
+      if (previous is AsyncLoading && next is AsyncData) {
+        clear();
+        if (context.mounted) context.goNamed(RouteKeys.homeName);
+      }
 
-          final obligationsNotifier = ref.read(obligationsProvider.notifier);
-          final memberStatsNotifier = ref.read(memberDataStats.notifier);
-          final cotisationStatsNotifier = ref.read(cotisationStats.notifier);
-
-          await Future.wait([
-            obligationsNotifier.refresh(),
-            memberStatsNotifier.refresh(),
-            cotisationStatsNotifier.refresh(),
-          ]);
-        },
-        error: (error, _) =>
-            RefListenError.errorListenProvider(context: context, error: error),
-      );
+      if (next is AsyncError) {
+        RefListenError.errorListenProvider(
+          context: context,
+          error: next.error ?? "",
+        );
+      }
     });
   }
 

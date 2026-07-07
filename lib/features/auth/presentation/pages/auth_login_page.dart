@@ -223,14 +223,13 @@ class _AuthLoginPageState extends ConsumerState<AuthLoginPage> {
 
                     Text.rich(
                       TextSpan(
-                        style: TextStyle(
-                          fontFamily: 'Inter',
-                          color: AppColor.textDescription,
-                          fontSize: SizeFont.medium,
-                        ),
                         children: [
-                          const TextSpan(
+                          TextSpan(
                             text: "Vous n'avez pas encore de compte ? ",
+                            style: TextStyle(
+                              fontSize: SizeFont.medium,
+                              // color: AppColor.textDescription,
+                            ),
                           ),
                           TextSpan(
                             text: "Créer un compte",

@@ -15,7 +15,6 @@ import 'package:login_with_unite_test_and_clean_architecture/core/widgets/app_in
 import 'package:login_with_unite_test_and_clean_architecture/core/widgets/app_text.dart';
 import 'package:login_with_unite_test_and_clean_architecture/features/member/domain/entities/member_entity.dart';
 import 'package:login_with_unite_test_and_clean_architecture/features/member/presentation/providers/member_add_notifier.dart';
-import 'package:login_with_unite_test_and_clean_architecture/features/member/presentation/providers/member_detail_provider.dart';
 import 'package:login_with_unite_test_and_clean_architecture/features/member/presentation/widgets/member/dialog_header.dart';
 
 class AddMemberDialog extends ConsumerStatefulWidget {
@@ -103,10 +102,6 @@ class _AddMemberDialogState extends ConsumerState<AddMemberDialog> {
       newMemberProvider,
       (previous, next) {
         if (previous is AsyncLoading && next is AsyncData) {
-          if (widget.member?.id != null) {
-            ref.invalidate(detailProvider(widget.member!.id!));
-          }
-
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
               backgroundColor: AppColor.green,

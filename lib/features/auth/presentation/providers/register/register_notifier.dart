@@ -14,12 +14,11 @@ class RegisterNotifier extends AsyncNotifier<AuthSessionEntity?> {
     state = AsyncLoading();
 
     final usecase = ref.read(usecaseRegisterProvider);
-
     final result = await usecase.call(entity);
 
     result.fold(
       (failure) => state = AsyncError(failure, StackTrace.current),
-      (info) => state = AsyncValue.data(info),
+      (info) => state = AsyncData(info),
     );
   }
 }
