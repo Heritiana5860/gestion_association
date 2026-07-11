@@ -9,6 +9,14 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await dotenv.load();
 
+  ErrorWidget.builder = (FlutterErrorDetails details) {
+    debugPrint("detail: ${details.exceptionAsString()}");
+    return Text(
+      details.exceptionAsString(),
+      style: TextStyle(color: Colors.red),
+    );
+  };
+
   runApp(ProviderScope(child: MyApp()));
 }
 

@@ -22,6 +22,14 @@ class AuthLoginNotifier extends AsyncNotifier<AuthSessionEntity?> {
       (r) => state = AsyncData(r),
     );
   }
+
+  void setSession(AuthSessionEntity session) {
+    state = AsyncData(session);
+  }
+
+  void clearSession() {
+    state = const AsyncData(null);
+  }
 }
 
 final loginProvider =

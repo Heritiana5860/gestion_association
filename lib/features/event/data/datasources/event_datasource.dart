@@ -26,7 +26,6 @@ class EventDatasourceImpl implements EventDatasource {
     );
 
     final List<dynamic> data = response.data;
-    debugPrint("Events: $data");
 
     return data.map((e) => EventModel.fromJson(e)).toList();
   }

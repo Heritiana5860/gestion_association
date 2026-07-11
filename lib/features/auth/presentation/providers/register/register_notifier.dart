@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:login_with_unite_test_and_clean_architecture/features/auth/domain/entities/auth_register_entity.dart';
 import 'package:login_with_unite_test_and_clean_architecture/features/auth/domain/entities/auth_session_entity.dart';
+import 'package:login_with_unite_test_and_clean_architecture/features/auth/presentation/providers/login/auth_login_notifier.dart';
 import 'package:login_with_unite_test_and_clean_architecture/features/auth/presentation/providers/register/register_provider.dart';
 
 class RegisterNotifier extends AsyncNotifier<AuthSessionEntity?> {
@@ -16,10 +17,12 @@ class RegisterNotifier extends AsyncNotifier<AuthSessionEntity?> {
     final usecase = ref.read(usecaseRegisterProvider);
     final result = await usecase.call(entity);
 
-    result.fold(
-      (failure) => state = AsyncError(failure, StackTrace.current),
-      (info) => state = AsyncData(info),
-    );
+    result.fold((failure) => state = AsyncError(failure, StackTrace.current), (
+      info,
+    ) {
+      state = AsyncData(info);
+      ref.read(loginProvider.notifier).setSession(info);
+    });
   }
 }
 

@@ -228,7 +228,7 @@ class _AuthLoginPageState extends ConsumerState<AuthLoginPage> {
                             text: "Vous n'avez pas encore de compte ? ",
                             style: TextStyle(
                               fontSize: SizeFont.medium,
-                              // color: AppColor.textDescription,
+                              color: AppColor.textDescription,
                             ),
                           ),
                           TextSpan(

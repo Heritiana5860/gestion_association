@@ -3,8 +3,8 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 class SizeFont {
   const SizeFont._();
 
-  static double title = 16.sp;
-  static double large = 14.sp;
-  static double medium = 13.sp;
-  static double small = 10.sp;
+  static double get title => 16.sp;
+  static double get large => 14.sp;
+  static double get medium => 13.sp;
+  static double get small => 10.sp;
 }
