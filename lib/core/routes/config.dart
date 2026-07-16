@@ -18,6 +18,7 @@ import 'package:login_with_unite_test_and_clean_architecture/features/cotisation
 import 'package:login_with_unite_test_and_clean_architecture/features/event/presentation/pages/event_detail_page.dart';
 import 'package:login_with_unite_test_and_clean_architecture/features/event/presentation/pages/event_page.dart';
 import 'package:login_with_unite_test_and_clean_architecture/features/home/presentation/pages/home_page.dart';
+import 'package:login_with_unite_test_and_clean_architecture/features/material/presentation/pages/page_material.dart';
 import 'package:login_with_unite_test_and_clean_architecture/features/member/presentation/pages/member_detail_page.dart';
 import 'package:login_with_unite_test_and_clean_architecture/features/member/presentation/pages/member_page.dart';
 import 'package:login_with_unite_test_and_clean_architecture/features/member/presentation/providers/member_notifier.dart';
@@ -99,6 +100,12 @@ final routerProvider = Provider<GoRouter>((ref) {
         path: RouteKeys.regleUrl,
         name: RouteKeys.regleName,
         builder: (context, state) => const ReglementPage(),
+      ),
+
+      GoRoute(
+        path: RouteKeys.materialUrl,
+        name: RouteKeys.materialName,
+        builder: (context, state) => const PageMaterial(),
       ),
 
       StatefulShellRoute.indexedStack(
@@ -296,6 +303,13 @@ final routerProvider = Provider<GoRouter>((ref) {
                                 label: "Règlement intérieur",
                                 onTap: () =>
                                     context.pushNamed(RouteKeys.regleName),
+                              ),
+
+                              _buildDrawerItem(
+                                icon: Icons.build,
+                                label: "Materiel",
+                                onTap: () =>
+                                    context.pushNamed(RouteKeys.materialName),
                               ),
 
                               _buildDrawerItem(
