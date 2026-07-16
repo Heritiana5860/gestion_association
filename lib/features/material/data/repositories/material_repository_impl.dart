@@ -61,4 +61,16 @@ class MaterialRepositoryImpl implements MaterialRepository {
       return Left(ServerFailure(message: e.toString()));
     }
   }
+
+  @override
+  Future<Either<Failure, void>> deleteMaterial(int id) async {
+    try {
+      final res = await datasource.deleteMaterial(id);
+      return Right(res);
+    } on DioException catch (e) {
+      return Left(mapDioExceptionToFailure(e));
+    } catch (e) {
+      return Left(ServerFailure(message: e.toString()));
+    }
+  }
 }

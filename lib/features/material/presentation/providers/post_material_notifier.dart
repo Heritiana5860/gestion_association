@@ -30,13 +30,22 @@ class PostMaterialNotifier extends AsyncNotifier<void> {
     final usecase = ref.read(updateUsecaseMaterialProvider);
     final result = await usecase.callUpdate(id: id, entity: entity);
 
-    result.fold(
-      (l) => state = AsyncError(l, StackTrace.current),
-      (r) {
-        ref.read(listMaterialProvider.notifier).refresh();
-        state = AsyncData(r);
-      }
-    );
+    result.fold((l) => state = AsyncError(l, StackTrace.current), (r) {
+      ref.read(listMaterialProvider.notifier).refresh();
+      state = AsyncData(r);
+    });
+  }
+
+  Future<void> deleteMaterialProvider(int id) async {
+    state = AsyncLoading();
+
+    final usecase = ref.read(deleteUsecaseMaterialProvider);
+    final result = await usecase.callDelete(id);
+
+    result.fold((l) => state = AsyncError(l, StackTrace.current), (r) {
+      ref.read(listMaterialProvider.notifier).refresh();
+      state = AsyncData(r);
+    });
   }
 }
 

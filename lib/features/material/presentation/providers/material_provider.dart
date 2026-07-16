@@ -3,6 +3,7 @@ import 'package:login_with_unite_test_and_clean_architecture/core/providers/dio_
 import 'package:login_with_unite_test_and_clean_architecture/features/material/data/datasources/material_datasource.dart';
 import 'package:login_with_unite_test_and_clean_architecture/features/material/data/repositories/material_repository_impl.dart';
 import 'package:login_with_unite_test_and_clean_architecture/features/material/domain/usecases/add_material_usercase.dart';
+import 'package:login_with_unite_test_and_clean_architecture/features/material/domain/usecases/delate_material_usecase.dart';
 import 'package:login_with_unite_test_and_clean_architecture/features/material/domain/usecases/liste_material_usecase.dart';
 import 'package:login_with_unite_test_and_clean_architecture/features/material/domain/usecases/update_material_usecase.dart';
 
@@ -34,4 +35,10 @@ final updateUsecaseMaterialProvider = Provider((ref) {
   final repository = ref.watch(repositoryProvider);
 
   return UpdateMaterialUsecase(repository: repository);
+});
+
+final deleteUsecaseMaterialProvider = Provider((ref) {
+  final repository = ref.watch(repositoryProvider);
+
+  return DelateMaterialUsecase(repository: repository);
 });
