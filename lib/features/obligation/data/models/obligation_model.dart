@@ -11,7 +11,7 @@ class ObligationModel extends ObligationEntity {
 
   factory ObligationModel.fromJson(Map<String, dynamic> json) {
     return ObligationModel(
-      doyenAncienExt: double.parse(json['adhasion_annuel_novice_ext']),
+      doyenAncienExt: double.parse(json['doyen_ancien_amount_outside']),
       doyenAncienIn: double.parse(json['doyen_ancien_in']),
       noviceAmountExt: double.parse(json['adhasion_annuel_novice_ext']),
       noviceAmountIn: double.parse(json['adhasion_annuel_novice_in']),
