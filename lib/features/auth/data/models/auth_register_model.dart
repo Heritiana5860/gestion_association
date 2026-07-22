@@ -6,6 +6,7 @@ class AuthRegisterModel extends AuthRegisterEntity {
     required super.fullName,
     required super.username,
     required super.password,
+    super.role,
   });
 
   factory AuthRegisterModel.fromJson(Map<String, dynamic> json) {
@@ -13,6 +14,7 @@ class AuthRegisterModel extends AuthRegisterEntity {
       fullName: json[InfoKey.fullName] as String,
       username: json[InfoKey.username] as String,
       password: json[InfoKey.password] as String,
+      role: json[InfoKey.role] as String,
     );
   }
 

@@ -11,6 +11,8 @@ import 'package:login_with_unite_test_and_clean_architecture/core/widgets/button
 import 'package:login_with_unite_test_and_clean_architecture/core/widgets/empty_list.dart';
 import 'package:login_with_unite_test_and_clean_architecture/core/widgets/global_padding.dart';
 import 'package:login_with_unite_test_and_clean_architecture/core/widgets/rad/header_card_rad.dart';
+import 'package:login_with_unite_test_and_clean_architecture/core/widgets/warning.dart';
+import 'package:login_with_unite_test_and_clean_architecture/features/auth/presentation/providers/role_provider.dart';
 import 'package:login_with_unite_test_and_clean_architecture/features/rad/presentation/providers/cadre/fetch_cadre_notifier.dart';
 import 'package:login_with_unite_test_and_clean_architecture/features/rad/presentation/widgets/cadre/cadre_card.dart';
 import 'package:login_with_unite_test_and_clean_architecture/features/rad/presentation/widgets/cadre/cadre_dialog.dart';
@@ -49,6 +51,7 @@ class _CadrePageState extends ConsumerState<CadrePage> {
   @override
   Widget build(BuildContext context) {
     final cadres = ref.watch(fetchCadre);
+    final role = ref.watch(roleUserProvider);
 
     return Scaffold(
       backgroundColor: AppColor.scaffoldBackground,
@@ -63,7 +66,9 @@ class _CadrePageState extends ConsumerState<CadrePage> {
       floatingActionButton: ButtonFoatingCard(
         heroTag: "cadre-btn",
         icon: Icons.person_pin_rounded,
-        onPressed: _openCadreDialog,
+        onPressed: () {
+          role == "Membre" ? messageRoleMember(context) : _openCadreDialog();
+        },
       ),
       body: Padding(
         padding: globalPadding(),

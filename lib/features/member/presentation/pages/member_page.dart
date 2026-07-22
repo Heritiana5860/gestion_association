@@ -10,6 +10,8 @@ import 'package:login_with_unite_test_and_clean_architecture/core/widgets/button
 import 'package:login_with_unite_test_and_clean_architecture/core/widgets/empty_list.dart';
 import 'package:login_with_unite_test_and_clean_architecture/core/widgets/global_padding.dart';
 import 'package:login_with_unite_test_and_clean_architecture/core/widgets/list_animated.dart';
+import 'package:login_with_unite_test_and_clean_architecture/core/widgets/warning.dart';
+import 'package:login_with_unite_test_and_clean_architecture/features/auth/presentation/providers/role_provider.dart';
 import 'package:login_with_unite_test_and_clean_architecture/features/member/data/models/member_filters_model.dart';
 import 'package:login_with_unite_test_and_clean_architecture/features/member/presentation/providers/member_notifier.dart';
 import 'package:login_with_unite_test_and_clean_architecture/features/member/presentation/providers/member_search_provider.dart';
@@ -61,12 +63,16 @@ class _MemberPageState extends ConsumerState<MemberPage> {
     final filters = ref.watch(memberFilterProvider);
     final activeCount = _countActiveFilters(filters);
 
+    final role = ref.watch(roleUserProvider);
+
     return Scaffold(
       backgroundColor: AppColor.scaffoldBackground,
       floatingActionButton: ButtonFoatingCard(
         heroTag: "member-btn",
         icon: Icons.person_add_alt_rounded,
-        onPressed: _createMember,
+        onPressed: () {
+          role == "Membre" ? messageRoleMember(context) : _createMember();
+        },
       ),
       body: Padding(
         padding: globalPadding(),

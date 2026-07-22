@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:login_with_unite_test_and_clean_architecture/features/auth/domain/entities/login_params.dart';
 import 'package:login_with_unite_test_and_clean_architecture/features/auth/domain/entities/auth_session_entity.dart';
 import 'package:login_with_unite_test_and_clean_architecture/features/auth/presentation/providers/login/auth_login_provider.dart';
+import 'package:login_with_unite_test_and_clean_architecture/features/auth/presentation/providers/role_provider.dart';
 
 class AuthLoginNotifier extends AsyncNotifier<AuthSessionEntity?> {
   @override
@@ -17,10 +18,15 @@ class AuthLoginNotifier extends AsyncNotifier<AuthSessionEntity?> {
 
     final result = await usecase.call(entity);
 
-    result.fold(
-      (l) => state = AsyncError(l, StackTrace.current),
-      (r) => state = AsyncData(r),
-    );
+    result.fold((l) => state = AsyncError(l, StackTrace.current), (r) {
+      final role = r.role == "USER"
+          ? "Bureau"
+          : r.role == "ADMIN"
+          ? "Administrateur"
+          : "Membre";
+      ref.read(roleUserProvider.notifier).state = role;
+      state = AsyncData(r);
+    });
   }
 
   void setSession(AuthSessionEntity session) {

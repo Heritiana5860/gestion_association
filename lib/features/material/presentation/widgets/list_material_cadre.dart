@@ -4,6 +4,8 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:login_with_unite_test_and_clean_architecture/core/contants/colors/app_color.dart';
 import 'package:login_with_unite_test_and_clean_architecture/core/widgets/app_text.dart';
 import 'package:login_with_unite_test_and_clean_architecture/core/widgets/card/card_style.dart';
+import 'package:login_with_unite_test_and_clean_architecture/core/widgets/warning.dart';
+import 'package:login_with_unite_test_and_clean_architecture/features/auth/presentation/providers/role_provider.dart';
 import 'package:login_with_unite_test_and_clean_architecture/features/material/domain/entities/material_entity.dart';
 import 'package:login_with_unite_test_and_clean_architecture/features/material/presentation/providers/post_material_notifier.dart';
 import 'package:login_with_unite_test_and_clean_architecture/features/material/presentation/widgets/dialog_material.dart';
@@ -21,7 +23,16 @@ class _ListMaterialCadreState extends ConsumerState<ListMaterialCadre> {
   bool _isRemoved = false;
 
   Future<bool> _confirmDelete(BuildContext context) async {
-    final result = await showDialog<bool>(
+    final role = ref.read(roleUserProvider);
+
+    bool? result = false;
+
+    if (role == "Membre") {
+      messageRoleMember(context);
+      return false;
+    }
+
+    result = await showDialog<bool>(
       context: context,
       builder: (context) => AlertDialog(
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8.r)),
@@ -70,7 +81,9 @@ class _ListMaterialCadreState extends ConsumerState<ListMaterialCadre> {
     return Dismissible(
       key: ValueKey(widget.item.id),
       direction: DismissDirection.startToEnd,
-      confirmDismiss: (_) => _confirmDelete(context),
+      confirmDismiss: (_) {
+        return _confirmDelete(context);
+      },
       onDismissed: (_) {
         setState(() => _isRemoved = true);
         ref

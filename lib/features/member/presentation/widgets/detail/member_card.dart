@@ -189,24 +189,26 @@ class _MemberCardState extends State<MemberCard> {
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           crossAxisAlignment: CrossAxisAlignment.end,
                           children: [
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                CardInfoRow(
-                                  icon: Icons.school,
-                                  label: member.school,
-                                ),
-                                SizedBox(height: 5.h),
-                                CardInfoRow(
-                                  icon: Icons.double_arrow,
-                                  label: member.level,
-                                ),
-                                SizedBox(height: 5.h),
-                                CardInfoRow(
-                                  icon: Icons.location_on,
-                                  label: member.address,
-                                ),
-                              ],
+                            Flexible(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  CardInfoRow(
+                                    icon: Icons.school,
+                                    label: member.school,
+                                  ),
+                                  SizedBox(height: 5.h),
+                                  CardInfoRow(
+                                    icon: Icons.double_arrow,
+                                    label: member.level,
+                                  ),
+                                  SizedBox(height: 5.h),
+                                  CardInfoRow(
+                                    icon: Icons.location_on,
+                                    label: member.address,
+                                  ),
+                                ],
+                              ),
                             ),
                             QrBox(data: member.cde),
                           ],

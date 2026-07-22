@@ -7,6 +7,8 @@ import 'package:login_with_unite_test_and_clean_architecture/core/widgets/app_ci
 import 'package:login_with_unite_test_and_clean_architecture/core/widgets/button_foating_card.dart';
 import 'package:login_with_unite_test_and_clean_architecture/core/widgets/empty_list.dart';
 import 'package:login_with_unite_test_and_clean_architecture/core/widgets/global_padding.dart';
+import 'package:login_with_unite_test_and_clean_architecture/core/widgets/warning.dart';
+import 'package:login_with_unite_test_and_clean_architecture/features/auth/presentation/providers/role_provider.dart';
 import 'package:login_with_unite_test_and_clean_architecture/features/event/presentation/providers/event_notifier.dart';
 import 'package:login_with_unite_test_and_clean_architecture/features/event/presentation/widgets/event/build_header.dart';
 import 'package:login_with_unite_test_and_clean_architecture/features/event/presentation/widgets/event/event_card.dart';
@@ -23,6 +25,7 @@ class _EventPageState extends ConsumerState<EventPage> {
   @override
   Widget build(BuildContext context) {
     final events = ref.watch(eventProvider);
+    final role = ref.watch(roleUserProvider);
 
     void openDialog() {
       showDialog(context: context, builder: (context) => NewEventDialog());
@@ -32,7 +35,9 @@ class _EventPageState extends ConsumerState<EventPage> {
       backgroundColor: AppColor.scaffoldBackground,
       floatingActionButton: ButtonFoatingCard(
         heroTag: "event-btn",
-        onPressed: openDialog,
+        onPressed: () {
+          role == "Membre" ? messageRoleMember(context) : openDialog;
+        },
         icon: Icons.event_note,
       ),
       body: RefreshIndicator(

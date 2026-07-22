@@ -5,4 +5,5 @@ class InfoKey {
   static const fName = "first_name";
   static const username = "username";
   static const password = "password";
+  static const role = "role";
 }

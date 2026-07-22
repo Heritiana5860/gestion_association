@@ -11,6 +11,8 @@ import 'package:login_with_unite_test_and_clean_architecture/core/widgets/button
 import 'package:login_with_unite_test_and_clean_architecture/core/widgets/empty_list.dart';
 import 'package:login_with_unite_test_and_clean_architecture/core/widgets/global_padding.dart';
 import 'package:login_with_unite_test_and_clean_architecture/core/widgets/rad/header_card_rad.dart';
+import 'package:login_with_unite_test_and_clean_architecture/core/widgets/warning.dart';
+import 'package:login_with_unite_test_and_clean_architecture/features/auth/presentation/providers/role_provider.dart';
 import 'package:login_with_unite_test_and_clean_architecture/features/rad/presentation/providers/president/get_president_provider.dart';
 import 'package:login_with_unite_test_and_clean_architecture/features/rad/presentation/widgets/president/president_card.dart';
 import 'package:login_with_unite_test_and_clean_architecture/features/rad/presentation/widgets/president/president_dialog.dart';
@@ -49,6 +51,7 @@ class _PresidentPageState extends ConsumerState<PresidentPage> {
   @override
   Widget build(BuildContext context) {
     final presidentData = ref.watch(getPresidentProvider);
+    final role = ref.watch(roleUserProvider);
 
     return Scaffold(
       backgroundColor: AppColor.scaffoldBackground,
@@ -63,7 +66,9 @@ class _PresidentPageState extends ConsumerState<PresidentPage> {
       floatingActionButton: ButtonFoatingCard(
         heroTag: "president-btn",
         icon: Icons.person_pin_rounded,
-        onPressed: _openPresidentDialog,
+        onPressed: () {
+          role == "Membre" ? messageRoleMember(context) : _openPresidentDialog();
+        },
       ),
       body: RefreshIndicator(
         onRefresh: () => ref.read(getPresidentProvider.notifier).refresh(),

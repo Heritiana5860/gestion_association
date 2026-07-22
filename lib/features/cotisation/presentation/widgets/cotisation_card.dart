@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
@@ -6,16 +7,20 @@ import 'package:login_with_unite_test_and_clean_architecture/core/contants/color
 import 'package:login_with_unite_test_and_clean_architecture/core/contants/constant_text/cotisation_text.dart';
 import 'package:login_with_unite_test_and_clean_architecture/core/contants/keys/route_keys.dart';
 import 'package:login_with_unite_test_and_clean_architecture/core/widgets/app_text.dart';
+import 'package:login_with_unite_test_and_clean_architecture/core/widgets/warning.dart';
+import 'package:login_with_unite_test_and_clean_architecture/features/auth/presentation/providers/role_provider.dart';
 import 'package:login_with_unite_test_and_clean_architecture/features/cotisation/domain/entities/cotisation_entity.dart';
 import 'package:login_with_unite_test_and_clean_architecture/features/cotisation/presentation/widgets/build_item.dart';
 
-class CotisationCard extends StatelessWidget {
+class CotisationCard extends ConsumerWidget {
   final CotisationEntity item;
 
   const CotisationCard({super.key, required this.item});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final role = ref.watch(roleUserProvider);
+
     return Container(
       margin: EdgeInsets.only(bottom: 6.h),
       decoration: BoxDecoration(
@@ -62,10 +67,12 @@ class CotisationCard extends StatelessWidget {
         trailing: IconButton(
           onPressed: () {
             if (!context.mounted) return;
-            context.pushNamed(
-              RouteKeys.memberDetailName,
-              extra: item.member.id,
-            );
+            role == "Membre"
+                ? messageRoleMember(context)
+                : context.pushNamed(
+                    RouteKeys.memberDetailName,
+                    extra: item.member.id,
+                  );
           },
           icon: const Icon(Icons.visibility_rounded),
         ),

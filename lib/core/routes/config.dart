@@ -11,9 +11,11 @@ import 'package:login_with_unite_test_and_clean_architecture/core/providers/sele
 import 'package:login_with_unite_test_and_clean_architecture/core/services/member_pdf_service.dart';
 import 'package:login_with_unite_test_and_clean_architecture/core/widgets/app_circular.dart';
 import 'package:login_with_unite_test_and_clean_architecture/core/widgets/app_text.dart';
+import 'package:login_with_unite_test_and_clean_architecture/core/widgets/warning.dart';
 import 'package:login_with_unite_test_and_clean_architecture/features/auth/presentation/pages/auth_login_page.dart';
 import 'package:login_with_unite_test_and_clean_architecture/features/auth/presentation/pages/auth_register_page.dart';
 import 'package:login_with_unite_test_and_clean_architecture/features/auth/presentation/providers/login/auth_login_notifier.dart';
+import 'package:login_with_unite_test_and_clean_architecture/features/auth/presentation/providers/role_provider.dart';
 import 'package:login_with_unite_test_and_clean_architecture/features/cotisation/presentation/pages/cotisation_page.dart';
 import 'package:login_with_unite_test_and_clean_architecture/features/event/presentation/pages/event_detail_page.dart';
 import 'package:login_with_unite_test_and_clean_architecture/features/event/presentation/pages/event_page.dart';
@@ -110,6 +112,8 @@ final routerProvider = Provider<GoRouter>((ref) {
 
       StatefulShellRoute.indexedStack(
         builder: (context, state, navigationShell) {
+          final role = ref.watch(roleUserProvider);
+
           return Scaffold(
             backgroundColor: AppColor.scaffoldBackground,
             appBar: AppBar(
@@ -128,6 +132,8 @@ final routerProvider = Provider<GoRouter>((ref) {
                         tooltip: "Exporter en PDF",
                         onPressed: members.isEmpty
                             ? null
+                            : role == "Membre"
+                            ? () => messageRoleMember(context)
                             : () async {
                                 final bytes = await MemberPdfService.generate(
                                   members: members,
@@ -203,8 +209,7 @@ final routerProvider = Provider<GoRouter>((ref) {
                                     radius: 34.r,
                                     backgroundColor: AppColor.white,
                                     child: AppText(
-                                      label:
-                                          initialName, // Plus besoin de "!" ici
+                                      label: initialName,
                                       color: AppColor.blue,
                                       fontWeight: FontWeight.bold,
                                       fontSize: 18.sp,
@@ -219,7 +224,7 @@ final routerProvider = Provider<GoRouter>((ref) {
                                     fontWeight: FontWeight.w700,
                                   ),
                                   AppText(
-                                    label: "Bienvenue 👋",
+                                    label: role,
                                     color: AppColor.white.withValues(
                                       alpha: 0.8,
                                     ),

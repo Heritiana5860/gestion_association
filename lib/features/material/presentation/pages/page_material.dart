@@ -11,6 +11,8 @@ import 'package:login_with_unite_test_and_clean_architecture/core/widgets/button
 import 'package:login_with_unite_test_and_clean_architecture/core/widgets/empty_list.dart';
 import 'package:login_with_unite_test_and_clean_architecture/core/widgets/global_padding.dart';
 import 'package:login_with_unite_test_and_clean_architecture/core/widgets/rad/header_card_rad.dart';
+import 'package:login_with_unite_test_and_clean_architecture/core/widgets/warning.dart';
+import 'package:login_with_unite_test_and_clean_architecture/features/auth/presentation/providers/role_provider.dart';
 import 'package:login_with_unite_test_and_clean_architecture/features/material/presentation/providers/list_material_provider.dart';
 import 'package:login_with_unite_test_and_clean_architecture/features/material/presentation/widgets/dialog_material.dart';
 import 'package:login_with_unite_test_and_clean_architecture/features/material/presentation/widgets/list_material_cadre.dart';
@@ -49,6 +51,7 @@ class _PageMaterialState extends ConsumerState<PageMaterial> {
   @override
   Widget build(BuildContext context) {
     final listMaterials = ref.watch(listMaterialProvider);
+    final role = ref.watch(roleUserProvider);
 
     return Scaffold(
       backgroundColor: AppColor.scaffoldBackground,
@@ -63,7 +66,9 @@ class _PageMaterialState extends ConsumerState<PageMaterial> {
       floatingActionButton: ButtonFoatingCard(
         heroTag: "material-btn",
         icon: Icons.post_add,
-        onPressed: _openMaterialDialog,
+        onPressed: () {
+          role == "Membre" ? messageRoleMember(context) : _openMaterialDialog();
+        },
       ),
       body: Padding(
         padding: globalPadding(),

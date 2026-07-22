@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'package:flutter/material.dart';
 import 'package:login_with_unite_test_and_clean_architecture/core/network/api_endpoints.dart';
 import 'package:login_with_unite_test_and_clean_architecture/features/obligation/data/models/obligation_model.dart';
 
@@ -22,6 +23,8 @@ class AddObligationDatasourceImpl implements AddObligationDatasource {
     final response = await dio.get(ApiEndpoints.annuel);
 
     final List<dynamic> data = response.data;
+
+    debugPrint("Data:: $data");
 
     return data.map((d) => ObligationModel.fromJson(d)).toList();
   }

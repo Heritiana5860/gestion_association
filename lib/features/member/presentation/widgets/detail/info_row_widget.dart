@@ -24,20 +24,22 @@ class InfoRowWidget extends StatelessWidget {
             child: Icon(row.icon, size: 16.sp, color: row.color),
           ),
           SizedBox(width: 12.w),
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              AppText(
-                label: row.label,
-                fontSize: 12.sp,
-                color: AppColor.textDescription,
-              ),
-              AppText(
-                label: row.value,
-                fontSize: 14.sp,
-                fontWeight: FontWeight.w500,
-              ),
-            ],
+          Flexible(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                AppText(
+                  label: row.label,
+                  fontSize: 12.sp,
+                  color: AppColor.textDescription,
+                ),
+                AppText(
+                  label: row.value,
+                  fontSize: 14.sp,
+                  fontWeight: FontWeight.w500,
+                ),
+              ],
+            ),
           ),
         ],
       ),

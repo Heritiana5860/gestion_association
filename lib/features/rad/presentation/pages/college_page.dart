@@ -11,6 +11,8 @@ import 'package:login_with_unite_test_and_clean_architecture/core/widgets/button
 import 'package:login_with_unite_test_and_clean_architecture/core/widgets/empty_list.dart';
 import 'package:login_with_unite_test_and_clean_architecture/core/widgets/global_padding.dart';
 import 'package:login_with_unite_test_and_clean_architecture/core/widgets/rad/header_card_rad.dart';
+import 'package:login_with_unite_test_and_clean_architecture/core/widgets/warning.dart';
+import 'package:login_with_unite_test_and_clean_architecture/features/auth/presentation/providers/role_provider.dart';
 import 'package:login_with_unite_test_and_clean_architecture/features/rad/presentation/providers/college/get_college_notifier.dart';
 import 'package:login_with_unite_test_and_clean_architecture/features/rad/presentation/widgets/college/college_card.dart';
 import 'package:login_with_unite_test_and_clean_architecture/features/rad/presentation/widgets/college/college_dialog.dart';
@@ -49,6 +51,7 @@ class _CollegePageState extends ConsumerState<CollegePage> {
   @override
   Widget build(BuildContext context) {
     final colleges = ref.watch(collegeDataProvider);
+    final role = ref.watch(roleUserProvider);
 
     return Scaffold(
       backgroundColor: AppColor.scaffoldBackground,
@@ -63,7 +66,9 @@ class _CollegePageState extends ConsumerState<CollegePage> {
       floatingActionButton: ButtonFoatingCard(
         heroTag: "college-btn",
         icon: Icons.person_pin_rounded,
-        onPressed: _openCollegeDialog,
+        onPressed: () {
+          role == "Membre" ? messageRoleMember(context) : _openCollegeDialog();
+        },
       ),
       body: Padding(
         padding: globalPadding(),

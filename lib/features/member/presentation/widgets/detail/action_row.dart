@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:login_with_unite_test_and_clean_architecture/core/widgets/warning.dart';
+import 'package:login_with_unite_test_and_clean_architecture/features/auth/presentation/providers/role_provider.dart';
 import 'package:login_with_unite_test_and_clean_architecture/features/cotisation/presentation/providers/cotisation/cotisation_notifier.dart';
 import 'package:login_with_unite_test_and_clean_architecture/features/member/domain/entities/member_entity.dart';
 import 'package:login_with_unite_test_and_clean_architecture/features/member/presentation/widgets/detail/pay_cotisation_dialog.dart';
@@ -18,6 +20,8 @@ class ActionRow extends ConsumerStatefulWidget {
 class _ActionRowState extends ConsumerState<ActionRow> {
   @override
   Widget build(BuildContext context) {
+    final role = ref.watch(roleUserProvider);
+
     return Row(
       children: [
         Expanded(
@@ -27,10 +31,12 @@ class _ActionRowState extends ConsumerState<ActionRow> {
             isPrimary: true,
             onTap: () {
               ref.read(cotisationDataProvider.notifier).refresh();
-              _payCotisation(
-                id: widget.member.id,
-                initialAmount: widget.member.cotisations?.first.amount,
-              );
+              role == "Membre"
+                  ? messageRoleMember(context)
+                  : _payCotisation(
+                      id: widget.member.id,
+                      initialAmount: widget.member.cotisations?.first.amount,
+                    );
             },
           ),
         ),
@@ -40,10 +46,13 @@ class _ActionRowState extends ConsumerState<ActionRow> {
             icon: Icons.edit_outlined,
             label: 'Modifier',
             onTap: () {
-              showDialog(
-                context: context,
-                builder: (context) => AddMemberDialog(member: widget.member),
-              );
+              role == "Membre"
+                  ? messageRoleMember(context)
+                  : showDialog(
+                      context: context,
+                      builder: (context) =>
+                          AddMemberDialog(member: widget.member),
+                    );
             },
           ),
         ),
@@ -54,8 +63,8 @@ class _ActionRowState extends ConsumerState<ActionRow> {
   void _payCotisation({required int? id, double? initialAmount}) {
     showDialog(
       context: context,
-      builder: (context) => PayCotisationDialog(id: id, initialAmount: initialAmount,),
+      builder: (context) =>
+          PayCotisationDialog(id: id, initialAmount: initialAmount),
     );
   }
 }
-

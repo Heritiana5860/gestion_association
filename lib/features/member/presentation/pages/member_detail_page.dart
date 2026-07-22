@@ -6,6 +6,8 @@ import 'package:login_with_unite_test_and_clean_architecture/core/contants/color
 import 'package:login_with_unite_test_and_clean_architecture/core/errors/provider_error.dart';
 import 'package:login_with_unite_test_and_clean_architecture/core/widgets/app_circular.dart';
 import 'package:login_with_unite_test_and_clean_architecture/core/widgets/app_text.dart';
+import 'package:login_with_unite_test_and_clean_architecture/core/widgets/warning.dart';
+import 'package:login_with_unite_test_and_clean_architecture/features/auth/presentation/providers/role_provider.dart';
 import 'package:login_with_unite_test_and_clean_architecture/features/cotisation/presentation/providers/cotisation/cotisation_notifier.dart';
 import 'package:login_with_unite_test_and_clean_architecture/features/member/presentation/providers/member_delete_notifier.dart';
 import 'package:login_with_unite_test_and_clean_architecture/features/member/presentation/providers/member_detail_provider.dart';
@@ -46,6 +48,7 @@ class _MemberDetailPageState extends ConsumerState<MemberDetailPage> {
     final membersAsync = ref.watch(detailProvider(widget.memberId));
     final deleteState = ref.watch(memberDeleteProvider);
     final isDeleting = deleteState is AsyncLoading;
+    final role = ref.watch(roleUserProvider);
 
     ref.listen<AsyncValue<void>>(memberDeleteProvider, (previous, next) async {
       if (previous is AsyncLoading && next is AsyncData) {
@@ -107,9 +110,11 @@ class _MemberDetailPageState extends ConsumerState<MemberDetailPage> {
               offset: const Offset(0, 8),
               onSelected: (value) {
                 if (value == 'delete') {
-                  ref
-                      .read(memberDeleteProvider.notifier)
-                      .deleteMember(widget.memberId);
+                  role == "Member" || role == "Bureau"
+                      ? messageRoleMember(context)
+                      : ref
+                            .read(memberDeleteProvider.notifier)
+                            .deleteMember(widget.memberId);
                 }
               },
               itemBuilder: (context) => [

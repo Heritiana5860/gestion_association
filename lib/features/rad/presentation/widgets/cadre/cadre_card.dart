@@ -1,25 +1,32 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:login_with_unite_test_and_clean_architecture/core/contants/colors/app_color.dart';
 import 'package:login_with_unite_test_and_clean_architecture/core/widgets/app_text.dart';
 import 'package:login_with_unite_test_and_clean_architecture/core/widgets/card/card_style.dart';
+import 'package:login_with_unite_test_and_clean_architecture/core/widgets/warning.dart';
+import 'package:login_with_unite_test_and_clean_architecture/features/auth/presentation/providers/role_provider.dart';
 import 'package:login_with_unite_test_and_clean_architecture/features/rad/domain/entities/cadre_entity.dart';
 import 'package:login_with_unite_test_and_clean_architecture/features/rad/presentation/widgets/build_info.dart';
 import 'package:login_with_unite_test_and_clean_architecture/features/rad/presentation/widgets/cadre/cadre_dialog.dart';
 
-class CadreCard extends StatelessWidget {
+class CadreCard extends ConsumerWidget {
   const CadreCard({super.key, required this.item});
 
   final CadreEntity item;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final role = ref.watch(roleUserProvider);
+
     return InkWell(
       onTap: () {
-        showDialog(
-          context: context,
-          builder: (context) => CadreDialog(item: item),
-        );
+        role == "Membre"
+            ? messageRoleMember(context)
+            : showDialog(
+                context: context,
+                builder: (context) => CadreDialog(item: item),
+              );
       },
       child: CardStyle(
         child: Row(

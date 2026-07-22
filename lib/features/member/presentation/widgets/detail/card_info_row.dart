@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:login_with_unite_test_and_clean_architecture/core/widgets/app_text.dart';
 
 class CardInfoRow extends StatelessWidget {
   const CardInfoRow({super.key, required this.icon, required this.label});
@@ -12,9 +13,9 @@ class CardInfoRow extends StatelessWidget {
       spacing: 6.w,
       children: [
         Icon(icon, size: 13.sp, color: Colors.white38),
-        Text(
-          label,
-          style: TextStyle(
+        Flexible(
+          child: AppText(
+            label: label,
             fontSize: 11.sp,
             color: Colors.white.withValues(alpha: 0.75),
           ),

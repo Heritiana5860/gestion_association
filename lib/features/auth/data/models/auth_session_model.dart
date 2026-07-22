@@ -6,6 +6,7 @@ class AuthSessionModel extends AuthSessionEntity {
     required super.access,
     required super.username,
     required super.firstName,
+    super.role,
   });
 
   factory AuthSessionModel.fromJson(Map<String, dynamic> json) {
@@ -14,6 +15,7 @@ class AuthSessionModel extends AuthSessionEntity {
       refresh: json["refresh"] as String,
       username: json["username"] as String,
       firstName: json["first_name"] as String? ?? '',
+      role: json["role"] as String?,
     );
   }
 }

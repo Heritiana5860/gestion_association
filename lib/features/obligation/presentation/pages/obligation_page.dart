@@ -8,6 +8,8 @@ import 'package:login_with_unite_test_and_clean_architecture/core/widgets/app_ci
 import 'package:login_with_unite_test_and_clean_architecture/core/widgets/app_text.dart';
 import 'package:login_with_unite_test_and_clean_architecture/core/widgets/button_foating_card.dart';
 import 'package:login_with_unite_test_and_clean_architecture/core/widgets/global_padding.dart';
+import 'package:login_with_unite_test_and_clean_architecture/core/widgets/warning.dart';
+import 'package:login_with_unite_test_and_clean_architecture/features/auth/presentation/providers/role_provider.dart';
 import 'package:login_with_unite_test_and_clean_architecture/features/obligation/presentation/providers/obligation_notifier.dart';
 import 'package:login_with_unite_test_and_clean_architecture/features/obligation/presentation/widgets/form_obligation_dialog.dart';
 import 'package:login_with_unite_test_and_clean_architecture/features/obligation/presentation/widgets/obligation_list_card.dart';
@@ -30,6 +32,7 @@ class _ObligationPageState extends ConsumerState<ObligationPage> {
   @override
   Widget build(BuildContext context) {
     final obligations = ref.watch(obligationsProvider);
+    final role = ref.watch(roleUserProvider);
 
     return Scaffold(
       backgroundColor: AppColor.scaffoldBackground,
@@ -54,7 +57,9 @@ class _ObligationPageState extends ConsumerState<ObligationPage> {
       floatingActionButton: ButtonFoatingCard(
         heroTag: "obligation-btn",
         icon: Icons.add_rounded,
-        onPressed: _openDialog,
+        onPressed: () {
+          role == "Membre" ? messageRoleMember(context) : _openDialog();
+        },
       ),
 
       body: Padding(
@@ -183,8 +188,10 @@ class _ObligationPageState extends ConsumerState<ObligationPage> {
                   );
                 },
 
-                error: (error, _) =>
-                    errorProvider(context: context, error: error),
+                error: (error, _) {
+                  debugPrint("Erreur:: $error");
+                  return errorProvider(context: context, error: error);
+                },
                 loading: () => const AppCircular(),
               ),
             ),

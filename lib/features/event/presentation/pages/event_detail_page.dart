@@ -6,6 +6,8 @@ import 'package:login_with_unite_test_and_clean_architecture/core/errors/ref_lis
 import 'package:login_with_unite_test_and_clean_architecture/core/widgets/app_circular.dart';
 import 'package:login_with_unite_test_and_clean_architecture/core/widgets/app_text.dart';
 import 'package:login_with_unite_test_and_clean_architecture/core/widgets/button_foating_card.dart';
+import 'package:login_with_unite_test_and_clean_architecture/core/widgets/warning.dart';
+import 'package:login_with_unite_test_and_clean_architecture/features/auth/presentation/providers/role_provider.dart';
 import 'package:login_with_unite_test_and_clean_architecture/features/event/domain/entities/event_entity.dart';
 import 'package:login_with_unite_test_and_clean_architecture/features/event/presentation/providers/event_detail_notifier.dart';
 import 'package:login_with_unite_test_and_clean_architecture/features/event/presentation/providers/event_notifier.dart';
@@ -119,6 +121,7 @@ class _EventDetailPageState extends ConsumerState<EventDetailPage> {
   @override
   Widget build(BuildContext context) {
     final eventDetail = ref.watch(eventDetailProvider(widget.eventId!));
+    final role = ref.watch(roleUserProvider);
 
     return Scaffold(
       backgroundColor: AppColor.scaffoldBackground,
@@ -130,23 +133,25 @@ class _EventDetailPageState extends ConsumerState<EventDetailPage> {
               ? ButtonFoatingCard(
                   heroTag: "event-detail-btn",
                   onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => Scaffold(
-                          body: MobileScanner(
-                            controller: _scannerController,
-                            overlayBuilder: (context, constraints) {
-                              return QrScannerOverlay(
-                                onCancel: () => Navigator.pop(context),
-                              );
-                            },
-                            onDetect: (result) =>
-                                _handleDetect(result, context),
-                          ),
-                        ),
-                      ),
-                    );
+                    role == "Membre"
+                        ? messageRoleMember(context)
+                        : Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => Scaffold(
+                                body: MobileScanner(
+                                  controller: _scannerController,
+                                  overlayBuilder: (context, constraints) {
+                                    return QrScannerOverlay(
+                                      onCancel: () => Navigator.pop(context),
+                                    );
+                                  },
+                                  onDetect: (result) =>
+                                      _handleDetect(result, context),
+                                ),
+                              ),
+                            ),
+                          );
                   }, // désactive le bouton si hors horaire
                   icon: Icons.qr_code_rounded,
                 )

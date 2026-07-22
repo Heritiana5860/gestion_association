@@ -1,25 +1,32 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:login_with_unite_test_and_clean_architecture/core/contants/colors/app_color.dart';
 import 'package:login_with_unite_test_and_clean_architecture/core/widgets/app_text.dart';
 import 'package:login_with_unite_test_and_clean_architecture/core/widgets/card/card_style.dart';
+import 'package:login_with_unite_test_and_clean_architecture/core/widgets/warning.dart';
+import 'package:login_with_unite_test_and_clean_architecture/features/auth/presentation/providers/role_provider.dart';
 import 'package:login_with_unite_test_and_clean_architecture/features/rad/domain/entities/honneur_entity.dart';
 import 'package:login_with_unite_test_and_clean_architecture/features/rad/presentation/widgets/build_info.dart';
 import 'package:login_with_unite_test_and_clean_architecture/features/rad/presentation/widgets/honneur/honneur_dialog.dart';
 
-class HonneurCard extends StatelessWidget {
+class HonneurCard extends ConsumerWidget {
   const HonneurCard({super.key, required this.item});
 
   final HonneurEntity item;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final role = ref.watch(roleUserProvider);
+
     return InkWell(
       onTap: () {
-        showDialog(
-          context: context,
-          builder: (context) => HonneurDialog(item: item),
-        );
+        role == "Membre"
+            ? messageRoleMember(context)
+            : showDialog(
+                context: context,
+                builder: (context) => HonneurDialog(item: item),
+              );
       },
       child: CardStyle(
         child: Row(

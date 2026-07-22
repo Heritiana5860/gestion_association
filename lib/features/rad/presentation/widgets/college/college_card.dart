@@ -1,22 +1,32 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:login_with_unite_test_and_clean_architecture/core/contants/colors/app_color.dart';
 import 'package:login_with_unite_test_and_clean_architecture/core/widgets/app_text.dart';
 import 'package:login_with_unite_test_and_clean_architecture/core/widgets/card/card_style.dart';
+import 'package:login_with_unite_test_and_clean_architecture/core/widgets/warning.dart';
+import 'package:login_with_unite_test_and_clean_architecture/features/auth/presentation/providers/role_provider.dart';
 import 'package:login_with_unite_test_and_clean_architecture/features/rad/domain/entities/college_entity.dart';
 import 'package:login_with_unite_test_and_clean_architecture/features/rad/presentation/widgets/build_info.dart';
 import 'package:login_with_unite_test_and_clean_architecture/features/rad/presentation/widgets/college/college_dialog.dart';
 
-class CollegeCard extends StatelessWidget {
+class CollegeCard extends ConsumerWidget {
   const CollegeCard({super.key, required this.item});
 
   final CollegeEntity item;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final role = ref.watch(roleUserProvider);
+
     return InkWell(
       onTap: () {
-        showDialog(context: context, builder: (context) => CollegeDialog(item: item),);
+        role == "Membre"
+            ? messageRoleMember(context)
+            : showDialog(
+                context: context,
+                builder: (context) => CollegeDialog(item: item),
+              );
       },
       child: CardStyle(
         child: Row(
@@ -79,7 +89,10 @@ class CollegeCard extends StatelessWidget {
                   ),
 
                   item.nomPromotion.isNotEmpty
-                      ? BuildInfo(label: item.nomPromotion, icon: Icons.task_alt)
+                      ? BuildInfo(
+                          label: item.nomPromotion,
+                          icon: Icons.task_alt,
+                        )
                       : SizedBox.shrink(),
 
                   BuildInfo(label: item.address, icon: Icons.place),

@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'package:flutter/material.dart';
 import 'package:login_with_unite_test_and_clean_architecture/core/network/api_endpoints.dart';
 import 'package:login_with_unite_test_and_clean_architecture/features/auth/data/models/auth_login_model.dart';
 import 'package:login_with_unite_test_and_clean_architecture/features/auth/data/models/auth_session_model.dart';
@@ -15,6 +16,8 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
   @override
   Future<AuthSessionModel> login(AuthLoginModel model) async {
     final response = await dio.post(ApiEndpoints.token, data: model.toJson());
+
+    debugPrint("Response: $response");
 
     return AuthSessionModel.fromJson(response.data);
   }
