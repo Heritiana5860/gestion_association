@@ -105,7 +105,7 @@ class _PresidentPageState extends ConsumerState<PresidentPage> {
                     final nomMatch = item.nom.toLowerCase().contains(
                       searchText,
                     );
-                    final contactMatch = item.contact.toLowerCase().contains(
+                    final contactMatch = item.contact!.toLowerCase().contains(
                       searchText,
                     );
                     final yearMatch = item.year.toLowerCase().contains(

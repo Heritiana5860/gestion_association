@@ -38,7 +38,7 @@ class _PresidentDialogState extends ConsumerState<PresidentDialog> {
 
     if (widget.item != null) {
       nom.text = widget.item!.nom;
-      contact.text = widget.item!.contact;
+      contact.text = widget.item!.contact ?? "";
       bio.text = widget.item!.bio;
       mandat.text = widget.item!.year;
     }
@@ -51,9 +51,7 @@ class _PresidentDialogState extends ConsumerState<PresidentDialog> {
             SnackBar(
               backgroundColor: AppColor.green,
               content: AppText(
-                label: _isEditing
-                    ? RadText.modifSucces
-                    : RadText.saveSucces,
+                label: _isEditing ? RadText.modifSucces : RadText.saveSucces,
                 color: AppColor.white,
               ),
             ),
