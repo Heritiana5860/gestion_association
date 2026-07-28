@@ -59,12 +59,12 @@ class CollegeCard extends ConsumerWidget {
 
                   Row(
                     children: [
-                      Expanded(
-                        child: BuildInfo(
-                          label: item.contact,
-                          icon: Icons.phone,
-                        ),
-                      ),
+                      // Expanded(
+                      //   child: BuildInfo(
+                      //     label: item.contact,
+                      //     icon: Icons.phone,
+                      //   ),
+                      // ),
                       Expanded(
                         child: BuildInfo(
                           label: item.year,

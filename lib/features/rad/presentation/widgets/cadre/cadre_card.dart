@@ -57,7 +57,7 @@ class CadreCard extends ConsumerWidget {
                     fontSize: 15.sp,
                   ),
 
-                  BuildInfo(label: item.contact, icon: Icons.phone),
+                  // BuildInfo(label: item.contact, icon: Icons.phone),
 
                   BuildInfo(label: item.fonction, icon: Icons.verified),
 

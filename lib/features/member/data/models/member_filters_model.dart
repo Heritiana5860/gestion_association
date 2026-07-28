@@ -6,6 +6,7 @@ class MemberFiltersModel extends MemberFiltersEntity {
     super.statut,
     super.level,
     super.isInside,
+    super.isPaid,
   });
 
   MemberFiltersModel copyWith({
@@ -13,6 +14,7 @@ class MemberFiltersModel extends MemberFiltersEntity {
     Object? statut = _sentinel,
     Object? level = _sentinel,
     Object? isInside = _sentinel,
+    Object? isPaid = _sentinel,
   }) {
     String? resolveString(Object? val, String? current) {
       if (val == _sentinel) return current;
@@ -25,11 +27,16 @@ class MemberFiltersModel extends MemberFiltersEntity {
       statut: resolveString(statut, this.statut),
       level: resolveString(level, this.level),
       isInside: isInside == _sentinel ? this.isInside : (isInside as bool?),
+      isPaid: isPaid == _sentinel ? this.isPaid : (isPaid as bool?),
     );
   }
 
   bool get isEmpty =>
-      search == null && statut == null && level == null && isInside == null;
+      search == null &&
+      statut == null &&
+      level == null &&
+      isInside == null &&
+      isPaid == null;
 
   Map<String, dynamic> toMap() {
     final map = <String, dynamic>{};
@@ -37,6 +44,7 @@ class MemberFiltersModel extends MemberFiltersEntity {
     if (statut != null) map['statut'] = statut;
     if (level != null) map['level'] = level;
     if (isInside != null) map['is_inside'] = isInside;
+    if (isPaid != null) map['is_paid'] = isPaid;
     return map;
   }
 }

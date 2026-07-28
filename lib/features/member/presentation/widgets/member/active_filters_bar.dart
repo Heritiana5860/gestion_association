@@ -41,6 +41,12 @@ class ActiveFiltersBar extends StatelessWidget {
               label: filters.isInside! ? 'Interne' : 'Externe',
               onRemove: () => onRemove('isInside'),
             ),
+
+          if (filters.isPaid != null) // NOUVEAU
+            ActiveChip(
+              label: filters.isPaid! ? 'Payée' : 'Non payée',
+              onRemove: () => onRemove('isPaid'),
+            ),
           TextButton.icon(
             onPressed: onClear,
             icon: const Icon(Icons.clear_all, size: 16),

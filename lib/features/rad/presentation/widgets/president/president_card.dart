@@ -66,14 +66,14 @@ class PresidentCard extends ConsumerWidget {
                           icon: Icons.date_range,
                         ),
                       ),
-                      item.contact != null
-                          ? Expanded(
-                              child: BuildInfo(
-                                label: item.contact!,
-                                icon: Icons.phone,
-                              ),
-                            )
-                          : SizedBox.shrink(),
+                      // item.contact != null
+                      //     ? Expanded(
+                      //         child: BuildInfo(
+                      //           label: item.contact!,
+                      //           icon: Icons.phone,
+                      //         ),
+                      //       )
+                      //     : SizedBox.shrink(),
                     ],
                   ),
 

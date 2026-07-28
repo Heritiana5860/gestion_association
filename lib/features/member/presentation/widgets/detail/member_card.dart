@@ -1,7 +1,9 @@
 import 'dart:typed_data';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:login_with_unite_test_and_clean_architecture/core/contants/colors/app_color.dart';
+import 'package:login_with_unite_test_and_clean_architecture/core/providers/selected_year_notifier.dart';
 import 'package:login_with_unite_test_and_clean_architecture/core/services/card_export_service.dart';
 import 'package:login_with_unite_test_and_clean_architecture/core/widgets/app_button.dart';
 import 'package:login_with_unite_test_and_clean_architecture/core/widgets/app_text.dart';
@@ -15,15 +17,15 @@ import 'package:login_with_unite_test_and_clean_architecture/features/member/pre
 import 'package:login_with_unite_test_and_clean_architecture/features/member/presentation/widgets/detail/verso_card.dart';
 import 'package:share_plus/share_plus.dart';
 
-class MemberCard extends StatefulWidget {
+class MemberCard extends ConsumerStatefulWidget {
   const MemberCard({super.key, required this.member});
   final MemberEntity member;
 
   @override
-  State<MemberCard> createState() => _MemberCardState();
+  ConsumerState<MemberCard> createState() => _MemberCardState();
 }
 
-class _MemberCardState extends State<MemberCard> {
+class _MemberCardState extends ConsumerState<MemberCard> {
   final GlobalKey _rectoKey = GlobalKey();
   final GlobalKey _versoKey = GlobalKey();
   bool _isExporting = false;
@@ -119,6 +121,7 @@ class _MemberCardState extends State<MemberCard> {
   @override
   Widget build(BuildContext context) {
     final member = widget.member;
+    final selectedYear = ref.watch(selectedYearProvider) ?? "2026";
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -179,10 +182,21 @@ class _MemberCardState extends State<MemberCard> {
                           color: Colors.white,
                         ),
                         SizedBox(height: 2.h),
-                        AppText(
-                          label: member.numberPhone,
-                          fontSize: 11.sp,
-                          color: Colors.white60,
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            AppText(
+                              label: member.numberPhone,
+                              fontSize: 11.sp,
+                              color: Colors.white60,
+                            ),
+                            AppText(
+                              label: selectedYear,
+                              fontSize: 11.sp,
+                              color: Colors.white60,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ],
                         ),
                         const Spacer(),
                         Row(

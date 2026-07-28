@@ -38,7 +38,7 @@ class ListMemberCard extends ConsumerWidget {
         title: AppText(
           label: member.fullName,
           fontWeight: FontWeight.w700,
-          maxLines: 1,
+          maxLines: 3,
           overflow: TextOverflow.ellipsis,
         ),
         subtitle: AppText(label: member.statut),

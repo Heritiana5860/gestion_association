@@ -148,13 +148,6 @@ class _PresidentDialogState extends ConsumerState<PresidentDialog> {
                   enabled: !isLoading,
                   labelText: "Contact",
                   maxLength: 10,
-                  validator: (value) {
-                    if (value == null || value.trim().isEmpty) {
-                      return ValidatorText.obligatorField;
-                    }
-
-                    return null;
-                  },
                 ),
                 AppInput(
                   controller: mandat,

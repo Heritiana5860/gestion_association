@@ -36,7 +36,7 @@ class _EventPageState extends ConsumerState<EventPage> {
       floatingActionButton: ButtonFoatingCard(
         heroTag: "event-btn",
         onPressed: () {
-          role == "Membre" ? messageRoleMember(context) : openDialog;
+          role == "Membre" ? messageRoleMember(context) : openDialog();
         },
         icon: Icons.event_note,
       ),

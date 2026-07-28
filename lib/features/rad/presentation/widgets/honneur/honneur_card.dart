@@ -66,12 +66,12 @@ class HonneurCard extends ConsumerWidget {
                           icon: Icons.date_range,
                         ),
                       ),
-                      Expanded(
-                        child: BuildInfo(
-                          label: item.contact,
-                          icon: Icons.phone,
-                        ),
-                      ),
+                      // Expanded(
+                      //   child: BuildInfo(
+                      //     label: item.contact,
+                      //     icon: Icons.phone,
+                      //   ),
+                      // ),
                     ],
                   ),
 

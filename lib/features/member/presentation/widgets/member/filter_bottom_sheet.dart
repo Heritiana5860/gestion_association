@@ -152,6 +152,38 @@ class FilterBottomSheetState extends State<FilterBottomSheet> {
             ),
           ),
 
+          SizedBox(height: 20.h),
+
+          SheetSection(
+            // NOUVEAU
+            title: "Cotisation",
+            child: Row(
+              children: [
+                ChoiceChipCard(
+                  label: "Payée",
+                  icon: Icons.check_circle_outline,
+                  selected: _draft.isPaid == true,
+                  onTap: () => setState(() {
+                    _draft = _draft.copyWith(
+                      isPaid: _draft.isPaid == true ? null : true,
+                    );
+                  }),
+                ),
+                SizedBox(width: 8.w),
+                ChoiceChipCard(
+                  label: "Non payée",
+                  icon: Icons.cancel_outlined,
+                  selected: _draft.isPaid == false,
+                  onTap: () => setState(() {
+                    _draft = _draft.copyWith(
+                      isPaid: _draft.isPaid == false ? null : false,
+                    );
+                  }),
+                ),
+              ],
+            ),
+          ),
+
           SizedBox(height: 28.h),
 
           SizedBox(

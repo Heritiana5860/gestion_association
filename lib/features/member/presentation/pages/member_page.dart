@@ -54,6 +54,7 @@ class _MemberPageState extends ConsumerState<MemberPage> {
     if (f.statut != null) count++;
     if (f.level != null) count++;
     if (f.isInside != null) count++;
+    if (f.isPaid != null) count++;
     return count;
   }
 
@@ -134,6 +135,7 @@ class _MemberPageState extends ConsumerState<MemberPage> {
                       'statut' => f.copyWith(statut: "TOUS"),
                       'level' => f.copyWith(level: "TOUS"),
                       'isInside' => f.copyWith(isInside: null),
+                      'isPaid' => f.copyWith(isPaid: null),
                       _ => f,
                     };
                   });
