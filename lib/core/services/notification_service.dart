@@ -1,5 +1,6 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
@@ -62,14 +63,40 @@ class NotificationService {
         ?.createNotificationChannel(_channel);
   }
 
+  /// Construit et affiche une notification enrichie (titre, description,
+  /// date, heures) avec le logo de l'association.
   void _showLocalNotification(RemoteMessage message) {
+    final data = message.data;
     final notification = message.notification;
-    if (notification == null) return;
+
+    // On privilégie les données structurées envoyées par le backend,
+    // avec repli sur le "notification" classique si absent.
+    final eventName =
+        data['event_name'] ?? notification?.title ?? 'Nouvel événement';
+    final description = data['event_description'] ?? '';
+    final eventDate = data['event_date'] ?? '';
+    final startTime = data['event_start_time'] ?? '';
+    final endTime = data['event_end_time'] ?? '';
+
+    final title = '📅 $eventName';
+
+    // Ligne courte affichée quand la notification n'est pas dépliée
+    final summaryLine = [
+      if (eventDate.isNotEmpty) eventDate,
+      if (startTime.isNotEmpty && endTime.isNotEmpty)
+        'de $startTime à $endTime',
+    ].join(' ');
+
+    // Texte complet affiché quand l'utilisateur déplie la notification
+    final expandedText = [
+      if (description.isNotEmpty) description,
+      if (summaryLine.isNotEmpty) summaryLine,
+    ].join('\n\n');
 
     _localNotifs.show(
       id: message.hashCode,
-      title: notification.title,
-      body: notification.body,
+      title: title,
+      body: summaryLine.isNotEmpty ? summaryLine : description,
       notificationDetails: NotificationDetails(
         android: AndroidNotificationDetails(
           _channel.id,
@@ -77,37 +104,55 @@ class NotificationService {
           channelDescription: _channel.description,
           importance: Importance.high,
           priority: Priority.high,
-          icon: '@mipmap/ic_launcher',
+          // Icône monochrome obligatoire pour la barre de statut
+          icon: 'ic_stat_notifications',
+          // Logo couleur complet de l'association affiché dans la notification
+          largeIcon: const DrawableResourceAndroidBitmap('logo_association'),
+          // Affiche le texte complet (description + date/heure) en dépliant
+          styleInformation: BigTextStyleInformation(
+            expandedText,
+            contentTitle: title,
+            summaryText: eventDate,
+          ),
+          color: const Color(0xFF1565C0), // couleur d'accent de l'association
         ),
         iOS: const DarwinNotificationDetails(
           presentAlert: true,
           presentSound: true,
         ),
       ),
-      payload: message.data['event_id'],
+      // On transmet toutes les infos en JSON pour la navigation au tap
+      payload: jsonEncode(data),
     );
   }
 
   void _handleNotificationTap(RemoteMessage message) {
     final eventId = message.data['event_id'];
-    // TODO: navigation
+    // TODO: navigation vers le détail de l'événement avec eventId
   }
 
   void _handleLocalNotificationTap(String? payload) {
     if (payload == null) return;
-    // TODO: navigation
+    final data = jsonDecode(payload) as Map<String, dynamic>;
+    final eventId = data['event_id'];
+    // TODO: navigation vers le détail de l'événement avec eventId
   }
 
   Future<void> _registerToken(String token, String baseUrl) async {
+    final cleanBaseUrl = baseUrl.endsWith('/')
+        ? baseUrl.substring(0, baseUrl.length - 1)
+        : baseUrl;
+
     try {
-      await http.post(
-        Uri.parse('$baseUrl/device-token/'),
+      final response = await http.post(
+        Uri.parse('$cleanBaseUrl/device-token/'),
         headers: {'Content-Type': 'application/json'},
         body: jsonEncode({
           'token': token,
           'platform': Platform.isIOS ? 'ios' : 'android',
         }),
       );
+      debugPrint('Device token registered: ${response.statusCode}');
     } catch (e) {
       // gérer l'échec réseau
     }
