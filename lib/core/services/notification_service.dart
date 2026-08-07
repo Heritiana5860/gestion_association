@@ -42,7 +42,7 @@ class NotificationService {
   }
 
   Future<void> _initLocalNotifications() async {
-    const androidInit = AndroidInitializationSettings('@mipmap/ic_launcher');
+    const androidInit = AndroidInitializationSettings('@mipmap/launcher_icon');
     const iosInit = DarwinInitializationSettings();
     const initSettings = InitializationSettings(
       android: androidInit,
@@ -114,7 +114,7 @@ class NotificationService {
             contentTitle: title,
             summaryText: eventDate,
           ),
-          color: const Color(0xFF1565C0), // couleur d'accent de l'association
+          color: const Color(0xFF1565C0),
         ),
         iOS: const DarwinNotificationDetails(
           presentAlert: true,
@@ -128,14 +128,14 @@ class NotificationService {
 
   void _handleNotificationTap(RemoteMessage message) {
     final eventId = message.data['event_id'];
-    // TODO: navigation vers le détail de l'événement avec eventId
+    // navigation vers le détail de l'événement avec eventId
   }
 
   void _handleLocalNotificationTap(String? payload) {
     if (payload == null) return;
     final data = jsonDecode(payload) as Map<String, dynamic>;
     final eventId = data['event_id'];
-    // TODO: navigation vers le détail de l'événement avec eventId
+    // navigation vers le détail de l'événement avec eventId
   }
 
   Future<void> _registerToken(String token, String baseUrl) async {

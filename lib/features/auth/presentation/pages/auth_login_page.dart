@@ -219,29 +219,29 @@ class _AuthLoginPageState extends ConsumerState<AuthLoginPage> {
                       ),
                     ),
 
-                    // SizedBox(height: SizeHeight.twentyFourHeight),
+                    SizedBox(height: SizeHeight.twentyFourHeight),
 
-                    // Text.rich(
-                    //   TextSpan(
-                    //     children: [
-                    //       TextSpan(
-                    //         text: "Vous n'avez pas encore de compte ? ",
-                    //         style: TextStyle(
-                    //           fontSize: SizeFont.medium,
-                    //           color: AppColor.textDescription,
-                    //         ),
-                    //       ),
-                    //       TextSpan(
-                    //         text: "Créer un compte",
-                    //         recognizer: _tapRecognizer,
-                    //         style: TextStyle(
-                    //           color: AppColor.blue,
-                    //           fontWeight: FontWeight.w500,
-                    //         ),
-                    //       ),
-                    //     ],
-                    //   ),
-                    // ),
+                    Text.rich(
+                      TextSpan(
+                        children: [
+                          TextSpan(
+                            text: "Vous n'avez pas encore de compte ? ",
+                            style: TextStyle(
+                              fontSize: SizeFont.medium,
+                              color: AppColor.textDescription,
+                            ),
+                          ),
+                          TextSpan(
+                            text: "Créer un compte",
+                            recognizer: _tapRecognizer,
+                            style: TextStyle(
+                              color: AppColor.blue,
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
                   ],
                 ),
               ),

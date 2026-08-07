@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:login_with_unite_test_and_clean_architecture/core/contants/colors/app_color.dart';
 import 'package:login_with_unite_test_and_clean_architecture/core/providers/selected_year_notifier.dart';
+import 'package:login_with_unite_test_and_clean_architecture/core/services/update_checker.dart';
 import 'package:login_with_unite_test_and_clean_architecture/core/widgets/app_dropdown.dart';
 import 'package:login_with_unite_test_and_clean_architecture/core/widgets/app_text.dart';
 import 'package:login_with_unite_test_and_clean_architecture/core/widgets/global_padding.dart';
@@ -31,6 +32,29 @@ class _HomePageState extends ConsumerState<HomePage> {
   @override
   void initState() {
     super.initState();
+
+    UpdateChecker.checkForUpdate().then((update) {
+      if (update != null && mounted) {
+        showDialog(
+          context: context,
+          builder: (_) => AlertDialog(
+            title: const AppText(label: "Mise à jour disponible"),
+            content: AppText(
+              label: "Version ${update['version']}\n\n${update['changelog']}",
+            ),
+            actions: [
+              TextButton(
+                onPressed: () {
+                  Navigator.pop(context);
+                  UpdateChecker.downloadAndInstall(update['url']);
+                },
+                child: const AppText(label: "Mettre à jour"),
+              ),
+            ],
+          ),
+        );
+      }
+    });
 
     _obligationSubscription = ref.listenManual<AsyncValue>(
       obligationsProvider,
