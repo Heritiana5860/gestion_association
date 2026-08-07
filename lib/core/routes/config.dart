@@ -118,7 +118,7 @@ final routerProvider = Provider<GoRouter>((ref) {
             backgroundColor: AppColor.scaffoldBackground,
             appBar: AppBar(
               title: AppText(
-                label: "Lonoky ho NGETROKY!",
+                label: "Lonoky ho NGETROKY!!!",
                 fontWeight: FontWeight.w600,
               ),
               centerTitle: true,
