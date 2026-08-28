@@ -33,7 +33,7 @@ class _HomePageState extends ConsumerState<HomePage> {
   void initState() {
     super.initState();
 
-    UpdateChecker.checkForUpdate().then((update) {
+    UpdateChecker.checkForUpdate(context).then((update) {
       if (update != null && mounted) {
         showDialog(
           context: context,
@@ -46,7 +46,10 @@ class _HomePageState extends ConsumerState<HomePage> {
               TextButton(
                 onPressed: () {
                   Navigator.pop(context);
-                  UpdateChecker.downloadAndInstall(update['url']);
+                  UpdateChecker.downloadAndInstall(
+                    url: update['url'],
+                    context: context,
+                  );
                 },
                 child: const AppText(label: "Mettre à jour"),
               ),
