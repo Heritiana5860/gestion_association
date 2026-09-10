@@ -37,7 +37,10 @@ class _HomePageState extends ConsumerState<HomePage> {
       if (update != null && mounted) {
         showDialog(
           context: context,
-          builder: (_) => AlertDialog(
+          builder: (dialogContext) => AlertDialog(
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(8.r),
+            ),
             title: const AppText(label: "Mise à jour disponible"),
             content: AppText(
               label: "Version ${update['version']}\n\n${update['changelog']}",
@@ -45,13 +48,22 @@ class _HomePageState extends ConsumerState<HomePage> {
             actions: [
               TextButton(
                 onPressed: () {
-                  Navigator.pop(context);
+                  Navigator.of(dialogContext).pop();
+                },
+                child: AppText(label: "Plus tard", color: AppColor.grey),
+              ),
+              TextButton(
+                onPressed: () {
+                  Navigator.of(dialogContext).pop();
                   UpdateChecker.downloadAndInstall(
                     url: update['url'],
                     context: context,
                   );
                 },
-                child: const AppText(label: "Mettre à jour"),
+                child: const AppText(
+                  label: "Mettre à jour",
+                  color: AppColor.black,
+                ),
               ),
             ],
           ),

@@ -10,7 +10,7 @@ class CampusCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final total = batiments.length + prefabrique.length;
+    final total = batiments.length + prefabrique.length + rplus.length;
 
     return Container(
       padding: EdgeInsets.all(14.r),
@@ -53,6 +53,20 @@ class CampusCard extends StatelessWidget {
             chipColor: const Color(0xFF0F6E56),
             chipBg: const Color(0xFFE1F5EE),
             chipBorder: const Color(0xFF9FE1CB),
+          ),
+
+          Padding(
+            padding: EdgeInsets.symmetric(vertical: 12.h),
+            child: Divider(height: 1, color: AppColor.lightGrey),
+          ),
+
+          // R+1
+          SectionBloc(
+            title: "R+1",
+            items: rplus,
+            chipColor: const Color(0xFF185FA5),
+            chipBg: const Color(0xFFE6F1FB),
+            chipBorder: const Color(0xFFB5D4F4),
           ),
         ],
       ),

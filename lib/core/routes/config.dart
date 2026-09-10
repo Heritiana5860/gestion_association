@@ -30,6 +30,7 @@ import 'package:login_with_unite_test_and_clean_architecture/features/rad/presen
 import 'package:login_with_unite_test_and_clean_architecture/features/rad/presentation/pages/college_page.dart';
 import 'package:login_with_unite_test_and_clean_architecture/features/rad/presentation/pages/honneur_page.dart';
 import 'package:login_with_unite_test_and_clean_architecture/features/rad/presentation/pages/president_page.dart';
+import 'package:login_with_unite_test_and_clean_architecture/features/statut/presentation/pages/campus.dart';
 import 'package:login_with_unite_test_and_clean_architecture/features/statut/presentation/pages/page_statut.dart';
 import 'package:login_with_unite_test_and_clean_architecture/features/statut/presentation/pages/reglement_page.dart';
 import 'package:printing/printing.dart';
@@ -108,6 +109,12 @@ final routerProvider = Provider<GoRouter>((ref) {
         path: RouteKeys.materialUrl,
         name: RouteKeys.materialName,
         builder: (context, state) => const PageMaterial(),
+      ),
+
+      GoRoute(
+        path: RouteKeys.campusUrl,
+        name: RouteKeys.campusName,
+        builder: (context, state) => const Campus(),
       ),
 
       StatefulShellRoute.indexedStack(
@@ -311,22 +318,17 @@ final routerProvider = Provider<GoRouter>((ref) {
                               ),
 
                               _buildDrawerItem(
+                                icon: Icons.school,
+                                label: "Règlement du Campus",
+                                onTap: () =>
+                                    context.pushNamed(RouteKeys.campusName),
+                              ),
+
+                              _buildDrawerItem(
                                 icon: Icons.build,
                                 label: "Materiel",
                                 onTap: () =>
                                     context.pushNamed(RouteKeys.materialName),
-                              ),
-
-                              _buildDrawerItem(
-                                icon: Icons.info_outline,
-                                label: "À propos",
-                                onTap: () {},
-                              ),
-
-                              _buildDrawerItem(
-                                icon: Icons.settings_outlined,
-                                label: "Paramètre",
-                                onTap: () {},
                               ),
                             ],
                           ),

@@ -15,6 +15,7 @@ class RouteKeys {
   static String get statutUrl => "/statut";
   static String get regleUrl => "/regle";
   static String get materialUrl => "/mater";
+  static String get campusUrl => "/campus";
 
   static String get loginName => "login";
   static String get inscriptionName => "inscription";
@@ -30,4 +31,5 @@ class RouteKeys {
   static String get statutName => "statut";
   static String get regleName => "regle";
   static String get materialName => "material";
+  static String get campusName => "campus";
 }

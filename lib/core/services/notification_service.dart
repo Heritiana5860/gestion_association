@@ -127,14 +127,14 @@ class NotificationService {
   }
 
   void _handleNotificationTap(RemoteMessage message) {
-    final eventId = message.data['event_id'];
+    // final eventId = message.data['event_id'];
     // navigation vers le détail de l'événement avec eventId
   }
 
   void _handleLocalNotificationTap(String? payload) {
     if (payload == null) return;
-    final data = jsonDecode(payload) as Map<String, dynamic>;
-    final eventId = data['event_id'];
+    // final data = jsonDecode(payload) as Map<String, dynamic>;
+    // final eventId = data['event_id'];
     // navigation vers le détail de l'événement avec eventId
   }
 

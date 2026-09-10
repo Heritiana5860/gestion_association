@@ -5,7 +5,6 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:login_with_unite_test_and_clean_architecture/core/contants/colors/app_color.dart';
 import 'package:login_with_unite_test_and_clean_architecture/core/contants/keys/route_keys.dart';
-import 'package:login_with_unite_test_and_clean_architecture/core/contants/sizes/size_font.dart';
 import 'package:login_with_unite_test_and_clean_architecture/core/contants/sizes/size_height.dart';
 import 'package:login_with_unite_test_and_clean_architecture/core/errors/ref_listen_error.dart';
 import 'package:login_with_unite_test_and_clean_architecture/core/widgets/app_button.dart';
@@ -221,27 +220,27 @@ class _AuthLoginPageState extends ConsumerState<AuthLoginPage> {
 
                     SizedBox(height: SizeHeight.twentyFourHeight),
 
-                    Text.rich(
-                      TextSpan(
-                        children: [
-                          TextSpan(
-                            text: "Vous n'avez pas encore de compte ? ",
-                            style: TextStyle(
-                              fontSize: SizeFont.medium,
-                              color: AppColor.textDescription,
-                            ),
-                          ),
-                          TextSpan(
-                            text: "Créer un compte",
-                            recognizer: _tapRecognizer,
-                            style: TextStyle(
-                              color: AppColor.blue,
-                              fontWeight: FontWeight.w500,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
+                    // Text.rich(
+                    //   TextSpan(
+                    //     children: [
+                    //       TextSpan(
+                    //         text: "Vous n'avez pas encore de compte ? ",
+                    //         style: TextStyle(
+                    //           fontSize: SizeFont.medium,
+                    //           color: AppColor.textDescription,
+                    //         ),
+                    //       ),
+                    //       TextSpan(
+                    //         text: "Créer un compte",
+                    //         recognizer: _tapRecognizer,
+                    //         style: TextStyle(
+                    //           color: AppColor.blue,
+                    //           fontWeight: FontWeight.w500,
+                    //         ),
+                    //       ),
+                    //     ],
+                    //   ),
+                    // ),
                   ],
                 ),
               ),

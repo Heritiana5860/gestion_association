@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
 import 'package:login_with_unite_test_and_clean_architecture/core/contants/colors/app_color.dart';
 import 'package:login_with_unite_test_and_clean_architecture/core/widgets/app_text.dart';
@@ -11,8 +12,7 @@ import 'package:permission_handler/permission_handler.dart';
 
 class UpdateChecker {
   static const owner = "Heritiana5860";
-  static const repo =
-      "https://github.com/Heritiana5860/gestion_association.git";
+  static const repo = "gestion_association";
 
   static Future<Map<String, dynamic>?> checkForUpdate(
     BuildContext context,
@@ -114,14 +114,32 @@ class UpdateChecker {
 
       await file.writeAsBytes(response.bodyBytes);
 
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: AppText(
+              label:
+                  "L'application va se fermer. Relancez-la après l'installation.",
+            ),
+          ),
+        );
+      }
+
       await OpenFilex.open(filePath); // lance l'installeur système
+
+      // Ferme l'app pour forcer l'utilisateur à relancer la nouvelle version
+      if (Platform.isAndroid) {
+        await SystemNavigator.pop(); // ou exit(0) si tu veux être plus radical
+      }
     } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          backgroundColor: AppColor.red,
-          content: AppText(label: "Erreur: $e"),
-        ),
-      );
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            backgroundColor: AppColor.red,
+            content: AppText(label: "Erreur: $e"),
+          ),
+        );
+      }
     }
   }
 }
