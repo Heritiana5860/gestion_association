@@ -15,10 +15,10 @@ class MemberRepositoryImpl implements MemberRepository {
   @override
   Future<Either<Failure, List<MemberEntity>>> members({
     Map<String, dynamic>? params,
-    required String year,
+    // required String year,
   }) async {
     try {
-      final response = await datasource.members(params: params, year: year);
+      final response = await datasource.members(params: params);
       return Right(response);
     } on DioException catch (e) {
       return Left(mapDioExceptionToFailure(e));

@@ -5,7 +5,7 @@ import 'package:login_with_unite_test_and_clean_architecture/features/member/dat
 abstract class MemberDatasource {
   Future<List<MemberModel>> members({
     Map<String, dynamic>? params,
-    required String year,
+    // required String year,
   });
 
   Future<void> addMember(MemberModel model);
@@ -22,11 +22,11 @@ class MemberDatasourceImpl implements MemberDatasource {
   @override
   Future<List<MemberModel>> members({
     Map<String, dynamic>? params,
-    required String year,
+    // required String year,
   }) async {
     final Map<String, dynamic> queryQueryParams = {
       if (params != null) ...params,
-      'year': year,
+      // 'year': year,
     };
 
     final response = await dio.get(

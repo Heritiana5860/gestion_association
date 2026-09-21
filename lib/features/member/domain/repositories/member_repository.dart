@@ -5,7 +5,7 @@ import 'package:login_with_unite_test_and_clean_architecture/features/member/dom
 abstract class MemberRepository {
   Future<Either<Failure, List<MemberEntity>>> members({
     Map<String, dynamic>? params,
-    required String year,
+    // required String year,
   });
   Future<Either<Failure, void>> addMember(MemberEntity entity);
   Future<Either<Failure, void>> updateMember({

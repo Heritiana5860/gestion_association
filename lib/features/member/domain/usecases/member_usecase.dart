@@ -9,8 +9,8 @@ class MemberUsecase {
 
   Future<Either<Failure, List<MemberEntity>>> call({
     Map<String, dynamic>? params,
-    required String year,
+    // required String year,
   }) {
-    return repository.members(params: params, year: year);
+    return repository.members(params: params);
   }
 }
