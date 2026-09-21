@@ -28,17 +28,17 @@ void main() {
     statut: "Novice",
   );
 
-  const year = "2026";
+  // const year = "2026";
 
   test("should return List<MemberEntity> when get member successful", () async {
     when(
-      () => mockRepository.members(year: year),
+      () => mockRepository.members(),
     ).thenAnswer((_) async => const Right([tEntity]));
 
-    final result = await usecase.call(year: year);
+    final result = await usecase.call();
 
     expect(result, const Right([tEntity]));
-    verify(() => mockRepository.members(year: year)).called(1);
+    verify(() => mockRepository.members()).called(1);
     verifyNoMoreInteractions(mockRepository);
   });
 
@@ -48,12 +48,12 @@ void main() {
     );
 
     when(
-      () => mockRepository.members(year: year),
+      () => mockRepository.members(),
     ).thenAnswer((_) async => const Left(tFailure));
 
-    final result = await usecase.call(year: year);
+    final result = await usecase.call();
 
     expect(result, const Left(tFailure));
-    verify(() => mockRepository.members(year: year));
+    verify(() => mockRepository.members());
   });
 }
